@@ -7,7 +7,7 @@ import datetime
 import time
 import traceback
 
-from driver_email import enviar_mail_con_adjuntos
+from .driver_email import enviar_mail_con_adjuntos
 
 PROGRAMADOR = 'xxxxxxxxxxxxx@xxxxxxxxxxxxx.com'
 USER = 'xxxxxxxxxxxxx@xxxxxxxxxxxxx.com'
@@ -26,6 +26,7 @@ ENCABEZADO_SUBIDA_DATOS = [
     "Días de Vencimiento (38)", "Importe de Acuerdo (39)", "Sueldo (40)", "Cantidad de Vehiculos (41)",
     "Datos Patrimoniales (42)"
 ]
+NUMBER_OF_COLUMNS = 66
 
 
 def limpiar_numeros(df_num):
@@ -425,47 +426,59 @@ def Preparacion_Datos_Comafi():
     print('Guardado exitoso!')
 
 
-def Datos_Riesgo():
-    'NECESARIOS: tener el archivos.csv de riesgo y el archivo de las cuentas de osiris como cuentas.csv'
+def get_phone_risk(df_risk: pd.DataFrame) -> pd.DataFrame:
+    frames = list()
+    num_tel = len([col_name for col_name in list(df_risk.columns) if 'tel_riesgo' in col_name])
+    for i in range(1, num_tel + 1):
+        col_riesgo = f'tel_riesgo_{i}'
+        df = df_risk.loc[df_risk[col_riesgo].notnull(), ['Cuenta', col_riesgo]]\
+            .rename(columns={col_riesgo: 'TEL'}).copy()
+        df['OBS'] = f'RIESGO {i}'
+        df['ID_FONO'] = '8'
+        frames.append(df)
+    df_phone_risk = pd.concat(frames)
+    return df_phone_risk
 
-    col_numeros = {
+
+def read_osiris_accounts() -> pd.DataFrame:
+    uploaded_accounts = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
+    uploaded_accounts = uploaded_accounts[['Cuenta', 'Mat. Unica']].rename(
+        columns={
+            'Mat. Unica': 'DNI'
+            },
+        inplace=False
+        )
+    return uploaded_accounts
+
+
+def risk_data():
+    'NECESARIOS: tener el archivos.csv de riesgo y el archivo de las cuentas de osiris como cuentas.csv'
+    col_numbers = {
         'NÃºmero.1': 'tel_riesgo_1',
         'NÃºmero.2': 'tel_riesgo_2',
         'NÃºmero.3': 'tel_riesgo_3',
         'NÃºmero.4': 'tel_riesgo_4'
     }
 
-    li = [x for x in range(66)]
-    riesgo = pd.read_csv('riesgo.csv', sep=';', encoding='ANSI', dtype=str, index_col=False, usecols=li)
-    df_riesgo = riesgo[['DNI'] + list(col_numeros.keys()) + ['NSE']]
+    col_list = [x for x in range(NUMBER_OF_COLUMNS)]
+    risk = pd.read_csv('riesgo.csv', sep=';', encoding='ANSI', dtype=str, index_col=False, usecols=col_list)
+    df_risk = risk[['DNI'] + list(col_numbers.keys()) + ['NSE']]
 
-    df_riesgo = df_riesgo.rename(columns=col_numeros, inplace=False)
-    # Lectura de cuetnas de Osiris
-    cuentas_subidas = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
-    cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
+    df_risk = df_risk.rename(columns=col_numbers, inplace=False)
 
-    # obteniendo las cuentas qcruzadas de osiris y riesgo
-    df_riesgo = pd.merge(cuentas_subidas, df_riesgo, how="inner", on="DNI")
+    uploaded_accounts = read_osiris_accounts()
 
-    # NUMERO DE TELEFONOS
-    frames = list()
-    num_tel = len([col_name for col_name in list(df_riesgo.columns) if 'tel_riesgo' in col_name])
-    for i in range(1, num_tel + 1):
-        col_riesgo = f'tel_riesgo_{i}'
-        df = df_riesgo.loc[df_riesgo[col_riesgo].notnull(), ['Cuenta', col_riesgo]]\
-            .rename(columns={col_riesgo: 'TEL'}).copy()
-        df['OBS'] = f'RIESGO {i}'
-        df['ID_FONO'] = '8'
-        frames.append(df)
-    df_tels_riesgo = pd.concat(frames)
+    df_risk = pd.merge(uploaded_accounts, df_risk, how="inner", on="DNI")
+
+    df_phone_risk = get_phone_risk(df_risk=df_risk)
 
     Escribir_Datos_Osiris(
-        df_tels_riesgo,
+        df_phone_risk,
         'RIESGO_telefonos.csv',
         ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
         ["ID Cuenta o Nro. de Asig. (0)", "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)", "Obs. de Teléfono (19)"]
     )
-    print('PLanilla de Telefonos de RIESGO escrita')
+    print('Planilla de Teléfonos de RIESGO escrita')
 
 
 def Datos_Info():
@@ -684,7 +697,7 @@ class Interfaz_Usuario(Cmd):
         print('\n\nCOMENZANDO PREPARACION DATOS RIESGO ONLINE\n')
         print('Preparando...')
         try:
-            Datos_Riesgo()
+            risk_data()
             print('PROCESO FINALIZADO.\n\n')
 
         except Exception:
