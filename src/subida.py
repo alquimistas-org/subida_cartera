@@ -390,7 +390,10 @@ def get_phone_risk(df_risk: pd.DataFrame) -> pd.DataFrame:
 
 
 def read_osiris_accounts() -> pd.DataFrame:
-    uploaded_accounts = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
+    try:
+        uploaded_accounts = pd.read_csv('cuentas.csv', encoding='latin_1', sep=';', dtype=str)
+    except Exception:
+        uploaded_accounts = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
     uploaded_accounts = uploaded_accounts[['Cuenta', 'Mat. Unica']].rename(
         columns={
             'Mat. Unica': 'DNI'
