@@ -63,12 +63,20 @@ def Escribir_Datos_Osiris(df, filename, cols_df, cols_osiris):
 
     df_subida = pd.DataFrame(columns=DATA_UPLOADER_HEADER)
     df_subida[cols_osiris] = df[cols_df]
-    df_subida.to_csv(
-        f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {filename}',
-        sep=';',
-        index=False,
-        encoding='ANSI'
-    )
+    try:
+        df_subida.to_csv(
+            f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {filename}',
+            sep=';',
+            index=False,
+            encoding='latin_1'
+        )
+    except Exception:
+        df_subida.to_csv(
+            f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {filename}',
+            sep=';',
+            index=False,
+            encoding='ANSI'
+        )
 
 
 def Control_Carpeta_Subida():
@@ -80,7 +88,12 @@ def Control_Carpeta_Subida():
 def Preparacion_Cuentas():
 
     "Condiciones"
-    cr = pd.read_csv('cr.csv', sep=';', encoding='ANSI', dtype=str)
+
+    try:
+        cr = pd.read_csv('cr.csv', sep=';', encoding='latin_1', dtype=str)
+    except Exception:
+        cr = pd.read_csv('cr.csv', sep=';', encoding='ANSI', dtype=str)
+
     columnas = ACOUNT_PREP_COL
     df_os = pd.DataFrame(columns=columnas)
 
@@ -112,23 +125,30 @@ def Preparacion_Cuentas():
     df_os['Importe Historico (14)'] = cr['CAPITAL'].str.replace(', ', '.')
     df_os['Observaciones (15)'] = (
         'Gestor anterior: ' + cr['GESTOR_ANTERIOR'] + ' - ' + 'Score: ' +
-        cr['SCORE'].str.replace(', ', '.').astype(float).round(2).astype(str)
+        cr['SCORE'].str.replace(', ', '.').str.replace(',', '.').astype(float).round(2).astype(str)
     )
     df_os['Fecha Fin de Gestion (16)'] = date_2
     df_os['IDSucursal(17)'] = '1'
     df_os['riesgo'] = cr['RIESGO']
-    # df_os.to_csv('subida_cartera.csv',sep=';',encoding='ANSI', index = False)
 
     for name, df_sub in df_os.groupby('riesgo'):
 
         print(f'Ecribiendo: subida_cartera_{name}.csv')
         df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
-        df_sub.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
-            sep=';',
-            encoding='ANSI',
-            index=False
-        )
+        try:
+            df_sub.to_csv(
+                f'Subida Osiris/{time.strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                sep=';',
+                encoding='latin_1',
+                index=False
+            )
+        except Exception:
+            df_sub.to_csv(
+                f'Subida Osiris/{time.strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                sep=';',
+                encoding='ANSI',
+                index=False
+            )
 
 
 def Preparacion_Cuentas_Comafi():
@@ -137,7 +157,10 @@ def Preparacion_Cuentas_Comafi():
 
     print('Iniciando preparacion')
     # lectura planilla modelo
-    df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='ANSI', sep=';')
+    try:
+        df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='latin_1', sep=';')
+    except Exception:
+        df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='ANSI', sep=';')
     df = pd.read_excel('emerix.xlsx', dtype=str)
     col_utiles = UTIL_COLS_COMAFI
     provincias = PROVINCES
@@ -194,15 +217,22 @@ def Preparacion_Cuentas_Comafi():
     for name, df_sub in df_os.groupby('subcliente'):
         print(f'Ecribiendo: {name}.csv')
         df_sub = df_sub.drop('subcliente', inplace=False, axis=1)
-        df_sub.to_csv(f'{name_folder}/{name}.csv', sep=';', encoding='ANSI', index=False)
+        try:
+            df_sub.to_csv(f'{name_folder}/{name}.csv', sep=';', encoding='latin_1', index=False)
+        except Exception:
+            df_sub.to_csv(f'{name_folder}/{name}.csv', sep=';', encoding='ANSI', index=False)
 
 
 def Preparacion_Datos():
     ' Necesita que este en la carpeta'
     print('Preparando planillas de datos...')
+    try:
+        cr = pd.read_csv('cr.csv', sep=';', encoding='latin_1', dtype=str)
+        cuentas_subidas = pd.read_csv('cuentas.csv', encoding='latin_1', sep=';', dtype=str)
+    except Exception:
+        cr = pd.read_csv('cr.csv', sep=';', encoding='ANSI', dtype=str)
+        cuentas_subidas = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
 
-    cr = pd.read_csv('cr.csv', sep=';', encoding='ANSI', dtype=str)
-    cuentas_subidas = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
     cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
 
     df_cr = cr[
@@ -296,8 +326,10 @@ def Preparacion_Datos():
 def Preparacion_Datos_Comafi():
 
     print('Preparando planillas de datos para comafi...')
-
-    df_subida = pd.read_csv('modelos/modelo_datos.csv', encoding='ANSI', sep=';')
+    try:
+        df_subida = pd.read_csv('modelos/modelo_datos.csv', encoding='latin_1', sep=';')
+    except Exception:
+        df_subida = pd.read_csv('modelos/modelo_datos.csv', encoding='ANSI', sep=';')
 
     df_num = pd.read_excel('emerix.xlsx', dtype=str)
     col_utiles = UTIL_COLS_COMAFI
@@ -309,22 +341,37 @@ def Preparacion_Datos_Comafi():
     df_num['telefono_2'] = df_num[df_num['telefono_2'].apply(len) >= 6]['telefono_2']
     df_num = df_num[df_num['telefono_2'].notna()]
 
-    df_cuentas_subidas = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
+    try:
+        df_cuentas_subidas = pd.read_csv('cuentas.csv', encoding='latin_1', sep=';', dtype=str)
+    except Exception:
+        df_cuentas_subidas = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
+
     df_cuentas_subidas = df_cuentas_subidas[['Cuenta', 'Mat. Unica']]\
         .rename(columns={'Mat. Unica': 'dni'}, inplace=False)
 
     df_numeros_cuentas = pd.merge(df_cuentas_subidas, df_num, how='inner', on='dni')
-    df_numeros_cuentas.to_csv('verificacion.csv', sep=';', encoding='ANSI', index=False)
+    try:
+        df_numeros_cuentas.to_csv('verificacion.csv', sep=';', encoding='latin_1', index=False)
+    except Exception:
+        df_numeros_cuentas.to_csv('verificacion.csv', sep=';', encoding='ANSI', index=False)
     df_subida[
         ['ID Cuenta o Nro. de Asig. (0)', "Nro. de Teléfono (18)"]] = df_numeros_cuentas[['Cuenta', 'telefono_2']]
     df_subida["ID Tipo de Teléfono (17)"] = 1
     print('Guardando planilla subida...')
-    df_subida.to_csv(
-        f'Subida Osiris/{time.strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
-        sep=';',
-        index=False,
-        encoding='ANSI'
-    )
+    try:
+        df_subida.to_csv(
+            f'Subida Osiris/{time.strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            sep=';',
+            index=False,
+            encoding='ANSI'
+        )
+    except Exception:
+        df_subida.to_csv(
+            f'Subida Osiris/{time.strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            sep=';',
+            index=False,
+            encoding='ANSI'
+        )
     print('Guardado exitoso!')
 
 
@@ -363,7 +410,10 @@ def risk_data():
     }
 
     col_list = [x for x in range(NUMBER_OF_COLUMNS)]
-    risk = pd.read_csv('riesgo.csv', sep=';', encoding='ANSI', dtype=str, index_col=False, usecols=col_list)
+    try:
+        risk = pd.read_csv('riesgo.csv', sep=';', encoding='latin_1', dtype=str, index_col=False, usecols=col_list)
+    except Exception:
+        risk = pd.read_csv('riesgo.csv', sep=';', encoding='ANSI', dtype=str, index_col=False, usecols=col_list)
     df_risk = risk[['DNI'] + list(col_numbers.keys()) + ['NSE']]
 
     df_risk = df_risk.rename(columns=col_numbers, inplace=False)
