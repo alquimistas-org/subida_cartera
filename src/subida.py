@@ -15,7 +15,11 @@ from .constants.constants import (
     DATA_UPLOADER_HEADER,
     PROVINCES,
     UTIL_COLS_COMAFI,
-    ACOUNT_PREP_COL,
+    ACCOUNT_PREP_COL,
+    NUMBER_OF_COLUMNS,
+    DATA_PREP_COLUMNS,
+    DATA_INFO_COLUMNS,
+    DATA_INFO_COLUMNS_RENAME,
 )
 
 
@@ -94,7 +98,7 @@ def Preparacion_Cuentas():
     except Exception:
         cr = pd.read_csv('cr.csv', sep=';', encoding='ANSI', dtype=str)
 
-    columnas = ACOUNT_PREP_COL
+    columnas = ACCOUNT_PREP_COL
     df_os = pd.DataFrame(columns=columnas)
 
     provincias = PROVINCES
@@ -235,11 +239,7 @@ def Preparacion_Datos():
 
     cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
 
-    df_cr = cr[
-        ['NRODOC', 'RIESGO', 'TIPO_CUENTA', 'TIPO_CUENTA', 'TEL_PARTICULAR',
-         'TEL_LABORAL', 'TEL_ALTERNATIVO', 'TEL_CR_PARTICULAR', 'TEL_CR_LABORAL',
-         'TEL_CR_ALTERNATIVO', 'EMAIL', 'ULTIMO_PAGO']
-        ].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
+    df_cr = cr[DATA_PREP_COLUMNS].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
     df_cr = pd.merge(cuentas_subidas, df_cr, how="inner", on="DNI")
 
     frames = list()
@@ -442,25 +442,8 @@ def Datos_Info():
     cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
 
     info = pd.read_excel('info.xlsx', dtype=str, skiprows=1)
-    df_info = info[
-        ['NUMERO DOCUMENTO', 'NUMERO 1', 'NUMERO 2', 'NUMERO 3', 'E-MAIL',
-         'REMUNERACION', 'RAZON SOCIAL', 'CANTIDAD.2', 'DETALLE.1', 'NSE']
-    ]
-    df_info = df_info.rename(
-        columns={
-            'NUMERO DOCUMENTO': 'DNI',
-            'NUMERO 1': 'tel_info_1',
-            'NUMERO 2': 'tel_info_2',
-            'NUMERO 3': 'tel_info_3',
-            'E-MAIL': 'MAIL_info',
-            'REMUNERACION': 'sueldo_info',
-            'RAZON SOCIAL': 'empleador_info',
-            'CANTIDAD.2': 'q_vehiculos',
-            'DETALLE.1': 'detalle_veh',
-            'NSE': 'NSE_info'
-        },
-        inplace=False
-    ).copy()
+    df_info = info[DATA_INFO_COLUMNS]
+    df_info = df_info.rename(DATA_INFO_COLUMNS_RENAME, inplace=False).copy()
     df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
 
     df_info = pd.merge(cuentas_subidas, df_info, how="inner", on="DNI")
