@@ -8,7 +8,7 @@ import time
 import traceback
 
 from driver_email import enviar_mail_con_adjuntos
-from .constants.constants import (
+from constants.constants import (
     PROGRAMMER,
     USER,
     PASSWORD,
