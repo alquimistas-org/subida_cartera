@@ -3,8 +3,7 @@ import os
 import shutil
 import pandas as pd
 import numpy as np
-import datetime
-import time
+from datetime import datetime
 import traceback
 
 from driver_email import enviar_mail_con_adjuntos
@@ -113,14 +112,14 @@ def Preparacion_Cuentas():
         df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
         try:
             df_sub.to_csv(
-                f'Subida Osiris/{time.strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
                 sep=';',
                 encoding='latin_1',
                 index=False
             )
         except Exception:
             df_sub.to_csv(
-                f'Subida Osiris/{time.strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
                 sep=';',
                 encoding='ANSI',
                 index=False
@@ -185,7 +184,7 @@ def Preparacion_Cuentas_Comafi():
     df_os['IDSucursal(17)'] = '1'
     df_os['subcliente'] = df['subcliente']
 
-    name_folder = f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {nombre_cartera}'
+    name_folder = f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} {nombre_cartera}'
     if os.path.isdir(name_folder):
         shutil.rmtree(name_folder)
     os.mkdir(name_folder)
@@ -332,14 +331,14 @@ def Preparacion_Datos_Comafi():
     print('Guardando planilla subida...')
     try:
         df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
             sep=';',
             index=False,
             encoding='ANSI'
         )
     except Exception:
         df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
             sep=';',
             index=False,
             encoding='ANSI'

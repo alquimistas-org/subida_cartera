@@ -1,10 +1,11 @@
 
+from datetime import datetime
+import os
 import pandas as pd
-import time
 from constants.constants import DATA_UPLOADER_HEADER
 
 
-def Escribir_Datos_Osiris(df, filename, cols_df, cols_osiris):
+def Escribir_Datos_Osiris(df: pd.DataFrame, filename: str, cols_df: list[str], cols_osiris: list[str]):
 
     Control_Carpeta_Subida()
 
@@ -12,14 +13,15 @@ def Escribir_Datos_Osiris(df, filename, cols_df, cols_osiris):
     df_subida[cols_osiris] = df[cols_df]
     try:
         df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {filename}',
+            f'{os.getenv("file_directory", "Subida Osiris")}/{datetime.now().strftime("(%H.%M hs) -")} {filename}',
             sep=';',
             index=False,
             encoding='latin_1'
         )
+
     except Exception:
         df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {filename}',
+            f'{os.getenv("file_directory", "Subida Osiris")}/{datetime.now().strftime("(%H.%M hs) -")} {filename}',
             sep=';',
             index=False,
             encoding='ANSI'

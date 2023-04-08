@@ -8,6 +8,8 @@ COPY Pipfile Pipfile.lock ./
 
 RUN pipenv install --system --deploy --ignore-pipfile
 
+ENV file_directory="Subida Osiris"
+
 COPY . .
 
 CMD ["python3", "src/subida.py"]
