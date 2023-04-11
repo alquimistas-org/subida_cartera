@@ -1,0 +1,11 @@
+import pandas as pd
+from src.subida import (
+    Preparacion_Cuentas_Comafi,
+)
+
+from unittest import mock
+
+class TestPreparacionCuentasComafi:
+    
+    def test_preparacion_cuentas_comafi(self):
+      return ' '
