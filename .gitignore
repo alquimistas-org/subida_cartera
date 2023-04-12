@@ -203,3 +203,5 @@ venv/
 *cr.csv
 Subida\ Osiris/*
 .DS_Store
+*riesgo.csv
+notebooks/
