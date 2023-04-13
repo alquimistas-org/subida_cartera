@@ -5,7 +5,7 @@ import pandas as pd
 from constants.constants import DATA_UPLOADER_HEADER
 
 
-def Escribir_Datos_Osiris(df: pd.DataFrame, filename: str, cols_df: list[str], cols_osiris: list[str]):
+def Escribir_Datos_Osiris(df: pd.DataFrame, filename: str, cols_df: 'list[str]', cols_osiris: 'list[str]'):
 
     Control_Carpeta_Subida()
 

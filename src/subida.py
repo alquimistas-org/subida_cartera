@@ -3,11 +3,12 @@ import os
 import shutil
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, date
 import traceback
 
 from driver_email import enviar_mail_con_adjuntos
 from constants.constants import (
+    CR_FILE_PATH,
     PROGRAMMER,
     USER,
     PASSWORD,
@@ -60,21 +61,21 @@ def limpiar_numeros(df_num):
     return df_num
 
 
-def Preparacion_Cuentas():
+def Preparacion_Cuentas(cr_file_path=CR_FILE_PATH) -> list:
 
     "Condiciones"
 
     try:
-        cr = pd.read_csv('cr.csv', sep=';', encoding='latin_1', dtype=str)
+        cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
     except Exception:
-        cr = pd.read_csv('cr.csv', sep=';', encoding='ANSI', dtype=str)
+        cr = pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
 
     columnas = ACCOUNT_PREP_COL
     df_os = pd.DataFrame(columns=columnas)
 
     provincias = PROVINCES
 
-    date_now = datetime.date.today()
+    date_now = date.today()
     years_to_add = date_now.year + 3
 
     date_1 = date_now.strftime('%d/%m/%Y')
@@ -106,24 +107,30 @@ def Preparacion_Cuentas():
     df_os['IDSucursal(17)'] = '1'
     df_os['riesgo'] = cr['RIESGO']
 
+    all_result_file_path = list()
     for name, df_sub in df_os.groupby('riesgo'):
 
         print(f'Ecribiendo: subida_cartera_{name}.csv')
         df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
+
+        result_file_path = f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv'
+
         try:
             df_sub.to_csv(
-                f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                result_file_path,
                 sep=';',
                 encoding='latin_1',
                 index=False
             )
         except Exception:
             df_sub.to_csv(
-                f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                result_file_path,
                 sep=';',
                 encoding='ANSI',
                 index=False
             )
+        all_result_file_path.append(result_file_path)
+    return all_result_file_path
 
 
 def Preparacion_Cuentas_Comafi():
@@ -155,7 +162,7 @@ def Preparacion_Cuentas_Comafi():
     print('\n')
     print('\nComenzando escritura de archivos..\n\n')
 
-    date_now = datetime.date.today()
+    date_now = date.today()
     years_to_add = date_now.year + 3
 
     date_1 = date_now.strftime('%d/%m/%Y')
