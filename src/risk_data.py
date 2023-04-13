@@ -8,18 +8,20 @@ from constants.constants import (
 from write_data_osiris import Escribir_Datos_Osiris
 
 
-def get_phone_risk(df_risk: pd.DataFrame) -> pd.DataFrame:
+def get_phones(df: pd.DataFrame, stop: int, colum_name: str) -> pd.DataFrame:
+    df_copy = df.copy()
     frames = list()
-    num_tel = len([col_name for col_name in list(df_risk.columns) if 'tel_riesgo' in col_name])
-    for i in range(1, num_tel + 1):
-        col_riesgo = f'tel_riesgo_{i}'
-        df = df_risk.loc[df_risk[col_riesgo].notnull(), ['Cuenta', col_riesgo]]\
-            .rename(columns={col_riesgo: 'TEL'}).copy()
-        df['OBS'] = f'RIESGO {i}'
-        df['ID_FONO'] = '8'
-        frames.append(df)
-    df_phone_risk = pd.concat(frames)
-    return df_phone_risk
+    for i in range(1, stop):
+        col = f'tel_{colum_name.lower()}_{i}'
+        new_df = df_copy.loc[df_copy[col].notnull(), ['Cuenta', col]]\
+            .rename(columns={col: 'TEL'}).copy()
+        new_df['OBS'] = f'{colum_name} {i}'
+        new_df['ID_FONO'] = '8'
+        frames.append(new_df)
+    df_phones = pd.concat(frames, ignore_index=True)
+    return df_phones
+
+# TODO: in other PR move this function to another file for helper functions or similar
 
 
 def read_osiris_accounts(osiris_accounts_file_path: Path) -> pd.DataFrame:
@@ -34,6 +36,8 @@ def read_osiris_accounts(osiris_accounts_file_path: Path) -> pd.DataFrame:
         inplace=False
         )
     return uploaded_accounts
+
+# TODO: in other PR move this function to another file for helper functions or similar
 
 
 def risk_data(risk_file_path=RISK_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH) -> str:
@@ -58,7 +62,7 @@ def risk_data(risk_file_path=RISK_FILE_PATH, osiris_accounts_file_path=OSIRIS_AC
 
     df_risk = pd.merge(uploaded_accounts, df_risk, how="inner", on="DNI")
 
-    df_phone_risk = get_phone_risk(df_risk=df_risk)
+    df_phone_risk = get_phones(df=df_risk)
 
     result_file_path = Escribir_Datos_Osiris(
         df_phone_risk,

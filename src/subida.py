@@ -11,8 +11,6 @@ from constants.constants import (
     ACCOUNT_PREP_COL,
     CR_FILE_PATH,
     DATA_PREP_COLUMNS,
-    DATA_INFO_COLUMNS,
-    DATA_INFO_COLUMNS_RENAME,
     EMERIX_FILE_PATH,
     PASSWORD,
     PROGRAMMER,
@@ -21,6 +19,7 @@ from constants.constants import (
     UTIL_COLS_COMAFI,
 )
 from risk_data import risk_data
+from data_info import GenerateDataInfo
 from write_data_osiris import Escribir_Datos_Osiris
 
 
@@ -356,119 +355,6 @@ def Preparacion_Datos_Comafi():
     print('Guardado exitoso!')
 
 
-def Datos_Info():
-    'NECESARIO cuentas de osiris como cuentas.csv, cuentas deinfo exporto como info.xlsx'
-    cuentas_subidas = pd.read_csv('cuentas.csv', sep=';', dtype=str)
-    cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
-
-    info = pd.read_excel('info.xlsx', dtype=str, skiprows=1)
-    df_info = info[DATA_INFO_COLUMNS]
-    df_info = df_info.rename(DATA_INFO_COLUMNS_RENAME, inplace=False).copy()
-    df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
-
-    df_info = pd.merge(cuentas_subidas, df_info, how="inner", on="DNI")
-
-    # PREPARACION DE NUMEROS
-    frames = list()
-
-    for i in range(1, 3):
-        col_info = f'tel_info_{i}'
-        df = df_info.loc[df_info[col_info].notnull(), ['Cuenta', col_info]].rename(columns={col_info: 'TEL'}).copy()
-        df['OBS'] = f'INFO {i}'
-        df['ID_FONO'] = '8'
-        frames.append(df)
-    Escribir_Datos_Osiris(
-        pd.concat(frames)[['Cuenta', 'ID_FONO', 'TEL', 'OBS']],
-        'INFO_telefonos.csv',
-        ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
-        ["ID Cuenta o Nro. de Asig. (0)", "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)", "Obs. de Teléfono (19)"]
-    )
-
-    print('Planilla de TELEFONOS de INFO escrita')
-
-    # sueldo
-    Escribir_Datos_Osiris(
-        df_info.loc[df_info['sueldo_info'].notnull(), ['Cuenta', 'sueldo_info']],
-        'INFO_sueldo.csv',
-        ['Cuenta', 'sueldo_info'],
-        ["ID Cuenta o Nro. de Asig. (0)", "Sueldo (40)"]
-    )
-    print('Planilla de SUELDOS de INFO escrita')
-
-    # MAIL
-    mails = df_info.loc[df_info['MAIL_info'].notnull(), 'MAIL_info'].str.split(', ', expand=True)
-    renombre = {x: f'mail_{i+1}' for i, x in enumerate(list(mails.columns), 0)}
-    mails = mails.rename(columns=renombre)
-    name_mails = list(renombre.values())
-    df_info[name_mails] = mails[name_mails]
-    concat_mails = list()
-    for name in name_mails:
-        concat_mails.append(df_info.loc[df_info[name].notnull(), ['Cuenta', name]].rename(columns={name: 'MAIL_info'}))
-
-    Escribir_Datos_Osiris(
-        pd.concat(concat_mails),
-        'INFO_mail.csv',
-        ['Cuenta', 'MAIL_info'],
-        ["ID Cuenta o Nro. de Asig. (0)", "Email (16)"]
-    )
-    print('Planilla de MAIL de INFO escrita')
-
-    # MAIL
-    Escribir_Datos_Osiris(
-        df_info.loc[df_info['q_vehiculos'] != '0', ['Cuenta', 'q_vehiculos']],
-        'INFO_Qvehiculos.csv',
-        ['Cuenta', 'q_vehiculos'],
-        ["ID Cuenta o Nro. de Asig. (0)", "Cantidad de Vehiculos (41)"]
-    )
-
-    print('Planilla de Q VEHICULOS de INFO escrita')
-
-    plantilla = (
-        'Sueldo: ${sueldo_info_str} Empleador: {empleador_info} - '
-        'Cantidad de Vehículos: {q_vehiculos} Detalle: {detalle_veh} - Nivel Socioeconómico: {NSE_info}'
-    )
-    df_info['sueldo_info_float'] = df_info['sueldo_info'].astype({'sueldo_info':  'float'})
-    df_info.loc[df_info['sueldo_info'].notnull(), 'sueldo_info_int'] = df_info.loc[
-        df_info['sueldo_info'].notnull(), 'sueldo_info_float'
-        ].astype({'sueldo_info_float': 'int32'})
-
-    df_info['sueldo_info_str'] = df_info['sueldo_info_int']\
-        .apply(lambda fila: "{:,}".format(fila).replace(", ", "@").replace('.', ', ').replace('@', '.'))
-
-    df_info['primonial'] = df_info.apply(lambda fila: plantilla.format(**fila.to_dict()), axis=1)
-
-    # borrando sueldo 0
-    df_info.loc[df_info['sueldo_info'].isnull(), 'primonial'] = df_info.loc[
-        df_info['sueldo_info'].isnull(), 'primonial'].str.replace('Sueldo: $nan ', '', regex=False)
-    df_info.loc[df_info['empleador_info'].isnull(), 'primonial'] = df_info.loc[
-        df_info['empleador_info'].isnull(), 'primonial'].str.replace('Empleador: nan - ', '', regex=False)
-    df_info.loc[df_info['q_vehiculos'] == '0', 'primonial'] = df_info.loc[
-        df_info['q_vehiculos'] == '0', 'primonial'].str.replace('Cantidad de Vehículos: 0 ', '', regex=False)
-    df_info.loc[df_info['detalle_veh'].isnull(), 'primonial'] = df_info.loc[
-        df_info['detalle_veh'].isnull(), 'primonial'].str.replace('Detalle: nan - ', '', regex=False)
-    df_info.loc[df_info['NSE_info'].isnull(), 'primonial'] = df_info.loc[df_info['NSE_info'].isnull(), 'primonial']\
-        .str.replace(' - Nivel Socioeconómico: nan', '', regex=False)
-    df_info.loc[df_info['NSE_info'].isnull(), 'primonial'] = df_info.loc[df_info['NSE_info'].isnull(), 'primonial']\
-        .str.replace('Nivel Socioeconómico: nan', '', regex=False)
-
-    df_info.loc[
-        (df_info['sueldo_info'].isnull()) &
-        (df_info['empleador_info'].isnull()) &
-        (df_info['q_vehiculos'] == '0') &
-        (df_info['detalle_veh'].isnull()) &
-        (df_info['NSE_info'].isnull()), 'primonial'
-    ] = np.nan
-    df_info[['Cuenta', 'q_vehiculos', 'detalle_veh', 'primonial']].iloc[10]
-
-    Escribir_Datos_Osiris(
-        df_info.loc[df_info['primonial'].notnull(), ['Cuenta', 'primonial']],
-        'INFO_Patrimoniales.csv',
-        ['Cuenta', 'primonial'],
-        ["ID Cuenta o Nro. de Asig. (0)", "Datos Patrimoniales (42)"]
-    )
-    print('Planilla de DATOS PATRIMONIALES de INFO escrita')
-
-
 class Interfaz_Usuario(Cmd):
 
     def do_CUENTAS(self, args):
@@ -542,7 +428,7 @@ class Interfaz_Usuario(Cmd):
         print('Preparando...')
 
         try:
-            Datos_Info()
+            GenerateDataInfo.process()
             print('PROCESO FINALIZADO.\n\n')
         except Exception:
             error = traceback.format_exc()
