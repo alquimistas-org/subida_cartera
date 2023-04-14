@@ -1,5 +1,5 @@
 import pandas as pd
-from src.subida import (
+from src.risk_data import (
     get_phone_risk,
     read_osiris_accounts,
     risk_data
@@ -51,9 +51,9 @@ class TestRiskData:
 
     @mock.patch("pandas.read_csv")
     @mock.patch("pandas.merge")
-    @mock.patch("src.subida.read_osiris_accounts")
-    @mock.patch("src.subida.get_phone_risk")
-    @mock.patch("src.subida.Escribir_Datos_Osiris")
+    @mock.patch("src.risk_data.read_osiris_accounts")
+    @mock.patch("src.risk_data.get_phone_risk")
+    @mock.patch("src.risk_data.Escribir_Datos_Osiris")
     def test_risk_data(
         self,
         mock_Escribir_Datos_Osiris,

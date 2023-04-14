@@ -3,8 +3,7 @@ import os
 import shutil
 import pandas as pd
 import numpy as np
-import datetime
-import time
+from datetime import datetime
 import traceback
 
 from driver_email import enviar_mail_con_adjuntos
@@ -12,15 +11,15 @@ from constants.constants import (
     PROGRAMMER,
     USER,
     PASSWORD,
-    DATA_UPLOADER_HEADER,
     PROVINCES,
     UTIL_COLS_COMAFI,
     ACCOUNT_PREP_COL,
-    NUMBER_OF_COLUMNS,
     DATA_PREP_COLUMNS,
     DATA_INFO_COLUMNS,
     DATA_INFO_COLUMNS_RENAME,
 )
+from risk_data import risk_data
+from write_data_osiris import Escribir_Datos_Osiris
 
 
 def limpiar_numeros(df_num):
@@ -59,34 +58,6 @@ def limpiar_numeros(df_num):
             .str.replace(r'^[54]+', '', regex=True).str.replace(r'^[0] + ', '', regex=True)
 
     return df_num
-
-
-def Escribir_Datos_Osiris(df, filename, cols_df, cols_osiris):
-
-    Control_Carpeta_Subida()
-
-    df_subida = pd.DataFrame(columns=DATA_UPLOADER_HEADER)
-    df_subida[cols_osiris] = df[cols_df]
-    try:
-        df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {filename}',
-            sep=';',
-            index=False,
-            encoding='latin_1'
-        )
-    except Exception:
-        df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {filename}',
-            sep=';',
-            index=False,
-            encoding='ANSI'
-        )
-
-
-def Control_Carpeta_Subida():
-    'COntrola que exista una carpeta llamada Subida Osiris y sino la crea'
-    pass
-    # no la estoy usando
 
 
 def Preparacion_Cuentas():
@@ -141,14 +112,14 @@ def Preparacion_Cuentas():
         df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
         try:
             df_sub.to_csv(
-                f'Subida Osiris/{time.strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
                 sep=';',
                 encoding='latin_1',
                 index=False
             )
         except Exception:
             df_sub.to_csv(
-                f'Subida Osiris/{time.strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
+                f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv',
                 sep=';',
                 encoding='ANSI',
                 index=False
@@ -213,7 +184,7 @@ def Preparacion_Cuentas_Comafi():
     df_os['IDSucursal(17)'] = '1'
     df_os['subcliente'] = df['subcliente']
 
-    name_folder = f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {nombre_cartera}'
+    name_folder = f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} {nombre_cartera}'
     if os.path.isdir(name_folder):
         shutil.rmtree(name_folder)
     os.mkdir(name_folder)
@@ -360,80 +331,19 @@ def Preparacion_Datos_Comafi():
     print('Guardando planilla subida...')
     try:
         df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
             sep=';',
             index=False,
             encoding='ANSI'
         )
     except Exception:
         df_subida.to_csv(
-            f'Subida Osiris/{time.strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
             sep=';',
             index=False,
             encoding='ANSI'
         )
     print('Guardado exitoso!')
-
-
-def get_phone_risk(df_risk: pd.DataFrame) -> pd.DataFrame:
-    frames = list()
-    num_tel = len([col_name for col_name in list(df_risk.columns) if 'tel_riesgo' in col_name])
-    for i in range(1, num_tel + 1):
-        col_riesgo = f'tel_riesgo_{i}'
-        df = df_risk.loc[df_risk[col_riesgo].notnull(), ['Cuenta', col_riesgo]]\
-            .rename(columns={col_riesgo: 'TEL'}).copy()
-        df['OBS'] = f'RIESGO {i}'
-        df['ID_FONO'] = '8'
-        frames.append(df)
-    df_phone_risk = pd.concat(frames)
-    return df_phone_risk
-
-
-def read_osiris_accounts() -> pd.DataFrame:
-    try:
-        uploaded_accounts = pd.read_csv('cuentas.csv', encoding='latin_1', sep=';', dtype=str)
-    except Exception:
-        uploaded_accounts = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
-    uploaded_accounts = uploaded_accounts[['Cuenta', 'Mat. Unica']].rename(
-        columns={
-            'Mat. Unica': 'DNI'
-            },
-        inplace=False
-        )
-    return uploaded_accounts
-
-
-def risk_data():
-    'NECESARIOS: tener el archivos.csv de riesgo y el archivo de las cuentas de osiris como cuentas.csv'
-    col_numbers = {
-        'NÃºmero.1': 'tel_riesgo_1',
-        'NÃºmero.2': 'tel_riesgo_2',
-        'NÃºmero.3': 'tel_riesgo_3',
-        'NÃºmero.4': 'tel_riesgo_4'
-    }
-
-    col_list = [x for x in range(NUMBER_OF_COLUMNS)]
-    try:
-        risk = pd.read_csv('riesgo.csv', sep=';', encoding='latin_1', dtype=str, index_col=False, usecols=col_list)
-    except Exception:
-        risk = pd.read_csv('riesgo.csv', sep=';', encoding='ANSI', dtype=str, index_col=False, usecols=col_list)
-    df_risk = risk[['DNI'] + list(col_numbers.keys()) + ['NSE']]
-
-    df_risk = df_risk.rename(columns=col_numbers, inplace=False)
-
-    uploaded_accounts = read_osiris_accounts()
-
-    df_risk = pd.merge(uploaded_accounts, df_risk, how="inner", on="DNI")
-
-    df_phone_risk = get_phone_risk(df_risk=df_risk)
-
-    Escribir_Datos_Osiris(
-        df_phone_risk,
-        'RIESGO_telefonos.csv',
-        ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
-        ["ID Cuenta o Nro. de Asig. (0)", "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)", "Obs. de Teléfono (19)"]
-    )
-    print('Planilla de Teléfonos de RIESGO escrita')
 
 
 def Datos_Info():
