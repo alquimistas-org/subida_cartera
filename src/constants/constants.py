@@ -163,3 +163,5 @@ DATA_INFO_COLUMNS_RENAME = {
 NUMBER_OF_COLUMNS = 66
 
 CR_FILE_PATH = Path('./cr.csv')
+OSIRIS_ACCOUNTS_FILE_PATH = Path('./cuentas.csv')
+RISK_FILE_PATH = Path('./risk.csv')

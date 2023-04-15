@@ -3,12 +3,15 @@ from pathlib import Path
 from freezegun import freeze_time
 import pandas as pd
 
-from src.subida import Preparacion_Cuentas
+from src.subida import (
+    Preparacion_Cuentas,
+    risk_data,
+)
 
+integration_test_file_path = Path('./tests/integration_tests_data/')
 
 @freeze_time('2023-04-12')
 def preparacion_cuentas_naranja_integration_test():
-    integration_test_file_path = Path('./tests/integration_tests_data/')
     naranja_file_path = integration_test_file_path / 'cuentas_naranja/'
 
     cr_test_file_path = naranja_file_path / 'cr_test.csv'
@@ -40,5 +43,22 @@ def preparacion_cuentas_naranja_integration_test():
     pd.testing.assert_frame_equal(df_result_nar_alto, expected_df_result_nar_alto)
 
 
+def prepararion_riesgo_online_data_integration_test():
+
+    risk_data_directory_path = integration_test_file_path / 'datos_riesgo/'
+
+    risk_df_filepath = risk_data_directory_path / 'riesgo_test.csv'
+    osiris_accounts_df = risk_data_directory_path / 'cuentas_test.csv'
+    expected_result_file_path = risk_data_directory_path / 'resultado_riesgo_test.csv'
+
+    expected_result_df = pd.read_csv(expected_result_file_path, encoding='latin-1', sep=';')
+
+    result_file_path = risk_data(risk_df_filepath, osiris_accounts_df)
+    result_df = pd.read_csv(result_file_path, encoding='latin-1', sep=';')
+
+    pd.testing.assert_frame_equal(result_df, expected_result_df)
+
+
 if __name__ == '__main__':
     preparacion_cuentas_naranja_integration_test()
+    prepararion_riesgo_online_data_integration_test()
