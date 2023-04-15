@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 PROGRAMMER = 'xxxxxxxxxxxxx@xxxxxxxxxxxxx.com'
 USER = 'xxxxxxxxxxxxx@xxxxxxxxxxxxx.com'
 PASSWORD = 'xxxxxxxxxxxxx'
@@ -158,3 +161,5 @@ DATA_INFO_COLUMNS_RENAME = {
 }
 
 NUMBER_OF_COLUMNS = 66
+
+CR_FILE_PATH = Path('./cr.csv')
