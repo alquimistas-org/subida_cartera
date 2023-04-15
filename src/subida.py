@@ -3,7 +3,7 @@ import os
 import shutil
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, date
 import traceback
 
 from driver_email import enviar_mail_con_adjuntos
@@ -74,7 +74,7 @@ def Preparacion_Cuentas():
 
     provincias = PROVINCES
 
-    date_now = datetime.date.today()
+    date_now = date.today()
     years_to_add = date_now.year + 3
 
     date_1 = date_now.strftime('%d/%m/%Y')
@@ -155,7 +155,7 @@ def Preparacion_Cuentas_Comafi():
     print('\n')
     print('\nComenzando escritura de archivos..\n\n')
 
-    date_now = datetime.date.today()
+    date_now = date.today()
     years_to_add = date_now.year + 3
 
     date_1 = date_now.strftime('%d/%m/%Y')
