@@ -10,8 +10,9 @@ from src.subida import (
 
 integration_test_file_path = Path('./tests/integration_tests_data/')
 
+
 @freeze_time('2023-04-12')
-def preparacion_cuentas_naranja_integration_test():
+def test_integration_preparacion_cuentas_naranja():
     naranja_file_path = integration_test_file_path / 'cuentas_naranja/'
 
     cr_test_file_path = naranja_file_path / 'cr_test.csv'
@@ -41,9 +42,10 @@ def preparacion_cuentas_naranja_integration_test():
     pd.testing.assert_frame_equal(df_result_nar_bajo, expected_df_result_nar_bajo)
     pd.testing.assert_frame_equal(df_result_nar_medio, expected_df_result_nar_medio)
     pd.testing.assert_frame_equal(df_result_nar_alto, expected_df_result_nar_alto)
+    print('hola')
 
 
-def prepararion_riesgo_online_data_integration_test():
+def test_integration_prepararion_riesgo_online_data():
 
     risk_data_directory_path = integration_test_file_path / 'datos_riesgo/'
 
@@ -60,5 +62,5 @@ def prepararion_riesgo_online_data_integration_test():
 
 
 if __name__ == '__main__':
-    preparacion_cuentas_naranja_integration_test()
-    prepararion_riesgo_online_data_integration_test()
+    test_integration_preparacion_cuentas_naranja()
+    test_integration_prepararion_riesgo_online_data()
