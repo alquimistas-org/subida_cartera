@@ -4,6 +4,7 @@ from src.risk_data import (
     read_osiris_accounts,
     risk_data
 )
+from ..src.constants.constants import OSIRIS_ACCOUNTS_FILE_PATH
 from unittest import mock
 
 
@@ -39,7 +40,7 @@ class TestRiskData:
             },
             index=[0]
         )
-        df_result = read_osiris_accounts()
+        df_result = read_osiris_accounts(OSIRIS_ACCOUNTS_FILE_PATH)
         expected = pd.DataFrame({
             "Cuenta": "1234",
             "DNI": "23345"
