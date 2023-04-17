@@ -1,0 +1,8 @@
+Nº de Asignacion (0);Razon social (1);ID Tipo de Documento (2);DNI (3);Domicilio (4);ID Localidad (5);ID Provincia (6);Código Postal (7);Observaciones Domicilio (8);Numero Telefono (9);Observaciones Telefono (10);Importe Asignado (11);Fecha de Ingreso (12);Fecha de Deuda dd/mm/aaaa (13);Importe Historico (14);Observaciones (15);Fecha Fin de Gestion (16);IDSucursal(17)
+88886866;First_Name_2022 Name_2022;1;88886866;;0;0;;;;;15539;17/04/2023;2019-02-14 00:00:00;5783;;17/04/2026;1
+88886848;First_Name_2040 Name_2040;1;88886848;;0;0;;;;;8914;17/04/2023;2013-06-14 00:00:00;3439;;17/04/2026;1
+88886847;First_Name_2041 Name_2041;1;88886847;;0;0;;;;;15986;17/04/2023;2014-01-24 00:00:00;6413;;17/04/2026;1
+88886846;First_Name_2042 Name_2042;1;88886846;;0;0;;;;;11855;17/04/2023;2013-02-14 00:00:00;4471;;17/04/2026;1
+88886845;First_Name_2043 Name_2043;1;88886845;;0;0;;;;;13318;17/04/2023;2014-08-14 00:00:00;5595;;17/04/2026;1
+88886844;First_Name_2044 Name_2044;1;88886844;;0;0;;;;;2888;17/04/2023;2020-01-09 00:00:00;2065;;17/04/2026;1
+88886839;First_Name_2049 Name_2049;1;88886839;fake_adress_2049 - MONTE CHINGOLO;0;24;;;;;9359;17/04/2023;2019-09-11 00:00:00;3940;;17/04/2026;1

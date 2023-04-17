@@ -1,0 +1,9 @@
+Nº de Asignacion (0);Razon social (1);ID Tipo de Documento (2);DNI (3);Domicilio (4);ID Localidad (5);ID Provincia (6);Código Postal (7);Observaciones Domicilio (8);Numero Telefono (9);Observaciones Telefono (10);Importe Asignado (11);Fecha de Ingreso (12);Fecha de Deuda dd/mm/aaaa (13);Importe Historico (14);Observaciones (15);Fecha Fin de Gestion (16);IDSucursal(17)
+88888678;First_Name_210 Name_210;1;88888678;fake_adress_210 - CORDOBA;0;19;5000;;;;1124;17/04/2023;2017-09-08 00:00:00;991;;17/04/2026;1
+88888660;First_Name_228 Name_228;1;88888660;fake_adress_228 - MONTECASEROS;0;24;5571;;;;190903;17/04/2023;2016-10-11 00:00:00;48158;;17/04/2026;1
+88888659;First_Name_229 Name_229;1;88888659;fake_adress_229 - Isidro Casanova;0;24;;;;;97730;17/04/2023;2016-10-17 00:00:00;24710;;17/04/2026;1
+88888658;First_Name_230 Name_230;1;88888658;fake_adress_230 - BERAZATEGUI;0;24;1879;;;;75114;17/04/2023;2016-06-14 00:00:00;18136;;17/04/2026;1
+88888657;First_Name_231 Name_231;1;88888657;fake_adress_231 - cordoba;0;19;5000;;;;107004;17/04/2023;2016-08-15 00:00:00;26426;;17/04/2026;1
+88886889;First_Name_1999 Name_1999;1;88886889;fake_adress_1999 - VILLA MINETTI;0;2;;;;;13446;17/04/2023;2018-12-10 00:00:00;4827;;17/04/2026;1
+88886888;First_Name_2000 Name_2000;1;88886888;fake_adress_2000 - ROSARIO;0;2;;;;;129330;17/04/2023;2015-04-14 00:00:00;27064;;17/04/2026;1
+88886887;First_Name_2001 Name_2001;1;88886887;fake_adress_2001 - SANTA FE;0;2;;;;;41613;17/04/2023;2018-02-10 00:00:00;12853;;17/04/2026;1

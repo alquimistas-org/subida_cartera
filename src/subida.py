@@ -8,16 +8,17 @@ import traceback
 
 from driver_email import enviar_mail_con_adjuntos
 from constants.constants import (
-    CR_FILE_PATH,
-    PROGRAMMER,
-    USER,
-    PASSWORD,
-    PROVINCES,
-    UTIL_COLS_COMAFI,
     ACCOUNT_PREP_COL,
+    CR_FILE_PATH,
     DATA_PREP_COLUMNS,
     DATA_INFO_COLUMNS,
     DATA_INFO_COLUMNS_RENAME,
+    EMERIX_FILE_PATH,
+    PASSWORD,
+    PROGRAMMER,
+    PROVINCES,
+    USER,
+    UTIL_COLS_COMAFI,
 )
 from risk_data import risk_data
 from write_data_osiris import Escribir_Datos_Osiris
@@ -133,7 +134,7 @@ def Preparacion_Cuentas(cr_file_path=CR_FILE_PATH) -> list:
     return all_result_file_path
 
 
-def Preparacion_Cuentas_Comafi():
+def Preparacion_Cuentas_Comafi(emerix_file_path=EMERIX_FILE_PATH):
 
     nombre_cartera = input('\nIngrese el nombre de la cartera que desea:  ')
 
@@ -143,7 +144,7 @@ def Preparacion_Cuentas_Comafi():
         df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='latin_1', sep=';')
     except Exception:
         df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='ANSI', sep=';')
-    df = pd.read_excel('emerix.xlsx', dtype=str)
+    df = pd.read_excel(emerix_file_path, dtype=str)
     col_utiles = UTIL_COLS_COMAFI
     provincias = PROVINCES
 
@@ -203,6 +204,8 @@ def Preparacion_Cuentas_Comafi():
             df_sub.to_csv(f'{name_folder}/{name}.csv', sep=';', encoding='latin_1', index=False)
         except Exception:
             df_sub.to_csv(f'{name_folder}/{name}.csv', sep=';', encoding='ANSI', index=False)
+
+    return name_folder
 
 
 def Preparacion_Datos():
