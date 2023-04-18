@@ -65,7 +65,7 @@ def test_integration_prepararion_riesgo_online_data():
 
 
 @freeze_time('2023-04-17')
-def comafi_accounts_preparation_integration_test():
+def test_integration_comafi_accounts_preparation():
 
     emerix_test_file_path = integration_test_file_path / 'comafi_accounts' / 'emerix_test.xlsx'
     result_directory_path = integration_test_file_path / 'comafi_accounts' / 'results'
@@ -138,8 +138,3 @@ def comafi_accounts_preparation_integration_test():
     pd.testing.assert_frame_equal(df_result_8, expected_df_result_8)
     pd.testing.assert_frame_equal(df_result_9, expected_df_result_9)
     pd.testing.assert_frame_equal(df_result_10, expected_df_result_10)
-
-
-if __name__ == '__main__':
-    test_integration_preparacion_cuentas_naranja()
-    test_integration_prepararion_riesgo_online_data()
