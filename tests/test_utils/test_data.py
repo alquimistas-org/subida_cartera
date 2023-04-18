@@ -1,22 +1,22 @@
 import pandas as pd
 
-## replace_invalid_chars ['#', 'Ð', 'ð', '&']
+# replace_invalid_chars ['#', 'Ð', 'ð', '&']
 
 invalid_chars_dataframe = pd.DataFrame(
     {
         "Numbers": [30, 25, 12, 14],
-        "nombre": ["JuanÐ", "Jorðe","Luca&", "Nu#ez"],
+        "nombre": ["JuanÐ", "Jorðe", "Luca&", "Nu#ez"],
     }
 )
 
 expected_invalid_chars_dataframe = pd.DataFrame(
     {
         "Numbers": [30, 25, 12, 14],
-        "nombre": ["Juanñ", "Jorñe","Lucañ", "Nuñez"],
+        "nombre": ["Juanñ", "Jorñe", "Lucañ", "Nuñez"],
     }
 )
 
-# Data for fill_data(), which takes "df" to fill "df_os"
+# Data for fill_data(), which takes "df" to fill "df_os"
 
 non_os_test_dataframe = pd.DataFrame(
     {
@@ -30,7 +30,7 @@ non_os_test_dataframe = pd.DataFrame(
         'fecha_inicio': ['01/01/2023', '02/02/2023'],
         'fecha_ult_pago': ['25/01/2023', '25/02/2023'],
         'deuda_capital': [543865, 5437654],
-        'subcliente' : ['Empresa1', 'Empresa2',],
+        'subcliente': ['Empresa1', 'Empresa2',],
     }
 )
 

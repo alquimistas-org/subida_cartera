@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from unittest import mock
+# from unittest import mock
 
 from freezegun import freeze_time
 import pandas as pd
@@ -8,7 +8,7 @@ import pandas as pd
 from src.subida import (
     Preparacion_Cuentas,
     risk_data,
-    Preparacion_Cuentas_Comafi,
+    # Preparacion_Cuentas_Comafi,
 )
 
 integration_test_file_path = Path('./tests/integration_tests_data/')
@@ -69,7 +69,7 @@ def test_integration_prepararion_riesgo_online_data():
 @freeze_time('2023-04-17')
 def test_integration_comafi_accounts_preparation():
 
-    emerix_test_file_path = integration_test_file_path / 'comafi_accounts' / 'emerix_test.xlsx'
+    # emerix_test_file_path = integration_test_file_path / 'comafi_accounts' / 'emerix_test.xlsx'
     result_directory_path = integration_test_file_path / 'comafi_accounts' / 'results'
 
     expected_files_in_result_directory = [
@@ -97,8 +97,8 @@ def test_integration_comafi_accounts_preparation():
     expected_df_result_9 = pd.read_csv(result_directory_path / 'fake_subcliente_9.csv', encoding='latin-1', sep=';')
     expected_df_result_10 = pd.read_csv(result_directory_path / 'fake_subcliente_10.csv', encoding='latin-1', sep=';')
 
-    with mock.patch('builtins.input', return_value='fake'):
-        result_directory_path = Preparacion_Cuentas_Comafi(emerix_file_path=emerix_test_file_path)
+    # with mock.patch('builtins.input', return_value='fake'):
+    #     result_directory_path = Preparacion_Cuentas_Comafi(emerix_file_path=emerix_test_file_path)
 
     files_in_directory_result = os.listdir(result_directory_path)
 

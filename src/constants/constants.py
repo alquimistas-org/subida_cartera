@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-
+INVALID_CHARACTERS = ['#', 'Ð', 'ð', '&']
 PROGRAMMER = 'xxxxxxxxxxxxx@xxxxxxxxxxxxx.com'
 USER = 'xxxxxxxxxxxxx@xxxxxxxxxxxxx.com'
 PASSWORD = 'xxxxxxxxxxxxx'

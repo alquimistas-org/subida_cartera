@@ -4,9 +4,11 @@ import pandas as pd
 import numpy as np
 import datetime
 import time
-from .constants.constants import (
+from constants.constants import (
+    INVALID_CHARACTERS,
     PROVINCES,
     UTIL_COLS_COMAFI,
+    EMERIX_FILE_PATH,
 )
 
 '''
@@ -16,49 +18,56 @@ Antes de reemplazarla, quiero probar al menos una vez el software así como est�
 y para ello neces
 '''
 
-def preparacion_cuentas_comafi():
-    nombre_cartera = input('\nIngrese el nombre de la cartera que desea:  ')
+
+def prepare_comafi_accounts(nombre_cartera, emerix_file_path=EMERIX_FILE_PATH):
 
     print('Iniciando preparacion')
     # lectura planilla modelo
-    df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='ANSI', sep=';')
-    df = pd.read_excel('emerix.xlsx', dtype=str)
+    try:
+        df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='latin_1', sep=';')
+    except Exception:
+        df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='ANSI', sep=';')
+    df = pd.read_excel(emerix_file_path, dtype=str)
+    col_utiles = UTIL_COLS_COMAFI
 
-    df = df[list(UTIL_COLS_COMAFI.keys())]
-    df = df.rename(columns=UTIL_COLS_COMAFI)
+    df = df[list(col_utiles.keys())]
+    df = df.rename(columns=col_utiles)
 
     # reemplazo de valores nulos
     df.loc[df['provincia'].isna(), 'provincia'] = '0'
     # reemplazo de 'ñ' en nombres
     replace_invalid_chars(df)
-    print('\n')
-    print('\nComenzando escritura de archivos..\n\n')
-
     fill_data(df, df_os)
 
-    name_folder = f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {nombre_cartera}'
-    if os.path.isdir(name_folder):
-        shutil.rmtree(name_folder)
-    os.mkdir(name_folder)
-    # iterear un loop por los subcliente a traves de un grouby
-    for name, df_sub in df_os.groupby('subcliente'):
-        print(f'Ecribiendo: {name}.csv')
-        df_sub = df_sub.drop('subcliente', inplace=False, axis=1)
-        df_sub.to_csv(f'{name_folder}/{name}.csv', sep=';', encoding='ANSI', index=False)
-    return ' '
+    new_folder = f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {nombre_cartera}'
+    if os.path.isdir(new_folder):
+        shutil.rmtree(new_folder)
+    os.mkdir(new_folder)
+
+    write_csv_per_subcliente(df_os, new_folder)
+
+    return nombre_cartera
 
 
 def replace_invalid_chars(dataframe):
-    characters = ['#', 'Ð', 'ð', '&']
-    for char in characters:
+    for char in INVALID_CHARACTERS:
         n = dataframe['nombre'].str.contains(char).sum()
         dataframe['nombre'] = dataframe['nombre'].str.replace(char, 'ñ').str.title()
         print(f'character {char}: se remplazaron {n}')
 
 
 def fill_data(df, df_os):
+    '''
+    Takes two dataframes, so it can fill the second df based upon
+    the values of the first one.
+    :param df: dataframe where we take data from
+    :param df_os: dataframe to be filled
+    Does not return anything.
+    '''
+    print('\n')
+    print('\nComenzando escritura de archivos..\n\n')
     date_now = datetime.date.today()
-    years_to_add = date_now.year + 3 
+    years_to_add = date_now.year + 3
 
     date_1 = date_now.strftime('%d/%m/%Y')
     date_2 = date_now.replace(year=years_to_add).strftime('%d/%m/%Y')
@@ -85,3 +94,13 @@ def fill_data(df, df_os):
     df_os['Fecha Fin de Gestion (16)'] = date_2
     df_os['IDSucursal(17)'] = '1'
     df_os['subcliente'] = df['subcliente']
+
+
+def write_csv_per_subcliente(dataframe, folder_name):
+    for name, df_sub in dataframe.groupby('subcliente'):
+        print(f'Ecribiendo: {name}.csv')
+        df_sub = df_sub.drop('subcliente', inplace=False, axis=1)
+        try:
+            df_sub.to_csv(f'{folder_name}/{name}.csv', sep=';', encoding='latin_1', index=False)
+        except Exception:
+            df_sub.to_csv(f'{folder_name}/{name}.csv', sep=';', encoding='ANSI', index=False)
