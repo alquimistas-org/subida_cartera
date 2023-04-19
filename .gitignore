@@ -207,3 +207,4 @@ Subida\ Osiris/*
 *riesgo.csv
 notebooks/
 *.ipynb
+.python-version
