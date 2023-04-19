@@ -31,15 +31,17 @@ def test_integration_preparacion_cuentas_naranja():
     all_result_file_path = Preparacion_Cuentas(cr_file_path=cr_test_file_path)
 
     for risk in ['BAJO', 'MEDIO', 'ALTO']:
-        match_files_path = [result for result in all_result_file_path if f'subida_cartera_NAR-{risk}.csv' in result]
+        match_files_path = [result
+                            for result in all_result_file_path
+                            if f'subida_cartera_NAR-{risk}.csv' in result.name]
         assert len(match_files_path) == 1
 
     for result_path in all_result_file_path:
-        if 'BAJO' in result_path:
+        if 'BAJO' in result_path.name:
             df_result_nar_bajo = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'MEDIO' in result_path:
+        elif 'MEDIO' in result_path.name:
             df_result_nar_medio = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'ALTO' in result_path:
+        elif 'ALTO' in result_path.name:
             df_result_nar_alto = pd.read_csv(result_path, encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(df_result_nar_bajo, expected_df_result_nar_bajo)
@@ -97,7 +99,6 @@ def test_integration_comafi_accounts_preparation():
 
     with mock.patch('builtins.input', return_value='fake'):
         result_directory_path = Preparacion_Cuentas_Comafi(emerix_file_path=emerix_test_file_path)
-    result_directory_path = Path(result_directory_path)
 
     files_in_directory_result = os.listdir(result_directory_path)
 
