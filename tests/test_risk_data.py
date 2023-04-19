@@ -108,7 +108,7 @@ class TestRiskData:
             },
             index=[0]
         )
- 
+
         risk_data()
 
         # asserts

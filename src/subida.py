@@ -114,7 +114,9 @@ def Preparacion_Cuentas(cr_file_path=CR_FILE_PATH) -> list:
         print(f'Ecribiendo: subida_cartera_{name}.csv')
         df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
 
-        result_file_path = ROOT_PATH / f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv'
+        result_file_path = (
+            ROOT_PATH / f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv'
+        )
 
         try:
             df_sub.to_csv(
