@@ -31,7 +31,9 @@ def test_integration_preparacion_cuentas_naranja():
     all_result_file_path = Preparacion_Cuentas(cr_file_path=cr_test_file_path)
 
     for risk in ['BAJO', 'MEDIO', 'ALTO']:
-        match_files_path = [result for result in all_result_file_path if f'subida_cartera_NAR-{risk}.csv' in result]
+        match_files_path = [result
+                            for result in all_result_file_path
+                            if f'subida_cartera_NAR-{risk}.csv' in result.name]
         assert len(match_files_path) == 1
 
     for result_path in all_result_file_path:
@@ -104,6 +106,7 @@ def test_integration_comafi_accounts_preparation():
     assert sorted(expected_files_in_result_directory) == sorted(files_in_directory_result)
 
     for result_path in files_in_directory_result:
+        result_path = result_path.name
         if 'fake_subcliente_0.csv' in result_path:
             df_result_0 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
         elif 'fake_subcliente_1.csv' in result_path:
