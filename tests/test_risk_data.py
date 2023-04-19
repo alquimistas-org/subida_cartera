@@ -108,8 +108,15 @@ class TestRiskData:
             },
             index=[0]
         )
+ 
         risk_data()
 
+        # asserts
+        mock_get_phones.assert_called_once_with(
+            df=mock_merge.return_value,
+            stop=5,
+            colum_name='RIESGO'
+        )
         mock_Escribir_Datos_Osiris.assert_called_once()
         mock_Escribir_Datos_Osiris.assert_called_once_with(
             mock_get_phones.return_value,

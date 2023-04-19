@@ -62,7 +62,12 @@ def risk_data(risk_file_path=RISK_FILE_PATH, osiris_accounts_file_path=OSIRIS_AC
 
     df_risk = pd.merge(uploaded_accounts, df_risk, how="inner", on="DNI")
 
-    df_phone_risk = get_phones(df=df_risk)
+    num_tel = len([col_name for col_name in list(df_risk.columns) if 'tel_riesgo' in col_name])
+    df_phone_risk = get_phones(
+        df=df_risk,
+        stop=num_tel+1,
+        colum_name='RIESGO'
+        )
 
     result_file_path = Escribir_Datos_Osiris(
         df_phone_risk,
