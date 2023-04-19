@@ -99,14 +99,12 @@ def test_integration_comafi_accounts_preparation():
 
     with mock.patch('builtins.input', return_value='fake'):
         result_directory_path = Preparacion_Cuentas_Comafi(emerix_file_path=emerix_test_file_path)
-    result_directory_path = Path(result_directory_path)
 
     files_in_directory_result = os.listdir(result_directory_path)
 
     assert sorted(expected_files_in_result_directory) == sorted(files_in_directory_result)
 
     for result_path in files_in_directory_result:
-        result_path = result_path.name
         if 'fake_subcliente_0.csv' in result_path:
             df_result_0 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
         elif 'fake_subcliente_1.csv' in result_path:
