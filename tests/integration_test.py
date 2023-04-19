@@ -37,11 +37,11 @@ def test_integration_preparacion_cuentas_naranja():
         assert len(match_files_path) == 1
 
     for result_path in all_result_file_path:
-        if 'BAJO' in result_path:
+        if 'BAJO' in result_path.name:
             df_result_nar_bajo = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'MEDIO' in result_path:
+        elif 'MEDIO' in result_path.name:
             df_result_nar_medio = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'ALTO' in result_path:
+        elif 'ALTO' in result_path.name:
             df_result_nar_alto = pd.read_csv(result_path, encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(df_result_nar_bajo, expected_df_result_nar_bajo)
