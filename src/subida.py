@@ -15,6 +15,7 @@ from constants.constants import (
     PASSWORD,
     PROGRAMMER,
     PROVINCES,
+    ROOT_PATH,
     USER,
     UTIL_COLS_COMAFI,
 )
@@ -113,7 +114,7 @@ def Preparacion_Cuentas(cr_file_path=CR_FILE_PATH) -> list:
         print(f'Ecribiendo: subida_cartera_{name}.csv')
         df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
 
-        result_file_path = f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv'
+        result_file_path = ROOT_PATH / f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv'
 
         try:
             df_sub.to_csv(
@@ -191,7 +192,7 @@ def Preparacion_Cuentas_Comafi(emerix_file_path=EMERIX_FILE_PATH):
     df_os['IDSucursal(17)'] = '1'
     df_os['subcliente'] = df['subcliente']
 
-    name_folder = f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} {nombre_cartera}'
+    name_folder = ROOT_PATH / f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} {nombre_cartera}'
     if os.path.isdir(name_folder):
         shutil.rmtree(name_folder)
     os.mkdir(name_folder)
