@@ -7,17 +7,31 @@ class Upload:
         self.input_id = input_id
         self.output_id = output_id
 
-    def create(self, id: int):
+    def create(self, id: str):
         upload = html.Div([
+            html.Div([
+                html.Img(src="assets/attach-icon.svg", height=20, style={'marginLeft': '5px'}),
+                html.Span("Cargar archivo", className="attach-file"),
+            ], className="attach-file-container"),
             dcc.Upload(
                 id=f'upload-data-{id}',
                 children=html.Div([
-                    'Drag and Drop or ',
-                    html.A('Select Files')
+                    html.A(
+                        children=[
+                            html.Img(
+                                src="assets/upload-icon.svg",
+                                className="upload-icon",
+                                style={
+                                    "marginTop": "3rem"
+                                }
+                            ),
+                            html.H5("Selecciona un archivo", className="select-file-link")
+                        ],
+                    )
                 ]),
                 style={
                     'width': '100%',
-                    'height': '100px',
+                    'height': '250px',
                     'lineHeight': '60px',
                     'borderWidth': '1px',
                     'borderStyle': 'dashed',
@@ -25,10 +39,9 @@ class Upload:
                     'textAlign': 'center',
                     'margin': '10px'
                 },
-                # Allow multiple files to be uploaded
-                multiple=False
+                # Don't allow multiple files to be uploaded
+                multiple=False,
             ),
-            html.Div(id=f'output-data-upload-{id}'),
         ])
 
         return upload

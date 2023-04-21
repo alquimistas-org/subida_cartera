@@ -1,0 +1,42 @@
+span.jsx-3468109796 {
+    font-size: x-large;
+    font-weight: 700;
+    color: #229ccc
+}
+
+.tab--selected.jsx-3468109796 {
+    border-top: 3px solid #1d8ab6;
+}
+
+.tab.jsx-3468109796:last-of-type.tab--selected {
+     border-top: 3px solid #1d8ab6;
+}
+
+.card-body{
+    margin-top: 2rem;
+    height: 700px;
+}
+
+.attach-file{
+    font-size: x-large;
+    margin-left: 0.5rem;
+}
+
+.attach-file-container{
+    margin-top: 2rem;
+}
+
+.select-file-link{
+    font-weight: 400;
+    width: 20%;
+    margin-left: 70rem;
+    color: #229ccc
+}
+
+.select-file-link:hover{
+    color:#77d1f1
+}
+
+.upload-icon:hover{
+    color:#77d1f1
+}

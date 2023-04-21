@@ -1,7 +1,6 @@
 import dash_bootstrap_components as dbc
-from .upload import Upload
-from .dropdown import Dropdown
-from .download import Download
+from .tab_contents import TabsContent
+from dash import html, dcc
 
 
 class Tabs:
@@ -10,45 +9,24 @@ class Tabs:
         self.input_id = input_id
         self.output_id = output_id
 
-    def createTabs(self) -> dbc.Tabs:
-        upload_file = Upload()
-        dropdown = Dropdown()
-        download = Download()
+    def create(self) -> dbc.Tabs:
+        naranja_tab_content = TabsContent("naranja")
+        comafi_tab_content = TabsContent("comafi")
 
-        tab1_content = dbc.Card(
-            dbc.CardBody(
-                [
-                    dropdown.create("naranja"),
-                    upload_file.create(1),
-                    download.create("naranja")
-                ]
-            ),
-            className="mt-3",
-        )
-
-        tab2_content = dbc.Card(
-            dbc.CardBody(
-                [
-                    dropdown.create("comafi"),
-                    upload_file.create(2),
-                    download.create("comafi"),
-
-                ]
-            ),
-            className="mt-3",
-        )
-
-        tabs = dbc.Tabs(
-            [
-                dbc.Tab(
+        tabs = html.Div([
+            dcc.Tabs(id="tabs-example-graph", value='naranja', children=[
+                dcc.Tab(
                     label="Naranja",
-                    children=tab1_content,
+                    value='naranja',
+                    children=naranja_tab_content.create("naranja"),
                 ),
-                dbc.Tab(
-                    label="Comafi",
-                    children=tab2_content,
+                dcc.Tab(
+                    label='Comafi',
+                    value='comafi',
+                    children=comafi_tab_content.create("comafi"),
                 ),
-            ]
-        )
+                ]
+            ),
+        ])
 
         return tabs

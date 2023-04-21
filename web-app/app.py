@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 import os
 
 
-assets_path = os.getcwd() + '/web-app/assets'
+assets_path = os.getcwd() + '/assets'
 external_stylesheets = [
     dbc.themes.MATERIA,
     dbc.icons.FONT_AWESOME,
@@ -17,4 +17,4 @@ app = dash.Dash(
     assets_folder=assets_path,
 )
 
-app.title = "Alquimistas"
+app.title = "Cuervo Abogados"
