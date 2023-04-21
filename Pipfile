@@ -7,6 +7,9 @@ name = "pypi"
 numpy = "1.24.2"
 openpyxl = "3.1.2"
 pandas = "2.0.0"
+dash = "2.9.3"
+dash-bootstrap-components = "1.4.1"
+
 
 [dev-packages]
 freezegun = "1.2.2"
@@ -14,6 +17,7 @@ ipdb = "0.13.13"
 pandas = "2.0.0"
 openpyxl = "3.1.2"
 pytest = "7.2.2"
+flake8 = "6.0.0"
 
 [requires]
 python_version = "3.10"
