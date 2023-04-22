@@ -5,10 +5,11 @@ import numpy as np
 import datetime
 import time
 from constants.constants import (
+    EMERIX_FILE_PATH,
     INVALID_CHARACTERS,
     PROVINCES,
+    ROOT_PATH,
     UTIL_COLS_COMAFI,
-    EMERIX_FILE_PATH,
 )
 
 '''
@@ -39,14 +40,13 @@ def prepare_comafi_accounts(nombre_cartera, emerix_file_path=EMERIX_FILE_PATH):
     replace_invalid_chars(df)
     fill_data(df, df_os)
 
-    new_folder = f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {nombre_cartera}'
-    if os.path.isdir(new_folder):
-        shutil.rmtree(new_folder)
-    os.mkdir(new_folder)
+    new_directory = ROOT_PATH / f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {nombre_cartera}'
+    if os.path.isdir(new_directory):
+        shutil.rmtree(new_directory)
+    os.mkdir(new_directory)
 
-    write_csv_per_subcliente(df_os, new_folder)
-
-    return nombre_cartera
+    write_csv_per_subcliente(df_os, new_directory)
+    return new_directory
 
 
 def replace_invalid_chars(dataframe):

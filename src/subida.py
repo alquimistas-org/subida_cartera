@@ -138,8 +138,8 @@ def Preparacion_Cuentas(cr_file_path=CR_FILE_PATH) -> list:
 def Preparacion_Cuentas_Comafi(emerix_file_path=EMERIX_FILE_PATH):
 
     nombre_cartera = input('\nIngrese el nombre de la cartera que desea:  ')
-    prepare_comafi_accounts(nombre_cartera, emerix_file_path=emerix_file_path)
-    return nombre_cartera
+    result_directory_path = prepare_comafi_accounts(nombre_cartera, emerix_file_path=emerix_file_path)
+    return result_directory_path
 
 
 def Preparacion_Datos():
