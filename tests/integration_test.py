@@ -47,7 +47,6 @@ def test_integration_preparacion_cuentas_naranja():
     pd.testing.assert_frame_equal(df_result_nar_bajo, expected_df_result_nar_bajo)
     pd.testing.assert_frame_equal(df_result_nar_medio, expected_df_result_nar_medio)
     pd.testing.assert_frame_equal(df_result_nar_alto, expected_df_result_nar_alto)
-    print('hola')
 
 
 def test_integration_prepararion_riesgo_online_data():
