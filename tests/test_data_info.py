@@ -5,29 +5,26 @@ import pytest
 from src.data_info import GenerateDataInfo
 
 
-@pytest.mark.parametrize(
-    'mock_df_data_info',
-    [
-        (
-            pd.DataFrame(
-                {
-                    'Cuenta': '1234',
-                    'DNI': '23345',
-                    'tel_info_1': '122233334',
-                    'tel_info_2': '',
-                    'tel_info_3': '',
-                    'MAIL_info': 'mock@mail.com',
-                    'sueldo_info': '10000',
-                    'empleador_info': 'Super Empleador',
-                    'q_vehiculos': '',
-                    'detalle_veh': '',
-                    'NSE_info': '',
-                },
-                index=[0]
-            )
-        )
-    ]
-)
+@pytest.fixture
+def mock_df_data_info():
+    return pd.DataFrame(
+        {
+            'Cuenta': '1234',
+            'DNI': '23345',
+            'tel_info_1': '122233334',
+            'tel_info_2': '',
+            'tel_info_3': '',
+            'MAIL_info': 'mock@mail.com',
+            'sueldo_info': '10000',
+            'empleador_info': 'Super Empleador',
+            'q_vehiculos': '',
+            'detalle_veh': '',
+            'NSE_info': '',
+        },
+        index=[0]
+    )
+
+
 class TestDataInfo:
 
     @patch('src.data_info.read_osiris_accounts')
@@ -231,6 +228,114 @@ class TestDataInfo:
         )
 
         pd.testing.assert_frame_equal(result, expected)
+
+    def test_get_emails_with_multiple_emails_false(self, mock_df_data_info):
+        df = pd.DataFrame(
+            [
+                {
+                    'Cuenta': '1234',
+                    'DNI': '23345',
+                    'tel_info_1': '122233334',
+                    'tel_info_2': '',
+                    'tel_info_3': '',
+                    'MAIL_info': 'mock@mail.com,mock2@mail.com, mock3@mail.com',
+                    'sueldo_info': '10000',
+                    'empleador_info': 'Super Empleador',
+                    'q_vehiculos': '',
+                    'detalle_veh': '',
+                    'NSE_info': '',
+                },
+                {
+                    'Cuenta': '5678',
+                    'DNI': '55678',
+                    'tel_info_1': '122233334',
+                    'tel_info_2': '',
+                    'tel_info_3': '',
+                    'MAIL_info': np.nan,
+                    'sueldo_info': '10000',
+                    'empleador_info': 'Super Empleador',
+                    'q_vehiculos': '',
+                    'detalle_veh': '',
+                    'NSE_info': '',
+                },
+                {
+                    'Cuenta': '9999',
+                    'DNI': '88999',
+                    'tel_info_1': '122233334',
+                    'tel_info_2': '',
+                    'tel_info_3': '',
+                    'MAIL_info': 'mock9@mail.com',
+                    'sueldo_info': '10000',
+                    'empleador_info': 'Super Empleador',
+                    'q_vehiculos': '',
+                    'detalle_veh': '',
+                    'NSE_info': '',
+                },
+            ],
+        )
+
+        result = GenerateDataInfo.get_emails(df=df)
+
+        expected = pd.DataFrame({
+            'Cuenta': pd.Series(['1234', '9999']),
+            'MAIL_info': pd.Series(['mock@mail.com', 'mock9@mail.com']),
+        })
+
+        pd.testing.assert_frame_equal(result.reset_index(drop=True), expected.reset_index(drop=True))
+
+    def test_get_emails_with_multiple_emails_true(self, mock_df_data_info):
+        df = pd.DataFrame(
+            [
+                {
+                    'Cuenta': '1234',
+                    'DNI': '23345',
+                    'tel_info_1': '122233334',
+                    'tel_info_2': '',
+                    'tel_info_3': '',
+                    'MAIL_info': 'mock@mail.com,mock2@mail.com, mock3@mail.com',
+                    'sueldo_info': '10000',
+                    'empleador_info': 'Super Empleador',
+                    'q_vehiculos': '',
+                    'detalle_veh': '',
+                    'NSE_info': '',
+                },
+                {
+                    'Cuenta': '5678',
+                    'DNI': '55678',
+                    'tel_info_1': '122233334',
+                    'tel_info_2': '',
+                    'tel_info_3': '',
+                    'MAIL_info': np.nan,
+                    'sueldo_info': '10000',
+                    'empleador_info': 'Super Empleador',
+                    'q_vehiculos': '',
+                    'detalle_veh': '',
+                    'NSE_info': '',
+                },
+                {
+                    'Cuenta': '9999',
+                    'DNI': '88999',
+                    'tel_info_1': '122233334',
+                    'tel_info_2': '',
+                    'tel_info_3': '',
+                    'MAIL_info': 'mock9@mail.com',
+                    'sueldo_info': '10000',
+                    'empleador_info': 'Super Empleador',
+                    'q_vehiculos': '',
+                    'detalle_veh': '',
+                    'NSE_info': '',
+                },
+            ],
+        )
+
+        result = GenerateDataInfo.get_emails(df=df, allow_multiple_emails=True)
+
+        expected = pd.DataFrame({
+            'Cuenta': pd.Series(['1234', '9999', '1234', '1234']),
+            'MAIL_info': pd.Series(['mock@mail.com', 'mock9@mail.com', 'mock2@mail.com', 'mock3@mail.com']),
+        })
+
+        pd.testing.assert_frame_equal(result.reset_index(drop=True), expected.reset_index(drop=True))
 
     @patch.object(GenerateDataInfo, 'write_patrimonial_data_template')
     @patch.object(GenerateDataInfo, 'write_q_vehicles_template')
