@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, date
 import traceback
+from typing import Union
+import io
 
 from driver_email import enviar_mail_con_adjuntos
 from constants.constants import (
@@ -21,7 +23,9 @@ from constants.constants import (
 from risk_data import risk_data
 from data_info import GenerateDataInfo
 from prepare_comafi_accounts import prepare_comafi_accounts
+from adapters.file_dataframe_saver import FileDataFrameSaver
 from write_data_osiris import Escribir_Datos_Osiris
+from ports.dataframe_saver import DataFrameSaver
 
 
 def limpiar_numeros(df_num):
@@ -67,9 +71,15 @@ def limpiar_numeros(df_num):
     return df_num
 
 
-def Preparacion_Cuentas(cr_file_path=CR_FILE_PATH) -> list:
+def Preparacion_Cuentas(
+    cr_file_path: Union[str, io.BytesIO, io.StringIO] = CR_FILE_PATH,
+    dataframe_saver: DataFrameSaver = None,
+) -> None:
 
     "Condiciones"
+
+    if not dataframe_saver:
+        dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/')
 
     try:
         cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
@@ -113,32 +123,8 @@ def Preparacion_Cuentas(cr_file_path=CR_FILE_PATH) -> list:
     df_os['IDSucursal(17)'] = '1'
     df_os['riesgo'] = cr['RIESGO']
 
-    all_result_file_path = list()
     for name, df_sub in df_os.groupby('riesgo'):
-
-        print(f'Ecribiendo: subida_cartera_{name}.csv')
-        df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
-
-        result_file_path = (
-            ROOT_PATH / f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv'
-        )
-
-        try:
-            df_sub.to_csv(
-                result_file_path,
-                sep=';',
-                encoding='latin_1',
-                index=False
-            )
-        except Exception:
-            df_sub.to_csv(
-                result_file_path,
-                sep=';',
-                encoding='ANSI',
-                index=False
-            )
-        all_result_file_path.append(result_file_path)
-    return all_result_file_path
+        dataframe_saver.save_df(name=name, df=df_sub)
 
 
 def Preparacion_Cuentas_Comafi(emerix_file_path=EMERIX_FILE_PATH):

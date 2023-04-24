@@ -1,9 +1,11 @@
-from dash import html
+from dash import html, dcc
 # import dash_bootstrap_components as dbc
-from components.tabs import Tabs
+from components.client_button import ClientButton
+from components.upload import Upload
 
 
-tabs = Tabs()
+client_button = ClientButton()
+upload = Upload()
 
 app_layout = html.Div([
     html.H1(
@@ -14,5 +16,12 @@ app_layout = html.Div([
             'marginLeft': '10px',
             'marginTop': '10px'
         }),
-    tabs.create(),
+    client_button.create(),
+    upload.create("1. Subir archivo cr", id="cr", multiple_files=False),
+    html.Div([
+                html.Div(id='div-download-NAR-ALTO'),
+                html.Div(id='div-download-NAR-MEDIO'),
+                html.Div(id='div-download-NAR-BAJO')
+            ], className="donwload-container"),
+    dcc.Store(id='stored-dfs')
 ])
