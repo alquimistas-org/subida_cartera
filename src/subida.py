@@ -21,6 +21,7 @@ from constants.constants import (
     UTIL_COLS_COMAFI,
 )
 from risk_data import risk_data
+from clean_numbers import clean_numbers
 from data_info import GenerateDataInfo
 from prepare_comafi_accounts import prepare_comafi_accounts
 from adapters.file_dataframe_saver import FileDataFrameSaver
@@ -246,7 +247,7 @@ def Preparacion_Datos_Comafi(emerix_file_path=EMERIX_FILE_PATH, osiris_accounts_
     df_num = df_num[list(col_utiles.keys())]
     df_num = df_num.rename(columns=col_utiles)
     df_num = df_num[df_num['telefono'].notna()]
-    df_num = limpiar_numeros(df_num)
+    df_num = clean_numbers(df_num)
     df_num = df_num[['dni', 'telefono', 'telefono_2']]
     df_num['telefono_2'] = df_num[df_num['telefono_2'].apply(len) >= 6]['telefono_2']
     df_num = df_num[df_num['telefono_2'].notna()]

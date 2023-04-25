@@ -24,13 +24,13 @@ non_os_test_dataframe = pd.DataFrame(
         'nombre': ['Juan Perez', 'Jorge Fernandez'],
         'direccion': ['Calle Tal 4567', 'Calle Otra 23'],
         'localidad': ['Maipu', 'Lujan'],
-        'provincia': ['MENDOZA', 'MENDOZA',],
+        'provincia': ['MENDOZA', 'MENDOZA'],
         'cod_postal': ['1234', '1111'],
         'deuda_total': [123456, 34567634],
         'fecha_inicio': ['01/01/2023', '02/02/2023'],
         'fecha_ult_pago': ['25/01/2023', '25/02/2023'],
         'deuda_capital': [543865, 5437654],
-        'subcliente': ['Empresa1', 'Empresa2',],
+        'subcliente': ['Empresa1', 'Empresa2'],
     }
 )
 

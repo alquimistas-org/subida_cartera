@@ -12,13 +12,6 @@ from constants.constants import (
     UTIL_COLS_COMAFI,
 )
 
-'''
-Estimados, esta función está en este momento sin implementar, pero
-va a reemplazar a la función con el mismo nombre en el archivo subida_cartera.py
-Antes de reemplazarla, quiero probar al menos una vez el software así como está,
-y para ello neces
-'''
-
 
 def prepare_comafi_accounts(nombre_cartera, emerix_file_path=EMERIX_FILE_PATH):
 
