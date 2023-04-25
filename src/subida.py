@@ -32,25 +32,30 @@ def limpiar_numeros(df_num):
     df_num['telefono_2'] = np.nan
     # limpiando los que tienen 11 011 y 0
     numeros_concatenar = df_num[sin_doble_guion & con_054 & ~con_guion_1]['telefono'].str.split('-', expand=True)
-    df_num.loc[sin_doble_guion & con_054 & ~con_guion_1, 'telefono_2'] = (
-        numeros_concatenar[1] + numeros_concatenar[2]
-        )\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    if not numeros_concatenar.empty:
+        df_num.loc[sin_doble_guion & con_054 & ~con_guion_1, 'telefono_2'] = (
+            numeros_concatenar[1] + numeros_concatenar[2]
+            )\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # limpieza de los que tiene -1- en medio
     con_1_medio = sin_doble_guion & con_054 & con_guion_1
-    df_num.loc[con_1_medio, 'telefono_2'] = df_num[con_1_medio]['telefono'].str.split('-', expand=True)[2]\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    numeros_concatenar = df_num[con_1_medio]['telefono'].str.split('-', expand=True)
+    if not numeros_concatenar.empty:
+        df_num.loc[con_1_medio, 'telefono_2'] = numeros_concatenar[2]\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # limpieza numeros CON DOBLE GUION
-    df_num.loc[con_doble_guion, 'telefono_2'] = df_num[con_doble_guion]['telefono'].str.split('--', expand=True)[1]\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    con_doble_guion = df_num[con_doble_guion]['telefono'].str.split('--', expand=True)
+    if not numeros_concatenar.empty:
+        df_num.loc[con_doble_guion, 'telefono_2'] = con_doble_guion[1]\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # resto de los numeros que quedaron vacios
     vacios = df_num['telefono_2'].isna()
@@ -265,10 +270,7 @@ def Preparacion_Datos_Comafi():
         .rename(columns={'Mat. Unica': 'dni'}, inplace=False)
 
     df_numeros_cuentas = pd.merge(df_cuentas_subidas, df_num, how='inner', on='dni')
-    try:
-        df_numeros_cuentas.to_csv('verificacion.csv', sep=';', encoding='latin_1', index=False)
-    except Exception:
-        df_numeros_cuentas.to_csv('verificacion.csv', sep=';', encoding='ANSI', index=False)
+
     df_subida[
         ['ID Cuenta o Nro. de Asig. (0)', "Nro. de Teléfono (18)"]] = df_numeros_cuentas[['Cuenta', 'telefono_2']]
     df_subida["ID Tipo de Teléfono (17)"] = 1
@@ -278,7 +280,7 @@ def Preparacion_Datos_Comafi():
             f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
             sep=';',
             index=False,
-            encoding='ANSI'
+            encoding='latin_1'
         )
     except Exception:
         df_subida.to_csv(
