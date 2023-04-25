@@ -12,25 +12,30 @@ def clean_numbers(df_num: pd.DataFrame) -> pd.DataFrame:
 
     # cleaning those with 11 011 y 0
     number_concatenate = df_num[without_double_dash & with_054 & ~with_dash_1]['telefono'].str.split('-', expand=True)
-    df_num.loc[without_double_dash & with_054 & ~with_dash_1, 'telefono_2'] = (
-        number_concatenate[1] + number_concatenate[2]
-        )\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    if not number_concatenate.empty:
+        df_num.loc[without_double_dash & with_054 & ~with_dash_1, 'telefono_2'] = (
+            number_concatenate[1] + number_concatenate[2]
+            )\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # cleaning those with -1- in the middle
     with_1_in_between = without_double_dash & with_054 & with_dash_1
-    df_num.loc[with_1_in_between, 'telefono_2'] = df_num[with_1_in_between]['telefono'].str.split('-', expand=True)[2]\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    number_concatenate = df_num[with_1_in_between]['telefono'].str.split('-', expand=True)
+    if not number_concatenate.empty:
+        df_num.loc[with_1_in_between, 'telefono_2'] = number_concatenate[2]\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # cleaning double dash
-    df_num.loc[with_double_dash, 'telefono_2'] = df_num[with_double_dash]['telefono'].str.split('--', expand=True)[1]\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    number_concatenate = df_num[with_double_dash]['telefono'].str.split('--', expand=True)
+    if not number_concatenate.empty:
+        df_num.loc[with_double_dash, 'telefono_2'] = number_concatenate[1]\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # remaining empty numbers
     remaining_empty = df_num['telefono_2'].isna()

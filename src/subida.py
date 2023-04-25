@@ -30,11 +30,8 @@ from ports.dataframe_saver import DataFrameSaver
 
 
 def limpiar_numeros(df_num):
-    con_doble_guion = df_num['telefono'].str.contains('--')
-    sin_doble_guion = ~ con_doble_guion
-    con_054 = df_num['telefono'].str.contains('(054)', regex=False)
-    con_guion_1 = df_num['telefono'].str.contains('-1-', regex=False)
 
+<<<<<<< HEAD
     df_num['telefono_2'] = np.nan
     # limpiando los que tienen 11 011 y 0
     numeros_concatenar = df_num[sin_doble_guion & con_054 & ~con_guion_1]['telefono'].str.split('-', expand=True)
@@ -72,13 +69,15 @@ def limpiar_numeros(df_num):
         .str.replace(r'^[0]+', '', regex=True)
 
     return df_num
+=======
+    return clean_numbers(df_num)
+>>>>>>> 8701e7a (refactor function limpiar_numeros and)
 
 
 def Preparacion_Cuentas(
     cr_file_path: Union[str, io.BytesIO, io.StringIO] = CR_FILE_PATH,
     dataframe_saver: DataFrameSaver = None,
 ) -> None:
-
     "Condiciones"
 
     if not dataframe_saver:
