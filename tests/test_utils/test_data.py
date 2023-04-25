@@ -76,3 +76,18 @@ os_test_other_dataframe = pd.DataFrame(
         'subcliente',
     ]
 )
+
+phone_numbers_dataframe = pd.DataFrame(
+    {
+        'nombre': ['Juan Perez', 'Jorge Ernesto', 'Miguel García', 'Roberto Gómez'],
+        'telefono': ['0541234567', '011-1-1234567', '0-800-3456789', '054-1-9876543'],
+    }
+)
+
+expected_phone_numbers_dataframe = pd.DataFrame(
+    {
+        'nombre': ['Juan Perez', 'Jorge Ernesto', 'Miguel García', 'Roberto Gómez'],
+        'telefono': ['0541234567', '011-1-1234567', '0-800-3456789', '054-1-9876543'],
+        'telefono_2': ['1234567', '1111234567', '8003456789', '19876543'],
+    }
+)

@@ -11,6 +11,18 @@ pipenv install --> Install dependencies. Also, this command also creates and act
 exit --> exit the virtual env\
 pipenv shell --> activate the virtual env\
 
+## To run program:
+python3 src/subida.py\
+
+## To run the containerized program, with Docker:
+1- Remember to start your Docker engine!
+
+2- Build image with:\
+docker build -t subida_cartera .\
+
+3- Then, run image with:\
+docker run -it subida_cartera
+
 ## To run tests
 
 pytest tests/ --> run all existing tests\

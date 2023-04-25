@@ -29,51 +29,6 @@ from write_data_osiris import Escribir_Datos_Osiris
 from ports.dataframe_saver import DataFrameSaver
 
 
-def limpiar_numeros(df_num):
-
-<<<<<<< HEAD
-    df_num['telefono_2'] = np.nan
-    # limpiando los que tienen 11 011 y 0
-    numeros_concatenar = df_num[sin_doble_guion & con_054 & ~con_guion_1]['telefono'].str.split('-', expand=True)
-    if not numeros_concatenar.empty:
-        df_num.loc[sin_doble_guion & con_054 & ~con_guion_1, 'telefono_2'] = (
-            numeros_concatenar[1] + numeros_concatenar[2]
-            )\
-            .str.replace(r'^[0]+', '', regex=True)\
-            .str.replace(r'^[54]+', '', regex=True)\
-            .str.replace(r'^[0]+', '', regex=True)
-
-    # limpieza de los que tiene -1- en medio
-    con_1_medio = sin_doble_guion & con_054 & con_guion_1
-    numeros_concatenar = df_num[con_1_medio]['telefono'].str.split('-', expand=True)
-    if not numeros_concatenar.empty:
-        df_num.loc[con_1_medio, 'telefono_2'] = numeros_concatenar[2]\
-            .str.replace(r'^[0]+', '', regex=True)\
-            .str.replace(r'^[54]+', '', regex=True)\
-            .str.replace(r'^[0]+', '', regex=True)
-
-    # limpieza numeros CON DOBLE GUION
-    con_doble_guion = df_num[con_doble_guion]['telefono'].str.split('--', expand=True)
-    if not numeros_concatenar.empty:
-        df_num.loc[con_doble_guion, 'telefono_2'] = con_doble_guion[1]\
-            .str.replace(r'^[0]+', '', regex=True)\
-            .str.replace(r'^[54]+', '', regex=True)\
-            .str.replace(r'^[0]+', '', regex=True)
-
-    # resto de los numeros que quedaron vacios
-    vacios = df_num['telefono_2'].isna()
-    df_num.loc[vacios, 'telefono_2'] = df_num[vacios]['telefono']\
-        .str.replace(r'[^\d]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
-
-    return df_num
-=======
-    return clean_numbers(df_num)
->>>>>>> 8701e7a (refactor function limpiar_numeros and)
-
-
 def Preparacion_Cuentas(
     cr_file_path: Union[str, io.BytesIO, io.StringIO] = CR_FILE_PATH,
     dataframe_saver: DataFrameSaver = None,
