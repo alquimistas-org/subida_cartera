@@ -3,7 +3,8 @@ import pandas as pd
 
 from constants.constants import (
     DATA_INFO_COLUMNS,
-    DATA_INFO_COLUMNS_RENAME
+    DATA_INFO_COLUMNS_RENAME,
+    OSIRIS_ACCOUNTS_FILE_PATH,
 )
 from risk_data import (
     get_phones,
@@ -14,12 +15,15 @@ from write_data_osiris import Escribir_Datos_Osiris
 
 class GenerateDataInfo:
 
+    info_experto_file_path = 'info.xlsx'
+    osiris_accounts_file_path = OSIRIS_ACCOUNTS_FILE_PATH
+
     @classmethod
     def get_data_info(cls) -> pd.DataFrame:
         'NECESARIO cuentas de osiris como cuentas.csv, cuentas deinfo exporto como info.xlsx'
-        uploaded_accounts = read_osiris_accounts()
+        uploaded_accounts = read_osiris_accounts(cls.osiris_accounts_file_path)
 
-        info = pd.read_excel('info.xlsx', dtype=str, skiprows=1)
+        info = pd.read_excel(cls.info_experto_file_path, dtype=str, skiprows=1)
         df_info = info[DATA_INFO_COLUMNS]
         df_info = df_info.rename(columns=DATA_INFO_COLUMNS_RENAME, inplace=False).copy()
         df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
@@ -35,9 +39,9 @@ class GenerateDataInfo:
             colum_name='INFO'
         )
 
-        Escribir_Datos_Osiris(
+        file_path = Escribir_Datos_Osiris(
             df_phones[['Cuenta', 'ID_FONO', 'TEL', 'OBS']],
-            'INFO_telefonos.csv',
+            'info_telefonos.csv',
             ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
             [
                 "ID Cuenta o Nro. de Asig. (0)",
@@ -48,41 +52,45 @@ class GenerateDataInfo:
         )
 
         print('Planilla de TELEFONOS de INFO escrita')
+        return file_path
 
     @classmethod
     def write_salary_template(cls, df: pd.DataFrame) -> None:
 
-        Escribir_Datos_Osiris(
+        file_path = Escribir_Datos_Osiris(
             df.loc[df['sueldo_info'].notnull(), ['Cuenta', 'sueldo_info']],
-            'INFO_sueldo.csv',
+            'info_sueldo.csv',
             ['Cuenta', 'sueldo_info'],
             ["ID Cuenta o Nro. de Asig. (0)", "Sueldo (40)"]
         )
         print('Planilla de SUELDOS de INFO escrita')
+        return file_path
 
     @classmethod
     def write_email_template(cls, df: pd.DataFrame) -> None:
         emails = cls.get_emails(df=df)
 
-        Escribir_Datos_Osiris(
+        file_path = Escribir_Datos_Osiris(
             emails,
-            'INFO_mail.csv',
+            'info_mail.csv',
             ['Cuenta', 'MAIL_info'],
             ["ID Cuenta o Nro. de Asig. (0)", "Email (16)"]
         )
         print('Planilla de MAIL de INFO escrita')
+        return file_path
 
     @classmethod
     def write_q_vehicles_template(cls, df: pd.DataFrame) -> None:
 
-        Escribir_Datos_Osiris(
+        file_path = Escribir_Datos_Osiris(
             df.loc[df['q_vehiculos'] != '0', ['Cuenta', 'q_vehiculos']],
-            'INFO_Qvehiculos.csv',
+            'info_q_vehiculos.csv',
             ['Cuenta', 'q_vehiculos'],
             ["ID Cuenta o Nro. de Asig. (0)", "Cantidad de Vehiculos (41)"]
         )
 
         print('Planilla de Q VEHICULOS de INFO escrita')
+        return file_path
 
     @classmethod
     def write_patrimonial_data_template(cls, df: pd.DataFrame) -> None:
@@ -112,13 +120,14 @@ class GenerateDataInfo:
         ] = np.nan
         df[['Cuenta', 'q_vehiculos', 'detalle_veh', 'primonial']].iloc[10]
 
-        Escribir_Datos_Osiris(
+        file_path = Escribir_Datos_Osiris(
             df.loc[df['primonial'].notnull(), ['Cuenta', 'primonial']],
-            'INFO_Patrimoniales.csv',
+            'info_patrimoniales.csv',
             ['Cuenta', 'primonial'],
             ["ID Cuenta o Nro. de Asig. (0)", "Datos Patrimoniales (42)"]
         )
         print('Planilla de DATOS PATRIMONIALES de INFO escrita')
+        return file_path
 
     @classmethod
     def apply_salary_template(cls, df: pd.DataFrame) -> pd.DataFrame:
@@ -156,10 +165,19 @@ class GenerateDataInfo:
         return pd.concat(concat_mails)
 
     @classmethod
-    def process(cls) -> None:
+    def process(cls) -> list:
         df = cls.get_data_info()
-        cls.write_phone_template(df=df)
-        cls.write_salary_template(df=df)
-        cls.write_email_template(df=df)
-        cls.write_q_vehicles_template(df=df)
-        cls.write_patrimonial_data_template(df=df)
+        phone_result_path_file = cls.write_phone_template(df=df)
+        salary_result_path_file = cls.write_salary_template(df=df)
+        email_result_path_file = cls.write_email_template(df=df)
+        q_vehicles_result_path_file = cls.write_q_vehicles_template(df=df)
+        patrimonial_result_path_file = cls.write_patrimonial_data_template(df=df)
+
+        all_result_file_paths = [
+            phone_result_path_file,
+            salary_result_path_file,
+            email_result_path_file,
+            q_vehicles_result_path_file,
+            patrimonial_result_path_file
+        ]
+        return all_result_file_paths
