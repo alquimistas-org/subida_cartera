@@ -1,16 +1,19 @@
 
 from datetime import datetime
 import os
+
 import pandas as pd
-from constants.constants import DATA_UPLOADER_HEADER
+from constants.constants import (
+    DATA_UPLOADER_HEADER,
+    ROOT_PATH,
+)
 
 
 def Escribir_Datos_Osiris(df: pd.DataFrame, filename: str, cols_df: 'list[str]', cols_osiris: 'list[str]'):
 
-    Control_Carpeta_Subida()
-    result_file_path = (
-        f'{os.getenv("file_directory", "Subida Osiris")}/{datetime.now().strftime("(%H.%M hs) -")} {filename}'
-    )
+    if there_is_not_saved_files_directory():
+        raise Exception
+    result_file_path = ROOT_PATH / "Subida Osiris" / f'{datetime.now().strftime("(%H.%M hs) -")} {filename}'
     df_subida = pd.DataFrame(columns=DATA_UPLOADER_HEADER)
     df_subida[cols_osiris] = df[cols_df]
     try:
@@ -31,7 +34,5 @@ def Escribir_Datos_Osiris(df: pd.DataFrame, filename: str, cols_df: 'list[str]',
     return result_file_path
 
 
-def Control_Carpeta_Subida():
-    'COntrola que exista una carpeta llamada Subida Osiris y sino la crea'
-    pass
-    # no la estoy usando
+def there_is_not_saved_files_directory():
+    return not os.path.isdir(ROOT_PATH / "Subida Osiris")
