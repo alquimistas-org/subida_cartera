@@ -191,14 +191,14 @@ def test_integration_info_experto_data_preparation():
     info_df_filepath = info_experto_data_directory_path / 'info_test.xlsx'
     osiris_accounts_df = info_experto_data_directory_path / 'cuentas_test.csv'
 
-    expected_result_info_patrimoniales_path = info_experto_data_directory_path / 'result_info_patrimoniales.csv'
-    expected_result_info_q_vehiculos_path = info_experto_data_directory_path / 'result_info_q_vehiculos.csv'
+    expected_patrimoniales_path = info_experto_data_directory_path / 'result_info_patrimoniales.csv'
+    expected_info_q_vehiculos_path = info_experto_data_directory_path / 'result_info_q_vehiculos.csv'
     expected_result_info_mail_path = info_experto_data_directory_path / 'result_info_mail.csv'
     expected_result_info_sueldo_path = info_experto_data_directory_path / 'result_info_sueldo.csv'
     expected_result_info_telefonos_path = info_experto_data_directory_path / 'result_info_telefonos.csv'
 
-    expected_result_info_patrimoniales_df = pd.read_csv(expected_result_info_patrimoniales_path, encoding='latin-1', sep=';')
-    expected_result_info_q_vehiculos_df = pd.read_csv(expected_result_info_q_vehiculos_path, encoding='latin-1', sep=';')
+    expected_result_info_patrimoniales_df = pd.read_csv(expected_patrimoniales_path, encoding='latin-1', sep=';')
+    expected_result_info_q_vehiculos_df = pd.read_csv(expected_info_q_vehiculos_path, encoding='latin-1', sep=';')
     expected_result_info_mail_df = pd.read_csv(expected_result_info_mail_path, encoding='latin-1', sep=';')
     expected_result_info_sueldo_df = pd.read_csv(expected_result_info_sueldo_path, encoding='latin-1', sep=';')
     expected_result_info_telefonos_df = pd.read_csv(expected_result_info_telefonos_path, encoding='latin-1', sep=';')
