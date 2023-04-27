@@ -10,6 +10,7 @@ from constants.constants import (
     CR_FILE_PATH,
     DATA_PREP_COLUMNS,
     EMERIX_FILE_PATH,
+    OSIRIS_ACCOUNTS_FILE_PATH,
     PASSWORD,
     PROGRAMMER,
     PROVINCES,
@@ -32,25 +33,30 @@ def limpiar_numeros(df_num):
     df_num['telefono_2'] = np.nan
     # limpiando los que tienen 11 011 y 0
     numeros_concatenar = df_num[sin_doble_guion & con_054 & ~con_guion_1]['telefono'].str.split('-', expand=True)
-    df_num.loc[sin_doble_guion & con_054 & ~con_guion_1, 'telefono_2'] = (
-        numeros_concatenar[1] + numeros_concatenar[2]
-        )\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    if not numeros_concatenar.empty:
+        df_num.loc[sin_doble_guion & con_054 & ~con_guion_1, 'telefono_2'] = (
+            numeros_concatenar[1] + numeros_concatenar[2]
+            )\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # limpieza de los que tiene -1- en medio
     con_1_medio = sin_doble_guion & con_054 & con_guion_1
-    df_num.loc[con_1_medio, 'telefono_2'] = df_num[con_1_medio]['telefono'].str.split('-', expand=True)[2]\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    numeros_concatenar = df_num[con_1_medio]['telefono'].str.split('-', expand=True)
+    if not numeros_concatenar.empty:
+        df_num.loc[con_1_medio, 'telefono_2'] = numeros_concatenar[2]\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # limpieza numeros CON DOBLE GUION
-    df_num.loc[con_doble_guion, 'telefono_2'] = df_num[con_doble_guion]['telefono'].str.split('--', expand=True)[1]\
-        .str.replace(r'^[0]+', '', regex=True)\
-        .str.replace(r'^[54]+', '', regex=True)\
-        .str.replace(r'^[0]+', '', regex=True)
+    con_doble_guion = df_num[con_doble_guion]['telefono'].str.split('--', expand=True)
+    if not numeros_concatenar.empty:
+        df_num.loc[con_doble_guion, 'telefono_2'] = con_doble_guion[1]\
+            .str.replace(r'^[0]+', '', regex=True)\
+            .str.replace(r'^[54]+', '', regex=True)\
+            .str.replace(r'^[0]+', '', regex=True)
 
     # resto de los numeros que quedaron vacios
     vacios = df_num['telefono_2'].isna()
@@ -142,15 +148,15 @@ def Preparacion_Cuentas_Comafi(emerix_file_path=EMERIX_FILE_PATH):
     return result_directory_path
 
 
-def Preparacion_Datos():
+def Preparacion_Datos(cr_file_path=CR_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
     ' Necesita que este en la carpeta'
     print('Preparando planillas de datos...')
     try:
-        cr = pd.read_csv('cr.csv', sep=';', encoding='latin_1', dtype=str)
-        cuentas_subidas = pd.read_csv('cuentas.csv', encoding='latin_1', sep=';', dtype=str)
+        cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
+        cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
     except Exception:
-        cr = pd.read_csv('cr.csv', sep=';', encoding='ANSI', dtype=str)
-        cuentas_subidas = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
+        cr = pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
+        cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='ANSI', sep=';', dtype=str)
 
     cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
 
@@ -213,14 +219,13 @@ def Preparacion_Datos():
     df_tels['TEL'] = df_tels['TEL'].str.replace(' ', '')
     df_tels['TEL'] = df_tels['TEL'].replace('', np.nan)
     df_tels['TEL'].fillna(0)
-    df_tels.to_csv('prueba_2.csv', index=False, sep=';')
     df_tels = df_tels.astype({'TEL': 'Int64'})
     df_tels = df_tels.astype({'TEL': 'str'})
     df_tels.drop(df_tels[df_tels.TEL == '0'].index, inplace=True)
 
-    Escribir_Datos_Osiris(
+    result_df_phones_file_path = Escribir_Datos_Osiris(
         df_tels,
-        'DATOS_CR_subida_telefonos.csv',
+        'datos_cr_subida_telefonos.csv',
         ['Cuenta', 'ID_FONO', 'TEL'],
         ['ID Cuenta o Nro. de Asig. (0)', "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)"]
     )
@@ -229,16 +234,18 @@ def Preparacion_Datos():
     # borrar numero cero
     df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'] = df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'].str.replace(' ', '')
     df_mail = df_cr.loc[df_cr['EMAIL'].notnull(), ['Cuenta', 'EMAIL']].copy()
-    Escribir_Datos_Osiris(
+    result_df_mails_file_path = Escribir_Datos_Osiris(
         df_mail,
-        'DATOS_CR_subida_mail.csv',
+        'datos_cr_subida_mail.csv',
         ['Cuenta', 'EMAIL'],
         ['ID Cuenta o Nro. de Asig. (0)', "Email (16)"]
     )
     print(f'{len(df_mail)} MAILS se guardaron en archivo: subida_mail.csv\n\n')
+    all_result_file_paths = [result_df_phones_file_path, result_df_mails_file_path]
+    return all_result_file_paths
 
 
-def Preparacion_Datos_Comafi():
+def Preparacion_Datos_Comafi(emerix_file_path=EMERIX_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
 
     print('Preparando planillas de datos para comafi...')
     try:
@@ -246,7 +253,7 @@ def Preparacion_Datos_Comafi():
     except Exception:
         df_subida = pd.read_csv('modelos/modelo_datos.csv', encoding='ANSI', sep=';')
 
-    df_num = pd.read_excel('emerix.xlsx', dtype=str)
+    df_num = pd.read_excel(emerix_file_path, dtype=str)
     col_utiles = UTIL_COLS_COMAFI
     df_num = df_num[list(col_utiles.keys())]
     df_num = df_num.rename(columns=col_utiles)
@@ -257,37 +264,39 @@ def Preparacion_Datos_Comafi():
     df_num = df_num[df_num['telefono_2'].notna()]
 
     try:
-        df_cuentas_subidas = pd.read_csv('cuentas.csv', encoding='latin_1', sep=';', dtype=str)
+        df_cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
     except Exception:
-        df_cuentas_subidas = pd.read_csv('cuentas.csv', encoding='ANSI', sep=';', dtype=str)
+        df_cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='ANSI', sep=';', dtype=str)
 
     df_cuentas_subidas = df_cuentas_subidas[['Cuenta', 'Mat. Unica']]\
         .rename(columns={'Mat. Unica': 'dni'}, inplace=False)
 
     df_numeros_cuentas = pd.merge(df_cuentas_subidas, df_num, how='inner', on='dni')
-    try:
-        df_numeros_cuentas.to_csv('verificacion.csv', sep=';', encoding='latin_1', index=False)
-    except Exception:
-        df_numeros_cuentas.to_csv('verificacion.csv', sep=';', encoding='ANSI', index=False)
+
     df_subida[
         ['ID Cuenta o Nro. de Asig. (0)', "Nro. de Teléfono (18)"]] = df_numeros_cuentas[['Cuenta', 'telefono_2']]
     df_subida["ID Tipo de Teléfono (17)"] = 1
     print('Guardando planilla subida...')
+    result_file_path = (
+        ROOT_PATH / "Subida Osiris" /
+        f'{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv'
+    )
     try:
         df_subida.to_csv(
-            f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            result_file_path,
             sep=';',
             index=False,
-            encoding='ANSI'
+            encoding='latin_1'
         )
     except Exception:
         df_subida.to_csv(
-            f'Subida Osiris/{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv',
+            result_file_path,
             sep=';',
             index=False,
             encoding='ANSI'
         )
     print('Guardado exitoso!')
+    return result_file_path
 
 
 class Interfaz_Usuario(Cmd):

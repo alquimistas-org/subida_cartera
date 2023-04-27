@@ -24,7 +24,7 @@ def get_phones(df: pd.DataFrame, stop: int, colum_name: str) -> pd.DataFrame:
 # TODO: in other PR move this function to another file for helper functions or similar
 
 
-def read_osiris_accounts(osiris_accounts_file_path: Path) -> pd.DataFrame:
+def read_osiris_accounts(osiris_accounts_file_path: Path = OSIRIS_ACCOUNTS_FILE_PATH) -> pd.DataFrame:
     try:
         uploaded_accounts = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
     except Exception:

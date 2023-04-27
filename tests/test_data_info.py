@@ -81,7 +81,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df_phones)
-        assert call_args[1] == 'INFO_telefonos.csv'
+        assert call_args[1] == 'info_telefonos.csv'
         assert call_args[2] == ['Cuenta', 'ID_FONO', 'TEL', 'OBS']
         assert call_args[3] == [
                 "ID Cuenta o Nro. de Asig. (0)",
@@ -106,7 +106,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df_info)
-        assert call_args[1] == 'INFO_sueldo.csv'
+        assert call_args[1] == 'info_sueldo.csv'
         assert call_args[2] == ['Cuenta', 'sueldo_info']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Sueldo (40)"]
 
@@ -128,7 +128,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], mock_get_emails.return_value)
-        assert call_args[1] == 'INFO_mail.csv'
+        assert call_args[1] == 'info_mail.csv'
         assert call_args[2] == ['Cuenta', 'MAIL_info']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Email (16)"]
 
@@ -148,7 +148,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df_info)
-        assert call_args[1] == 'INFO_Qvehiculos.csv'
+        assert call_args[1] == 'info_q_vehiculos.csv'
         assert call_args[2] == ['Cuenta', 'q_vehiculos']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Cantidad de Vehiculos (41)"]
 
@@ -216,7 +216,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df)
-        assert call_args[1] == 'INFO_Patrimoniales.csv'
+        assert call_args[1] == 'info_patrimoniales.csv'
         assert call_args[2] == ['Cuenta', 'primonial']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Datos Patrimoniales (42)"]
 

@@ -4,9 +4,12 @@ from unittest import mock
 
 from freezegun import freeze_time
 import pandas as pd
+from src.data_info import GenerateDataInfo
 
 from src.subida import (
     Preparacion_Cuentas,
+    Preparacion_Datos,
+    Preparacion_Datos_Comafi,
     risk_data,
     Preparacion_Cuentas_Comafi,
 )
@@ -138,3 +141,87 @@ def test_integration_comafi_accounts_preparation():
     pd.testing.assert_frame_equal(df_result_8, expected_df_result_8)
     pd.testing.assert_frame_equal(df_result_9, expected_df_result_9)
     pd.testing.assert_frame_equal(df_result_10, expected_df_result_10)
+
+
+def test_integration_comafi_data_preparation():
+    comafi_data_directory_path = integration_test_file_path / 'datos_comafi/'
+
+    emerix_df_file_path = comafi_data_directory_path / 'emerix_test.xlsx'
+    osiris_accounts_df = comafi_data_directory_path / 'cuentas_comafi_test.csv'
+    expected_result_file_path = comafi_data_directory_path / 'resultado_datos_emerix_subida_telefono.csv'
+
+    expected_result_df = pd.read_csv(expected_result_file_path, encoding='latin-1', sep=';')
+
+    result_file_path = Preparacion_Datos_Comafi(emerix_df_file_path, osiris_accounts_df)
+    result_df = pd.read_csv(result_file_path, encoding='latin-1', sep=';')
+
+    pd.testing.assert_frame_equal(result_df, expected_result_df)
+
+
+def test_integration_naranja_data_preparation():
+    naranja_data_file_path = integration_test_file_path / 'datos_naranja/'
+
+    cr_test_file_path = naranja_data_file_path / 'cr_test.csv'
+    osiris_accounts_df = naranja_data_file_path / 'cuentas_osiris_naranja_test.csv'
+
+    result_mails_path = naranja_data_file_path / 'result_datos_cr_subida_mail.csv'
+    result_phones_path = naranja_data_file_path / 'result_datos_cr_subida_telefonos.csv'
+
+    expected_df_result_mails = pd.read_csv(result_mails_path, encoding='latin-1', sep=';')
+    expected_df_result_phones = pd.read_csv(result_phones_path, encoding='latin-1', sep=';')
+
+    all_result_file_path = Preparacion_Datos(
+        cr_file_path=cr_test_file_path,
+        osiris_accounts_file_path=osiris_accounts_df
+    )
+
+    for result_path in all_result_file_path:
+        if 'datos_cr_subida_mail.csv' in result_path.name:
+            df_result_mails = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        elif 'datos_cr_subida_telefonos.csv' in result_path.name:
+            df_result_phones = pd.read_csv(result_path, encoding='latin-1', sep=';')
+
+    pd.testing.assert_frame_equal(expected_df_result_mails, df_result_mails)
+    pd.testing.assert_frame_equal(expected_df_result_phones, df_result_phones)
+
+
+def test_integration_info_experto_data_preparation():
+    info_experto_data_directory_path = integration_test_file_path / 'datos_info_experto'
+
+    info_df_filepath = info_experto_data_directory_path / 'info_test.xlsx'
+    osiris_accounts_df = info_experto_data_directory_path / 'cuentas_test.csv'
+
+    expected_patrimoniales_path = info_experto_data_directory_path / 'result_info_patrimoniales.csv'
+    expected_info_q_vehiculos_path = info_experto_data_directory_path / 'result_info_q_vehiculos.csv'
+    expected_result_info_mail_path = info_experto_data_directory_path / 'result_info_mail.csv'
+    expected_result_info_sueldo_path = info_experto_data_directory_path / 'result_info_sueldo.csv'
+    expected_result_info_telefonos_path = info_experto_data_directory_path / 'result_info_telefonos.csv'
+
+    expected_result_info_patrimoniales_df = pd.read_csv(expected_patrimoniales_path, encoding='latin-1', sep=';')
+    expected_result_info_q_vehiculos_df = pd.read_csv(expected_info_q_vehiculos_path, encoding='latin-1', sep=';')
+    expected_result_info_mail_df = pd.read_csv(expected_result_info_mail_path, encoding='latin-1', sep=';')
+    expected_result_info_sueldo_df = pd.read_csv(expected_result_info_sueldo_path, encoding='latin-1', sep=';')
+    expected_result_info_telefonos_df = pd.read_csv(expected_result_info_telefonos_path, encoding='latin-1', sep=';')
+
+    with mock.patch.object(GenerateDataInfo, 'info_experto_file_path', info_df_filepath):
+        with mock.patch.object(GenerateDataInfo, 'osiris_accounts_file_path', osiris_accounts_df):
+
+            all_result_file_paths = GenerateDataInfo.process()
+
+    for result_path in all_result_file_paths:
+        if 'info_patrimoniales' in result_path.name:
+            df_result_info_patrimoniales = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        elif 'info_q_vehiculos' in result_path.name:
+            df_result_info_q_vehiculos = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        elif 'info_mail' in result_path.name:
+            df_result_info_mail = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        elif 'info_sueldo' in result_path.name:
+            df_result_info_sueldo = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        elif 'info_telefonos' in result_path.name:
+            df_result_info_telefonos = pd.read_csv(result_path, encoding='latin-1', sep=';')
+
+    pd.testing.assert_frame_equal(expected_result_info_patrimoniales_df, df_result_info_patrimoniales)
+    pd.testing.assert_frame_equal(expected_result_info_q_vehiculos_df, df_result_info_q_vehiculos)
+    pd.testing.assert_frame_equal(expected_result_info_mail_df, df_result_info_mail)
+    pd.testing.assert_frame_equal(expected_result_info_sueldo_df, df_result_info_sueldo)
+    pd.testing.assert_frame_equal(expected_result_info_telefonos_df, df_result_info_telefonos)

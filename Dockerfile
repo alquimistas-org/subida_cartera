@@ -8,7 +8,6 @@ COPY Pipfile Pipfile.lock ./
 
 RUN pipenv install --system --deploy --ignore-pipfile
 
-ENV file_directory="Subida Osiris"
 ENV DEBUG="0"
 
 COPY . .
