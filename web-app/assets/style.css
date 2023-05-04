@@ -1,3 +1,9 @@
+body{
+    margin-left: 2rem;
+    margin-right: 4rem;
+    margin-top: 1.5rem;
+}
+
 span.jsx-3468109796 {
     font-size: x-large;
     font-weight: 700;
@@ -14,7 +20,7 @@ span.jsx-3468109796 {
 
 .card-body{
     margin-top: 2rem;
-    height: 700px;
+    height: 350px;
 }
 
 .attach-file{
@@ -28,15 +34,80 @@ span.jsx-3468109796 {
 
 .select-file-link{
     font-weight: 400;
-    width: 20%;
-    margin-left: 70rem;
-    color: #229ccc
+    color: #229ccc;
+}
+a.upload-link-container{
+    text-decoration: none;
 }
 
 .select-file-link:hover{
     color:#77d1f1
 }
 
+.upload-icon{
+    width: fit-content;
+}
+
 .upload-icon:hover{
     color:#77d1f1
+}
+
+.upload-link-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-container{
+    width: 50%;
+}
+
+.donwload-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.download-button{
+    width: 23rem;
+    border-radius: 10px;
+    color: #ffffff;
+    background-color: #1d8ab6;
+    border-color: #1d8ab6;
+    text-align: center;
+    margin: 1rem;
+}
+
+.download-button:hover{
+    background-color: #b9e8fbc7;
+    color: #080808;
+    border-color: #b9e8fbc7;
+}
+
+.filaname-container{
+    margin-left: 3rem;
+    font-size: large;
+    color:#1d8ab6;
+}
+
+.btn-tab{
+    width: 50%;
+    margin: 0.5rem;
+}
+
+.tabs-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.fa-trash-can{
+    color:red;
+}
+.fa-trash-can:hover{
+    cursor: pointer;
+    color: rgb(245, 97, 97);
 }
