@@ -12,5 +12,5 @@ from callback import upload_csv   # noqa
 app.layout = app_layout
 
 if __name__ == "__main__":
-    DEBUG = bool(int(os.getenv("DEBUG", "0")))
+    DEBUG = bool(int(os.getenv("DEBUG", "1")))
     app.run_server(debug=DEBUG)

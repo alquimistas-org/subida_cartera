@@ -41,20 +41,13 @@ def Preparacion_Cuentas(
 ) -> None:
 
     if not dataframe_saver:
-        dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/')
+        dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/', portfolio_name='subida_cartera')
 
     cr = read_data(cr_file_path)
 
     df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
 
     write_csv(df_os, dataframe_saver)
-
-
-def Preparacion_Cuentas_Comafi(emerix_file_path=EMERIX_FILE_PATH):
-
-    nombre_cartera = input('\nIngrese el nombre de la cartera que desea:  ')
-    result_directory_path = prepare_comafi_accounts(nombre_cartera, emerix_file_path=emerix_file_path)
-    return result_directory_path
 
 
 def Preparacion_Datos(cr_file_path=CR_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
@@ -305,7 +298,7 @@ class Interfaz_Usuario(Cmd):
 
     def do_CUENTAS_COMAFI(self, args):
         try:
-            Preparacion_Cuentas_Comafi()
+            prepare_comafi_accounts()
             print('PROCESO FINALIZADO.\n\n')
         except Exception:
             error = traceback.format_exc()

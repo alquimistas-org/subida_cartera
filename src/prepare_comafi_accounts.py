@@ -1,9 +1,8 @@
-import os
-import shutil
+import io
 import pandas as pd
 import numpy as np
 import datetime
-import time
+from typing import Union
 from constants.constants import (
     EMERIX_FILE_PATH,
     INVALID_CHARACTERS,
@@ -11,9 +10,19 @@ from constants.constants import (
     ROOT_PATH,
     UTIL_COLS_COMAFI,
 )
+from adapters.file_dataframe_saver import FileDataFrameSaver
+from ports.dataframe_saver import DataFrameSaver
 
 
-def prepare_comafi_accounts(nombre_cartera, emerix_file_path=EMERIX_FILE_PATH):
+def prepare_comafi_accounts(
+        emerix_file_path: Union[str, io.BytesIO, io.StringIO] = EMERIX_FILE_PATH,
+        dataframe_saver: DataFrameSaver = None,
+) -> None:
+
+    portfolio_name = input('\nIngrese el nombre de la cartera que desea:  ')
+
+    if not dataframe_saver:
+        dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/', portfolio_name=portfolio_name)
 
     print('Iniciando preparacion')
     # lectura planilla modelo
@@ -21,6 +30,7 @@ def prepare_comafi_accounts(nombre_cartera, emerix_file_path=EMERIX_FILE_PATH):
         df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='latin_1', sep=';')
     except Exception:
         df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='ANSI', sep=';')
+
     df = pd.read_excel(emerix_file_path, dtype=str)
     col_utiles = UTIL_COLS_COMAFI
 
@@ -33,13 +43,7 @@ def prepare_comafi_accounts(nombre_cartera, emerix_file_path=EMERIX_FILE_PATH):
     replace_invalid_chars(df)
     fill_data(df, df_os)
 
-    new_directory = ROOT_PATH / f'Subida Osiris/{time.strftime("(%H.%M hs) -")} {nombre_cartera}'
-    if os.path.isdir(new_directory):
-        shutil.rmtree(new_directory)
-    os.mkdir(new_directory)
-
-    write_csv_per_subcliente(df_os, new_directory)
-    return new_directory
+    write_csv_per_subcliente(df_os, dataframe_saver)
 
 
 def replace_invalid_chars(dataframe):
@@ -89,11 +93,8 @@ def fill_data(df, df_os):
     df_os['subcliente'] = df['subcliente']
 
 
-def write_csv_per_subcliente(dataframe, folder_name):
+def write_csv_per_subcliente(dataframe: pd.DataFrame, dataframe_saver: DataFrameSaver):
     for name, df_sub in dataframe.groupby('subcliente'):
         print(f'Ecribiendo: {name}.csv')
         df_sub = df_sub.drop('subcliente', inplace=False, axis=1)
-        try:
-            df_sub.to_csv(f'{folder_name}/{name}.csv', sep=';', encoding='latin_1', index=False)
-        except Exception:
-            df_sub.to_csv(f'{folder_name}/{name}.csv', sep=';', encoding='ANSI', index=False)
+        dataframe_saver.save_df(name=name, df=df_sub)
