@@ -118,6 +118,7 @@ ACCOUNT_PREP_COL = [
     'Observaciones (15)',
     'Fecha Fin de Gestion (16)',
     'IDSucursal(17)',
+    'riesgo',
 ]
 
 DATA_PREP_COLUMNS = [

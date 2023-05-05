@@ -22,9 +22,9 @@ from constants.constants import (
     USER,
     UTIL_COLS_COMAFI,
 )
+from process_preparacion_cuentas import FIELDS_PROCESSORS
 from ports.dataframe_saver import DataFrameSaver
 from prepare_comafi_accounts import prepare_comafi_accounts
-from process_preparacion_cuentas import NARANJA_FIELDS
 from utils.cuentas_processor_utils import (
     write_csv,
     read_data,
@@ -87,7 +87,7 @@ def Preparacion_Cuentas(
 
     cr = read_data(cr_file_path)
 
-    df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
+    df_os = process_cuentas(cr, FIELDS_PROCESSORS, ACCOUNT_PREP_COL)
 
     write_csv(df_os, dataframe_saver)
 

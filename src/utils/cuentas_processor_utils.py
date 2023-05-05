@@ -33,10 +33,10 @@ def process_cuentas(
 
     df_os['Nº de Asignacion (0)'] = fields_processor['Nº de Asignacion (0)'](cr)
     df_os['Razon social (1)'] = fields_processor['Razon social (1)'](cr)
-    df_os['ID Tipo de Documento (2)'] = fields_processor['ID Tipo de Documento (2)']
+    df_os['ID Tipo de Documento (2)'] = fields_processor['ID Tipo de Documento (2)']()
     df_os['DNI (3)'] = fields_processor['DNI (3)'](cr)
     df_os['Domicilio (4)'] = fields_processor['Domicilio (4)'](cr)
-    df_os['ID Localidad (5)'] = fields_processor['ID Localidad (5)']
+    df_os['ID Localidad (5)'] = fields_processor['ID Localidad (5)']()
     df_os['ID Provincia (6)'] = fields_processor['ID Provincia (6)'](cr)
     df_os['Código Postal (7)'] = fields_processor['Código Postal (7)'](cr)
     df_os['Importe Asignado (11)'] = fields_processor['Importe Asignado (11)'](cr)
@@ -45,7 +45,7 @@ def process_cuentas(
     df_os['Importe Historico (14)'] = fields_processor['Importe Historico (14)'](cr)
     df_os['Observaciones (15)'] = fields_processor['Observaciones (15)'](cr)
     df_os['Fecha Fin de Gestion (16)'] = create_date(YEARS_TO_ADD)
-    df_os['IDSucursal(17)'] = fields_processor['IDSucursal(17)']
+    df_os['IDSucursal(17)'] = fields_processor['IDSucursal(17)']()
     df_os['riesgo'] = fields_processor['riesgo'](cr)
 
     return df_os
