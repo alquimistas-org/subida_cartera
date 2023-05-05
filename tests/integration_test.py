@@ -101,7 +101,7 @@ def test_integration_comafi_accounts_preparation():
             prepare_comafi_accounts(emerix_file_path=emerix_test_file_path, dataframe_saver=saver)
             saved_files = saver.get_saved_files()
 
-            for file, path in saved_files.items():
+            for _, path in saved_files.items():
                 if 'fake_subcliente_0.csv' in path.name:
                     df_result_0 = pd.read_csv(path, encoding='latin-1', sep=';')
                 elif 'fake_subcliente_1.csv' in path.name:

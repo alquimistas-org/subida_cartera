@@ -21,11 +21,10 @@ def upload_csv(list_of_contents, client_selected):
         if client_selected == 'naranja':
             download_buttons, data_dict = process_naranja_client(dash_dataframe_saver, decoded, content_string)
 
-            return download_buttons, data_dict
-
         elif client_selected == 'comafi':
             download_buttons, data_dict = process_comafi_client(dash_dataframe_saver, decoded, content_string)
-            return download_buttons, data_dict
+
+        return download_buttons, data_dict
 
     else:
         return html.Div(), None

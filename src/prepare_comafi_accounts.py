@@ -19,7 +19,7 @@ def prepare_comafi_accounts(
         dataframe_saver: DataFrameSaver = None,
 ) -> None:
 
-    portfolio_name = input('\nIngrese el nombre de la cartera que desea:  ')
+    portfolio_name = input('\nIngrese el nombre de la cartera que desea:  ')  # TODO: move this input to CMD interface
 
     if not dataframe_saver:
         dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/', portfolio_name=portfolio_name)
