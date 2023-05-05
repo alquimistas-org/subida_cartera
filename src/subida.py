@@ -298,7 +298,8 @@ class Interfaz_Usuario(Cmd):
 
     def do_CUENTAS_COMAFI(self, args):
         try:
-            prepare_comafi_accounts()
+            portfolio_name = input('\nIngrese el nombre de la cartera que desea:  ')
+            prepare_comafi_accounts(portfolio_name=portfolio_name)
             print('PROCESO FINALIZADO.\n\n')
         except Exception:
             error = traceback.format_exc()

@@ -3,7 +3,9 @@ import pandas as pd
 import numpy as np
 import datetime
 from typing import Union
+from pathlib import Path
 from constants.constants import (
+    ACCOUNTS_MODEL_CSV_PATH,
     EMERIX_FILE_PATH,
     INVALID_CHARACTERS,
     PROVINCES,
@@ -17,19 +19,20 @@ from ports.dataframe_saver import DataFrameSaver
 def prepare_comafi_accounts(
         emerix_file_path: Union[str, io.BytesIO, io.StringIO] = EMERIX_FILE_PATH,
         dataframe_saver: DataFrameSaver = None,
+        portfolio_name: str = None,
+        accounts_models: Path = ACCOUNTS_MODEL_CSV_PATH,
 ) -> None:
-
-    portfolio_name = input('\nIngrese el nombre de la cartera que desea:  ')  # TODO: move this input to CMD interface
 
     if not dataframe_saver:
         dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/', portfolio_name=portfolio_name)
 
     print('Iniciando preparacion')
     # lectura planilla modelo
+
     try:
-        df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='latin_1', sep=';')
+        df_os = pd.read_csv(accounts_models, encoding='latin_1', sep=';')
     except Exception:
-        df_os = pd.read_csv('modelos/modelo_cuentas.csv', encoding='ANSI', sep=';')
+        df_os = pd.read_csv(accounts_models, encoding='ANSI', sep=';')
 
     df = pd.read_excel(emerix_file_path, dtype=str)
     col_utiles = UTIL_COLS_COMAFI
