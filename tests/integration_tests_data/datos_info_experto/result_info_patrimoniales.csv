@@ -1,73 +1,73 @@
 ID Cuenta o Nro. de Asig. (0);ID SubCliente (1);Activa (S, N) (2);ID Supervisor (3);ID Ejecutivo (4);Nº de Asignación Nuevo (5);Fecha de Contacto (6);ID Acción (7);ID Resultado (8);Notas (9);ID Usuario (10);ID SubEstado (11);ID SubCliente (12);Importe Asignado (13);Importe Histórico (14);Observaciones (15);Email (16);ID Tipo de Teléfono (17);Nro. de Teléfono (18);Obs. de Teléfono (19);ID Tipo de Domicilio (20);Domicilio sin Formato (21);Obs. de Domicilio (22);ID Localidad (23);ID Provincia (24);Fecha de Vencimiento (25);Número de Referencia (26);Importe Factura (27);Observaciones Factura (28);ID Sucursal (29);Fecha de Pago (30);ID Concepto (31);Importe de Pago(32);ID Usuario  de Pago(33);Rendido (S, N) (34);Fecha Proximo Pago (35);Importe Proximo Pago (36);Fecha de Acuerdo (37);Días de Vencimiento (38);Importe de Acuerdo (39);Sueldo (40);Cantidad de Vehiculos (41);Datos Patrimoniales (42)
 689532;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_0 - Nivel Socioeconómico: C2
-689551;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $154,176, 0 Empleador: fake_razon_social_1 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_1 - Nivel Socioeconómico: C3
+689551;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $154.176,0 Empleador: fake_razon_social_1 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_1 - Nivel Socioeconómico: C3
 689701;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: C3
-690075;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $307,000, 0 Empleador: fake_razon_social_4 - Nivel Socioeconómico: C1
-690076;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $632,291, 0 Empleador: fake_razon_social_5 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_5 - Nivel Socioeconómico: B
+690075;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $307.000,0 Empleador: fake_razon_social_4 - Nivel Socioeconómico: C1
+690076;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $632.291,0 Empleador: fake_razon_social_5 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_5 - Nivel Socioeconómico: B
 690078;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_6
 690096;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 2 Detalle: fake_detalle1_7
-690101;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $160,766, 0 Empleador: fake_razon_social_8 - Nivel Socioeconómico: C2
-690102;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $280,509, 0 Empleador: fake_razon_social_9 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_9 - Nivel Socioeconómico: C1
-690104;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $153,020, 0 Empleador: fake_razon_social_11 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_11 - Nivel Socioeconómico: C3
-690106;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $156,992, 0 Empleador: fake_razon_social_12 - Nivel Socioeconómico: C2
-690109;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $106,771, 0 Empleador: fake_razon_social_14 - Nivel Socioeconómico: C2
+690101;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $160.766,0 Empleador: fake_razon_social_8 - Nivel Socioeconómico: C2
+690102;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $280.509,0 Empleador: fake_razon_social_9 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_9 - Nivel Socioeconómico: C1
+690104;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $153.020,0 Empleador: fake_razon_social_11 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_11 - Nivel Socioeconómico: C3
+690106;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $156.992,0 Empleador: fake_razon_social_12 - Nivel Socioeconómico: C2
+690109;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $106.771,0 Empleador: fake_razon_social_14 - Nivel Socioeconómico: C2
 690112;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_15
-690116;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $226,786, 0 Empleador: fake_razon_social_17 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_17 - Nivel Socioeconómico: B
-690121;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $148,477, 0 Empleador: fake_razon_social_22 - Nivel Socioeconómico: C3
-690124;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $199,376, 0 Empleador: fake_razon_social_25 - Nivel Socioeconómico: C2
-690125;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $48,646, 0 Empleador: fake_razon_social_26 - Nivel Socioeconómico: D2
+690116;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $226.786,0 Empleador: fake_razon_social_17 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_17 - Nivel Socioeconómico: B
+690121;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $148.477,0 Empleador: fake_razon_social_22 - Nivel Socioeconómico: C3
+690124;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $199.376,0 Empleador: fake_razon_social_25 - Nivel Socioeconómico: C2
+690125;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $48.646,0 Empleador: fake_razon_social_26 - Nivel Socioeconómico: D2
 690126;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 7 Detalle: fake_detalle1_27
 690127;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 2 Detalle: fake_detalle1_28
 690129;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_30
-690130;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $100,933, 0 Empleador: fake_razon_social_31 - Nivel Socioeconómico: D1
-690132;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $132,415, 0 Empleador: fake_razon_social_33 - Nivel Socioeconómico: C3
+690130;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $100.933,0 Empleador: fake_razon_social_31 - Nivel Socioeconómico: D1
+690132;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $132.415,0 Empleador: fake_razon_social_33 - Nivel Socioeconómico: C3
 690133;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: D1
 690134;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 2 Detalle: fake_detalle1_35
-690135;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $424,455, 0 Empleador: fake_razon_social_36 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_36 - Nivel Socioeconómico: C1
+690135;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $424.455,0 Empleador: fake_razon_social_36 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_36 - Nivel Socioeconómico: C1
 690137;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: D1
 690138;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: D1
 690139;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_40 - Nivel Socioeconómico: D1
 690141;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: C3
 690142;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_43 - Nivel Socioeconómico: C1
-690144;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $661,150, 0 Empleador: fake_razon_social_45 - Nivel Socioeconómico: A
-690145;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $40,000, 0 Empleador: fake_razon_social_46 - Nivel Socioeconómico: D2
-690146;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $60,990, 0 Empleador: fake_razon_social_47 - Nivel Socioeconómico: D2
-690149;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $227,564, 0 Empleador: fake_razon_social_50 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_50 - Nivel Socioeconómico: C1
-690155;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $153,633, 0 Empleador: fake_razon_social_56 - Nivel Socioeconómico: C1
-690158;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $94,554, 0 Empleador: fake_razon_social_59 - Nivel Socioeconómico: D1
+690144;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $661.150,0 Empleador: fake_razon_social_45 - Nivel Socioeconómico: A
+690145;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $40.000,0 Empleador: fake_razon_social_46 - Nivel Socioeconómico: D2
+690146;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $60.990,0 Empleador: fake_razon_social_47 - Nivel Socioeconómico: D2
+690149;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $227.564,0 Empleador: fake_razon_social_50 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_50 - Nivel Socioeconómico: C1
+690155;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $153.633,0 Empleador: fake_razon_social_56 - Nivel Socioeconómico: C1
+690158;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $94.554,0 Empleador: fake_razon_social_59 - Nivel Socioeconómico: D1
 690159;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_60
 690160;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 2 Detalle: fake_detalle1_61
-690161;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $157,152, 0 Empleador: fake_razon_social_62 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_62 - Nivel Socioeconómico: C2
+690161;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $157.152,0 Empleador: fake_razon_social_62 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_62 - Nivel Socioeconómico: C2
 690162;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: D1
-690163;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $87,246, 0 Empleador: fake_razon_social_64 - Nivel Socioeconómico: C2
+690163;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $87.246,0 Empleador: fake_razon_social_64 - Nivel Socioeconómico: C2
 690166;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 2 Detalle: fake_detalle1_67
-690167;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $94,386, 0 Empleador: fake_razon_social_68 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_68 - Nivel Socioeconómico: C2
+690167;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $94.386,0 Empleador: fake_razon_social_68 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_68 - Nivel Socioeconómico: C2
 690168;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: D1
-690169;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $404,301, 0 Empleador: fake_razon_social_70 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_70 - Nivel Socioeconómico: C1
-690170;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $347,100, 0 Empleador: fake_razon_social_71 - Nivel Socioeconómico: C1
-690171;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $357,817, 0 Empleador: fake_razon_social_72 - Nivel Socioeconómico: C1
-690172;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $52,643, 0 Empleador: fake_razon_social_73 - Nivel Socioeconómico: D2
-690173;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $251,754, 0 Empleador: fake_razon_social_74 - Nivel Socioeconómico: C1
+690169;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $404.301,0 Empleador: fake_razon_social_70 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_70 - Nivel Socioeconómico: C1
+690170;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $347.100,0 Empleador: fake_razon_social_71 - Nivel Socioeconómico: C1
+690171;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $357.817,0 Empleador: fake_razon_social_72 - Nivel Socioeconómico: C1
+690172;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $52.643,0 Empleador: fake_razon_social_73 - Nivel Socioeconómico: D2
+690173;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $251.754,0 Empleador: fake_razon_social_74 - Nivel Socioeconómico: C1
 690177;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 3 Detalle: fake_detalle1_78 - Nivel Socioeconómico: C2
-690180;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $62,416, 0 Empleador: fake_razon_social_81 - Nivel Socioeconómico: C3
+690180;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $62.416,0 Empleador: fake_razon_social_81 - Nivel Socioeconómico: C3
 690181;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_82
 690183;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 2 Detalle: fake_detalle1_84
 690184;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: C3
-690185;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $221,433, 0 Empleador: fake_razon_social_86 - Nivel Socioeconómico: C2
-690188;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $156,851, 0 Empleador: fake_razon_social_89 - Nivel Socioeconómico: C1
-690189;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $404,282, 0 Empleador: fake_razon_social_90 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_90 - Nivel Socioeconómico: C1
-690190;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $648,895, 0 Empleador: fake_razon_social_91 - Nivel Socioeconómico: B
+690185;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $221.433,0 Empleador: fake_razon_social_86 - Nivel Socioeconómico: C2
+690188;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $156.851,0 Empleador: fake_razon_social_89 - Nivel Socioeconómico: C1
+690189;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $404.282,0 Empleador: fake_razon_social_90 - Cantidad de Vehículos: 1 Detalle: fake_detalle1_90 - Nivel Socioeconómico: C1
+690190;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $648.895,0 Empleador: fake_razon_social_91 - Nivel Socioeconómico: B
 690193;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_94
-690194;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $245,452, 0 Empleador: fake_razon_social_95 - Nivel Socioeconómico: C1
+690194;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $245.452,0 Empleador: fake_razon_social_95 - Nivel Socioeconómico: C1
 690196;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_97 - Nivel Socioeconómico: C2
-690197;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $0, 0 Empleador: fake_razon_social_98 - Nivel Socioeconómico: D2
+690197;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $0,0 Empleador: fake_razon_social_98 - Nivel Socioeconómico: D2
 690198;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_99
 690200;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: D1
-690202;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $152,282, 0 Empleador: fake_razon_social_103 - Nivel Socioeconómico: C1
-690204;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $162,691, 0 Empleador: fake_razon_social_105 - Nivel Socioeconómico: C2
-690206;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $14,042, 0 Empleador: fake_razon_social_107 - Nivel Socioeconómico: D1
+690202;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $152.282,0 Empleador: fake_razon_social_103 - Nivel Socioeconómico: C1
+690204;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $162.691,0 Empleador: fake_razon_social_105 - Nivel Socioeconómico: C2
+690206;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $14.042,0 Empleador: fake_razon_social_107 - Nivel Socioeconómico: D1
 690207;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Nivel Socioeconómico: D1
 690210;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Cantidad de Vehículos: 1 Detalle: fake_detalle1_111
-690211;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $35,000, 0 Empleador: fake_razon_social_112 - Nivel Socioeconómico: D2
-690212;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $159,144, 0 Empleador: fake_razon_social_113 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_113 - Nivel Socioeconómico: C2
-690213;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $307,063, 0 Empleador: fake_razon_social_114 - Nivel Socioeconómico: C1
+690211;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $35.000,0 Empleador: fake_razon_social_112 - Nivel Socioeconómico: D2
+690212;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $159.144,0 Empleador: fake_razon_social_113 - Cantidad de Vehículos: 2 Detalle: fake_detalle1_113 - Nivel Socioeconómico: C2
+690213;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Sueldo: $307.063,0 Empleador: fake_razon_social_114 - Nivel Socioeconómico: C1
