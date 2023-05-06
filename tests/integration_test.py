@@ -19,7 +19,7 @@ from src.subida import (
 integration_test_file_path = Path('./tests/integration_tests_data/')
 
 
-@freeze_time('2023-04-12')
+@freeze_time('2023-05-06')
 @mock.patch('subida.DataFrameSaver')
 def test_integration_preparacion_cuentas_naranja(mock_dataframe_saver):
     integration_test_file_path = Path('./tests/integration_tests_data/')
@@ -65,7 +65,7 @@ def test_integration_prepararion_riesgo_online_data():
     pd.testing.assert_frame_equal(result_df, expected_result_df)
 
 
-@freeze_time('2023-04-17')
+@freeze_time('2023-05-06')
 def test_integration_comafi_accounts_preparation():
 
     emerix_test_file_path = integration_test_file_path / 'comafi_accounts' / 'emerix_test.xlsx'

@@ -193,20 +193,20 @@ class TestDataInfo:
                 ),
                 'primonial': pd.Series(
                     [
-                        'Sueldo: $10,000, 0 Empleador: Super Empleador 1 - Cantidad de Vehículos: 1 Detalle: Auto 1',
-                        'Sueldo: $20,000, 0 Empleador: Super Empleador 2 - Cantidad de Vehículos: 2 Detalle: Auto 2',
-                        'Sueldo: $30,000, 0 Empleador: Super Empleador 3 - Cantidad de Vehículos: 3 Detalle: Auto 3',
-                        'Sueldo: $40,000, 0 Empleador: Super Empleador 4 - Cantidad de Vehículos: 4 Detalle: Auto 4',
-                        'Sueldo: $50,000, 0 Empleador: Super Empleador 5 - Cantidad de Vehículos: 5 Detalle: Auto 5',
-                        'Sueldo: $60,000, 0 Empleador: Super Empleador 6 - Cantidad de Vehículos: 6 Detalle: Auto 6',
-                        'Sueldo: $70,000, 0 Empleador: Super Empleador 7 - Cantidad de Vehículos: 7 Detalle: Auto 7',
-                        'Sueldo: $80,000, 0 Empleador: Super Empleador 8 - Cantidad de Vehículos: 8 Detalle: Auto 8',
-                        'Sueldo: $90,000, 0 Empleador: Super Empleador 9 - Cantidad de Vehículos: 9 Detalle: Auto 9',
-                        'Sueldo: $100,000, 0 Empleador: Super Empleador 10 - Cantidad de Vehículos: 10 Detalle: Auto 10',  # noqa
-                        'Sueldo: $110,000, 0 Empleador: Super Empleador 11 - Cantidad de Vehículos: 11 Detalle: Auto 11',  # noqa                   
-                        'Sueldo: $120,000, 0 Empleador: Super Empleador 12 - Cantidad de Vehículos: 12 Detalle: Auto 12',  # noqa                  
-                        'Sueldo: $130,000, 0 Empleador: Super Empleador 13 - Cantidad de Vehículos: 13 Detalle: Auto 13',  # noqa                   
-                        'Sueldo: $140,000, 0 Empleador: Super Empleador 14 - Cantidad de Vehículos: 14 Detalle: Auto 14',  # noqa
+                        'Sueldo: $10.000,0 Empleador: Super Empleador 1 - Cantidad de Vehículos: 1 Detalle: Auto 1',
+                        'Sueldo: $20.000,0 Empleador: Super Empleador 2 - Cantidad de Vehículos: 2 Detalle: Auto 2',
+                        'Sueldo: $30.000,0 Empleador: Super Empleador 3 - Cantidad de Vehículos: 3 Detalle: Auto 3',
+                        'Sueldo: $40.000,0 Empleador: Super Empleador 4 - Cantidad de Vehículos: 4 Detalle: Auto 4',
+                        'Sueldo: $50.000,0 Empleador: Super Empleador 5 - Cantidad de Vehículos: 5 Detalle: Auto 5',
+                        'Sueldo: $60.000,0 Empleador: Super Empleador 6 - Cantidad de Vehículos: 6 Detalle: Auto 6',
+                        'Sueldo: $70.000,0 Empleador: Super Empleador 7 - Cantidad de Vehículos: 7 Detalle: Auto 7',
+                        'Sueldo: $80.000,0 Empleador: Super Empleador 8 - Cantidad de Vehículos: 8 Detalle: Auto 8',
+                        'Sueldo: $90.000,0 Empleador: Super Empleador 9 - Cantidad de Vehículos: 9 Detalle: Auto 9',
+                        'Sueldo: $100.000,0 Empleador: Super Empleador 10 - Cantidad de Vehículos: 10 Detalle: Auto 10',  # noqa
+                        'Sueldo: $110.000,0 Empleador: Super Empleador 11 - Cantidad de Vehículos: 11 Detalle: Auto 11',  # noqa
+                        'Sueldo: $120.000,0 Empleador: Super Empleador 12 - Cantidad de Vehículos: 12 Detalle: Auto 12',  # noqa
+                        'Sueldo: $130.000,0 Empleador: Super Empleador 13 - Cantidad de Vehículos: 13 Detalle: Auto 13',  # noqa
+                        'Sueldo: $140.000,0 Empleador: Super Empleador 14 - Cantidad de Vehículos: 14 Detalle: Auto 14',  # noqa
                     ]
                 ),
             },

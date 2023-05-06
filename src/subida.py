@@ -65,8 +65,10 @@ def limpiar_numeros(df_num):
     # resto de los numeros que quedaron vacios
     vacios = df_num['telefono_2'].isna()
     df_num.loc[vacios, 'telefono_2'] = df_num[vacios]['telefono']\
-        .str.replace(r'[^\d]+', '').str.replace(r'^[0]+', '', regex=True)\
-            .str.replace(r'^[54]+', '', regex=True).str.replace(r'^[0] + ', '', regex=True)
+        .str.replace(r'[^\d]+', '', regex=True)\
+        .str.replace(r'^[0]+', '', regex=True)\
+        .str.replace(r'^[54]+', '', regex=True)\
+        .str.replace(r'^[0]+', '', regex=True)
 
     return df_num
 
@@ -111,13 +113,13 @@ def Preparacion_Cuentas(
 
     df_os['ID Provincia (6)'] = cr['PROVINCIA'].apply(lambda fila: provincias[fila])
     df_os['Código Postal (7)'] = cr['POSTAL']
-    df_os['Importe Asignado (11)'] = cr['DEUDA_ACTUALIZADA'].str.replace(', ', '.')
+    df_os['Importe Asignado (11)'] = cr['DEUDA_ACTUALIZADA'].str.replace(',', '.').str.replace(',', '.')
     df_os['Fecha de Ingreso (12)'] = date_1
     df_os['Fecha de Deuda dd/mm/aaaa (13)'] = cr['INICIOMORA']
-    df_os['Importe Historico (14)'] = cr['CAPITAL'].str.replace(', ', '.')
+    df_os['Importe Historico (14)'] = cr['CAPITAL'].str.replace(',', '.').str.replace(',', '.')
     df_os['Observaciones (15)'] = (
         'Gestor anterior: ' + cr['GESTOR_ANTERIOR'] + ' - ' + 'Score: ' +
-        cr['SCORE'].str.replace(', ', '.').str.replace(',', '.').astype(float).round(2).astype(str)
+        cr['SCORE'].str.replace(',', '.').astype(float).round(2).astype(str)
     )
     df_os['Fecha Fin de Gestion (16)'] = date_2
     df_os['IDSucursal(17)'] = '1'
