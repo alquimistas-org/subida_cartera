@@ -143,7 +143,13 @@ class GenerateDataInfo:
             ].astype({'sueldo_info_float': 'int32'})
 
         df_copy['sueldo_info_str'] = df_copy['sueldo_info_int']\
-            .apply(lambda row: "{:,}".format(row).replace(", ", "@").replace('.', ', ').replace('@', '.'))
+            .apply(
+                lambda row:
+                    "{:,}".format(row)
+                    .replace(",", "@")
+                    .replace('.', ',')
+                    .replace('@', '.')
+            )
 
         df_copy['primonial'] = df_copy.apply(lambda row: plantilla.format(**row.to_dict()), axis=1)
 
@@ -152,7 +158,7 @@ class GenerateDataInfo:
     @classmethod
     def get_emails(cls, df: pd.DataFrame) -> pd.DataFrame:
         df_copy = df.copy()
-        mails = df_copy.loc[df_copy['MAIL_info'].notnull(), 'MAIL_info'].str.split(', ', expand=True)
+        mails = df_copy.loc[df_copy['MAIL_info'].notnull(), 'MAIL_info'].str.split(',', expand=True)
         rename = {x: f'mail_{i+1}' for i, x in enumerate(list(mails.columns), 0)}
         mails = mails.rename(columns=rename)
         name_mails = list(rename.values())
