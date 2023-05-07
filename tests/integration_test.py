@@ -6,10 +6,10 @@ from src.adapters.file_dataframe_saver import FileDataFrameSaver
 from freezegun import freeze_time
 import pandas as pd
 from src.data_info import GenerateDataInfo
+from src.data_naranja import GenerateDataNaranja
 
 from src.subida import (
     Preparacion_Cuentas,
-    Preparacion_Datos,
     Preparacion_Datos_Comafi,
     risk_data,
 )
@@ -167,7 +167,7 @@ def test_integration_naranja_data_preparation():
     expected_df_result_mails = pd.read_csv(result_mails_path, encoding='latin-1', sep=';')
     expected_df_result_phones = pd.read_csv(result_phones_path, encoding='latin-1', sep=';')
 
-    all_result_file_path = Preparacion_Datos(
+    all_result_file_path = GenerateDataNaranja.process(
         cr_file_path=cr_test_file_path,
         osiris_accounts_file_path=osiris_accounts_df
     )

@@ -9,11 +9,11 @@ import pandas as pd
 
 from adapters.file_dataframe_saver import FileDataFrameSaver
 from data_info import GenerateDataInfo
+from data_naranja import GenerateDataNaranja
 from driver_email import enviar_mail_con_adjuntos
 from constants.constants import (
     ACCOUNT_PREP_COL,
     CR_FILE_PATH,
-    DATA_PREP_COLUMNS,
     EMERIX_FILE_PATH,
     OSIRIS_ACCOUNTS_FILE_PATH,
     PASSWORD,
@@ -25,7 +25,6 @@ from constants.constants import (
 from risk_data import risk_data
 from clean_numbers import clean_numbers
 from prepare_comafi_accounts import prepare_comafi_accounts
-from write_data_osiris import Escribir_Datos_Osiris
 from ports.dataframe_saver import DataFrameSaver
 from process_preparacion_cuentas import NARANJA_FIELDS
 from utils.cuentas_processor_utils import (
@@ -48,103 +47,6 @@ def Preparacion_Cuentas(
     df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
 
     write_csv(df_os, dataframe_saver)
-
-
-def Preparacion_Datos(cr_file_path=CR_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
-    ' Necesita que este en la carpeta'
-    print('Preparando planillas de datos...')
-    try:
-        cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
-        cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
-    except Exception:
-        cr = pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
-        cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='ANSI', sep=';', dtype=str)
-
-    cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
-
-    df_cr = cr[DATA_PREP_COLUMNS].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
-    df_cr = pd.merge(cuentas_subidas, df_cr, how="inner", on="DNI")
-
-    frames = list()
-    print('Subiendo numeros...\n')
-    print('----------------------')
-
-    # MASIVOS
-
-    # paso TEL_ALTERNATIVO esta vacio
-    df = df_cr.loc[
-        df_cr['TEL_ALTERNATIVO'].notnull(), ['Cuenta', 'TEL_ALTERNATIVO']
-    ].rename(columns={'TEL_ALTERNATIVO': 'TEL'}, inplace=False).copy()
-    df['ID_FONO'] = '1'
-    print(f'{len(df)} Telefonos ALTERNATIVOS cargados com MASIVOS')
-    frames.append(df)
-
-    # paso TEL_PARTICULAR como masivo.
-    df = df_cr.loc[
-        df_cr['TEL_ALTERNATIVO'].isnull() & df_cr['TEL_PARTICULAR'].notnull(), ['Cuenta', 'TEL_PARTICULAR']
-    ].rename(columns={'TEL_PARTICULAR': 'TEL'}, inplace=False).copy()
-    df_cr.loc[df_cr['TEL_ALTERNATIVO'].isnull() & df_cr['TEL_PARTICULAR'].notnull(), 'TEL_PARTICULAR'] = np.nan
-    df['ID_FONO'] = '1'
-    print(f'{len(df)} Telefonos PARTICULAR cargados com MASIVOS en cuentas que no poseen ALTERNATIVO')
-    frames.append(df)
-
-    # FIJOS
-    df = df_cr.loc[df_cr['TEL_PARTICULAR'].notnull(), ['Cuenta', 'TEL_PARTICULAR']]\
-        .rename(columns={'TEL_PARTICULAR': 'TEL'}, inplace=False).copy()
-    df['ID_FONO'] = '2'
-    print(f'{len(df)} Telefonos ALTERNATIVOS cargados como FIJOS')
-    frames.append(df)
-
-    # LABORALES
-    df = df_cr.loc[
-        df_cr['TEL_LABORAL'].notnull(), ['Cuenta', 'TEL_LABORAL']
-    ].rename(columns={'TEL_LABORAL': 'TEL'}, inplace=False).copy()
-    df['ID_FONO'] = '3'
-    print(f'{len(df)} Telefonos LABORALES cargados como LABORALES')
-    frames.append(df)
-
-    # OTROS
-    df = df_cr.melt(
-        id_vars=['Cuenta'], value_vars=['TEL_CR_PARTICULAR', 'TEL_CR_LABORAL', 'TEL_CR_ALTERNATIVO']
-        ).dropna().copy()
-    df = df[['Cuenta', 'value']].rename(columns={'value': 'TEL'}, inplace=False)
-    df['ID_FONO'] = '8'
-    print(f'{len(df)} Telefonos OTROS_CR cargados como OTROS')
-    frames.append(df)
-    print('----------------------\n')
-
-    df_tels = pd.concat(frames)
-
-    # Depuracion
-    df_tels['TEL'] = df_tels['TEL'].str.replace(r'[^0-9]+', '', regex=True)   # elimina todo lo que no sea un numero
-    # df_tels['TEL'] = df_tels['TEL'].str.replace('-', '')
-    df_tels['TEL'] = df_tels['TEL'].str.replace(' ', '')
-    df_tels['TEL'] = df_tels['TEL'].replace('', np.nan)
-    df_tels['TEL'].fillna(0)
-    df_tels = df_tels.astype({'TEL': 'Int64'})
-    df_tels = df_tels.astype({'TEL': 'str'})
-    df_tels.drop(df_tels[df_tels.TEL == '0'].index, inplace=True)
-
-    result_df_phones_file_path = Escribir_Datos_Osiris(
-        df_tels,
-        'datos_cr_subida_telefonos.csv',
-        ['Cuenta', 'ID_FONO', 'TEL'],
-        ['ID Cuenta o Nro. de Asig. (0)', "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)"]
-    )
-    print(f'{len(df_tels)} TELEFONOS se guardaron en archivo: subida_telefono.csv')
-    # reemplazar cualquier caractaer alfabetico que este dentro del numero para evitar roblema en futuro
-    # borrar numero cero
-    df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'] = df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'].str.replace(' ', '')
-    df_mail = df_cr.loc[df_cr['EMAIL'].notnull(), ['Cuenta', 'EMAIL']].copy()
-    result_df_mails_file_path = Escribir_Datos_Osiris(
-        df_mail,
-        'datos_cr_subida_mail.csv',
-        ['Cuenta', 'EMAIL'],
-        ['ID Cuenta o Nro. de Asig. (0)', "Email (16)"]
-    )
-    print(f'{len(df_mail)} MAILS se guardaron en archivo: subida_mail.csv\n\n')
-    all_result_file_paths = [result_df_phones_file_path, result_df_mails_file_path]
-    return all_result_file_paths
 
 
 def Preparacion_Datos_Comafi(emerix_file_path=EMERIX_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
@@ -222,7 +124,7 @@ class Interfaz_Usuario(Cmd):
         print('\n\nCOMENZANDO ARMADO DE PLANILLA DE DATOS\n')
         print('Preparando...')
         try:
-            Preparacion_Datos()
+            GenerateDataNaranja.process()
             print('PROCESO FINALIZADO.\n\n')
 
         except Exception:
