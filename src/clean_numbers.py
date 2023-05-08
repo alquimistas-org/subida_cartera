@@ -40,7 +40,9 @@ def clean_numbers(df_num: pd.DataFrame) -> pd.DataFrame:
     # remaining empty numbers
     remaining_empty = df_num['telefono_2'].isna()
     df_num.loc[remaining_empty, 'telefono_2'] = df_num[remaining_empty]['telefono']\
-        .str.replace(r'[^\d]+', '').str.replace(r'^[0]+', '', regex=True)\
-            .str.replace(r'^[54]+', '', regex=True).str.replace(r'^[0] + ', '', regex=True)
+        .str.replace(r'[^\d]+', '', regex=True)\
+        .str.replace(r'^[0]+', '', regex=True)\
+        .str.replace(r'^[54]+', '', regex=True)\
+        .str.replace(r'^[0]+', '', regex=True)
 
     return df_num
