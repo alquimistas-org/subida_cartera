@@ -24,13 +24,13 @@ non_os_test_dataframe = pd.DataFrame(
         'nombre': ['Juan Perez', 'Jorge Fernandez'],
         'direccion': ['Calle Tal 4567', 'Calle Otra 23'],
         'localidad': ['Maipu', 'Lujan'],
-        'provincia': ['MENDOZA', 'MENDOZA',],
+        'provincia': ['MENDOZA', 'MENDOZA'],
         'cod_postal': ['1234', '1111'],
         'deuda_total': [123456, 34567634],
         'fecha_inicio': ['01/01/2023', '02/02/2023'],
         'fecha_ult_pago': ['25/01/2023', '25/02/2023'],
         'deuda_capital': [543865, 5437654],
-        'subcliente': ['Empresa1', 'Empresa2',],
+        'subcliente': ['Empresa1', 'Empresa2'],
     }
 )
 
@@ -75,4 +75,19 @@ os_test_other_dataframe = pd.DataFrame(
         'fecha_ult_pago',
         'subcliente',
     ]
+)
+
+phone_numbers_dataframe = pd.DataFrame(
+    {
+        'nombre': ['Juan Perez', 'Jorge Ernesto', 'Miguel García', 'Roberto Gómez'],
+        'telefono': ['0541234567', '011-1-1234567', '0-800-3456789', '054-1-9876543'],
+    }
+)
+
+expected_phone_numbers_dataframe = pd.DataFrame(
+    {
+        'nombre': ['Juan Perez', 'Jorge Ernesto', 'Miguel García', 'Roberto Gómez'],
+        'telefono': ['0541234567', '011-1-1234567', '0-800-3456789', '054-1-9876543'],
+        'telefono_2': ['1234567', '1111234567', '8003456789', '19876543'],
+    }
 )
