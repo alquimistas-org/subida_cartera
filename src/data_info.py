@@ -6,7 +6,7 @@ from constants.constants import (
     DATA_INFO_COLUMNS_RENAME,
     OSIRIS_ACCOUNTS_FILE_PATH,
 )
-from risk_data import (
+from helpers import (
     get_phones,
     read_osiris_accounts,
 )
