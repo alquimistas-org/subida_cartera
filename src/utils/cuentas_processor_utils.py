@@ -8,6 +8,7 @@ from ports.dataframe_saver import DataFrameSaver
 
 def write_csv(df_os: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
     for name, df_sub in df_os.groupby('riesgo'):
+        df_sub = df_sub.drop('riesgo', inplace=False, axis=1)
         dataframe_saver.save_df(name=name, df=df_sub)
 
 

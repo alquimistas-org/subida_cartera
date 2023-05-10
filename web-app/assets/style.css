@@ -64,7 +64,8 @@ a.upload-link-container{
     width: 50%;
 }
 
-.donwload-container{
+.major-donwload-container{
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -80,16 +81,53 @@ a.upload-link-container{
     margin: 1rem;
 }
 
+.donwload-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+
 .download-button:hover{
     background-color: #b9e8fbc7;
     color: #080808;
     border-color: #b9e8fbc7;
+    cursor: pointer;
 }
 
 .filaname-container{
     margin-left: 3rem;
     font-size: large;
     color:#1d8ab6;
+}
+
+.download-csv-btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+
+}
+
+.container-filename-icon-dwn{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.p-download-csv{
+    width: 25rem;
+    background-color: #dce7eb;
+    color: #090909;
+    margin-top: 0.5rem;
+    border-radius: 10px;
+    margin-left: 15px;
+}
+
+.p-download-csv:hover{
+    cursor: pointer;
 }
 
 .btn-tab{

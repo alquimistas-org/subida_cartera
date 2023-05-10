@@ -5,17 +5,20 @@ from pathlib import Path
 
 class FileDataFrameSaver:
 
-    def __init__(self, output_path: Path) -> None:
+    def __init__(self, output_path: Path, portfolio_name: str = None) -> None:
         self.output_path = output_path
         self.saved_dfs: dict[str, pd.DataFrame] = {}
         self.saved_files: dict[str, Path] = {}
+        self.portfolio_name = portfolio_name
 
     def save_df(self, name: str, df: pd.DataFrame) -> None:
         print(f'Ecribiendo: subida_cartera_{name}.csv')
 
-        df = df.drop('riesgo', inplace=False, axis=1)
-
-        result_file_path = self.output_path / f'{datetime.now().strftime("(%H.%M hs) -")} subida_cartera_{name}.csv'
+        result_file_path = (
+            self.output_path /
+            f'{datetime.now().strftime("(%H.%M hs) -")} \
+            {self.portfolio_name if self.portfolio_name else ""}_{name}.csv'
+        )
 
         try:
             df.to_csv(

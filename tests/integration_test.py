@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from unittest import mock
 import tempfile
@@ -13,8 +12,8 @@ from src.subida import (
     Preparacion_Datos,
     Preparacion_Datos_Comafi,
     risk_data,
-    Preparacion_Cuentas_Comafi,
 )
+from src.prepare_comafi_accounts import prepare_comafi_accounts
 
 integration_test_file_path = Path('./tests/integration_tests_data/')
 
@@ -72,17 +71,17 @@ def test_integration_comafi_accounts_preparation():
     result_directory_path = integration_test_file_path / 'comafi_accounts' / 'results'
 
     expected_files_in_result_directory = [
-        'fake_subcliente_0.csv',
-        'fake_subcliente_1.csv',
-        'fake_subcliente_2.csv',
-        'fake_subcliente_3.csv',
-        'fake_subcliente_4.csv',
-        'fake_subcliente_5.csv',
-        'fake_subcliente_6.csv',
-        'fake_subcliente_7.csv',
-        'fake_subcliente_8.csv',
-        'fake_subcliente_9.csv',
-        'fake_subcliente_10.csv',
+        'fake_subcliente_0',
+        'fake_subcliente_1',
+        'fake_subcliente_2',
+        'fake_subcliente_3',
+        'fake_subcliente_4',
+        'fake_subcliente_5',
+        'fake_subcliente_6',
+        'fake_subcliente_7',
+        'fake_subcliente_8',
+        'fake_subcliente_9',
+        'fake_subcliente_10',
     ]
     expected_df_result_0 = pd.read_csv(result_directory_path / 'fake_subcliente_0.csv', encoding='latin-1', sep=';')
     expected_df_result_1 = pd.read_csv(result_directory_path / 'fake_subcliente_1.csv', encoding='latin-1', sep=';')
@@ -97,35 +96,36 @@ def test_integration_comafi_accounts_preparation():
     expected_df_result_10 = pd.read_csv(result_directory_path / 'fake_subcliente_10.csv', encoding='latin-1', sep=';')
 
     with mock.patch('builtins.input', return_value='fake'):
-        result_directory_path = Preparacion_Cuentas_Comafi(emerix_file_path=emerix_test_file_path)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            prepare_comafi_accounts(emerix_file_path=emerix_test_file_path, dataframe_saver=saver)
+            saved_files = saver.get_saved_files()
 
-    files_in_directory_result = os.listdir(result_directory_path)
+            for _, path in saved_files.items():
+                if 'fake_subcliente_0.csv' in path.name:
+                    df_result_0 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_1.csv' in path.name:
+                    df_result_1 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_2.csv' in path.name:
+                    df_result_2 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_3.csv' in path.name:
+                    df_result_3 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_4.csv' in path.name:
+                    df_result_4 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_5.csv' in path.name:
+                    df_result_5 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_6.csv' in path.name:
+                    df_result_6 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_7.csv' in path.name:
+                    df_result_7 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_8.csv' in path.name:
+                    df_result_8 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_9.csv' in path.name:
+                    df_result_9 = pd.read_csv(path, encoding='latin-1', sep=';')
+                elif 'fake_subcliente_10.csv' in path.name:
+                    df_result_10 = pd.read_csv(path, encoding='latin-1', sep=';')
 
-    assert sorted(expected_files_in_result_directory) == sorted(files_in_directory_result)
-
-    for result_path in files_in_directory_result:
-        if 'fake_subcliente_0.csv' in result_path:
-            df_result_0 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_1.csv' in result_path:
-            df_result_1 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_2.csv' in result_path:
-            df_result_2 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_3.csv' in result_path:
-            df_result_3 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_4.csv' in result_path:
-            df_result_4 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_5.csv' in result_path:
-            df_result_5 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_6.csv' in result_path:
-            df_result_6 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_7.csv' in result_path:
-            df_result_7 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_8.csv' in result_path:
-            df_result_8 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_9.csv' in result_path:
-            df_result_9 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
-        elif 'fake_subcliente_10.csv' in result_path:
-            df_result_10 = pd.read_csv(result_directory_path / result_path, encoding='latin-1', sep=';')
+    assert sorted(expected_files_in_result_directory) == sorted([key for key in saved_files.keys()])
 
     pd.testing.assert_frame_equal(df_result_0, expected_df_result_0)
     pd.testing.assert_frame_equal(df_result_1, expected_df_result_1)
