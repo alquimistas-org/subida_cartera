@@ -167,3 +167,5 @@ CR_FILE_PATH = Path('./cr.csv')
 OSIRIS_ACCOUNTS_FILE_PATH = Path('./cuentas.csv')
 RISK_FILE_PATH = Path('./risk.csv')
 EMERIX_FILE_PATH = Path('./emerix.xlsx')
+
+YEARS_TO_ADD = 3

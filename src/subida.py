@@ -1,11 +1,14 @@
 from cmd import Cmd
-import pandas as pd
-import numpy as np
-from datetime import datetime, date
+from datetime import datetime
+import io
 import traceback
 from typing import Union
-import io
 
+import numpy as np
+import pandas as pd
+
+from adapters.file_dataframe_saver import FileDataFrameSaver
+from data_info import GenerateDataInfo
 from driver_email import enviar_mail_con_adjuntos
 from constants.constants import (
     ACCOUNT_PREP_COL,
@@ -15,73 +18,36 @@ from constants.constants import (
     OSIRIS_ACCOUNTS_FILE_PATH,
     PASSWORD,
     PROGRAMMER,
-    PROVINCES,
     ROOT_PATH,
     USER,
     UTIL_COLS_COMAFI,
 )
 from risk_data import risk_data
 from clean_numbers import clean_numbers
-from data_info import GenerateDataInfo
 from prepare_comafi_accounts import prepare_comafi_accounts
-from adapters.file_dataframe_saver import FileDataFrameSaver
 from write_data_osiris import Escribir_Datos_Osiris
 from ports.dataframe_saver import DataFrameSaver
+from process_preparacion_cuentas import NARANJA_FIELDS
+from utils.cuentas_processor_utils import (
+    write_csv,
+    read_data,
+    process_cuentas
+)
 
 
 def Preparacion_Cuentas(
     cr_file_path: Union[str, io.BytesIO, io.StringIO] = CR_FILE_PATH,
     dataframe_saver: DataFrameSaver = None,
 ) -> None:
-    "Condiciones"
 
     if not dataframe_saver:
         dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/')
 
-    try:
-        cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
-    except Exception:
-        cr = pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
+    cr = read_data(cr_file_path)
 
-    columnas = ACCOUNT_PREP_COL
-    df_os = pd.DataFrame(columns=columnas)
+    df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
 
-    provincias = PROVINCES
-
-    date_now = date.today()
-    years_to_add = date_now.year + 3
-
-    date_1 = date_now.strftime('%d/%m/%Y')
-    date_2 = date_now.replace(year=years_to_add).strftime('%d/%m/%Y')
-
-    df_os['Nº de Asignacion (0)'] = cr['NRODOC']
-    df_os['Razon social (1)'] = cr['NOMBRECOMPLETO'].str.title()
-    df_os['ID Tipo de Documento (2)'] = '1'
-    df_os['DNI (3)'] = cr['NRODOC']
-
-    df_os['Domicilio (4)'] = (
-        cr['CALLE'] + ' ' + cr['NUMERO'] + ' - ' + cr['PISO'] + ' ' +
-        cr['DEPTO'] + ' - ' + cr['BARRIO'] + ' - ' + cr['LOCALIDAD']
-    )
-
-    df_os['ID Localidad (5)'] = '0'
-
-    df_os['ID Provincia (6)'] = cr['PROVINCIA'].apply(lambda fila: provincias[fila])
-    df_os['Código Postal (7)'] = cr['POSTAL']
-    df_os['Importe Asignado (11)'] = cr['DEUDA_ACTUALIZADA'].str.replace(',', '.').str.replace(',', '.')
-    df_os['Fecha de Ingreso (12)'] = date_1
-    df_os['Fecha de Deuda dd/mm/aaaa (13)'] = cr['INICIOMORA']
-    df_os['Importe Historico (14)'] = cr['CAPITAL'].str.replace(',', '.').str.replace(',', '.')
-    df_os['Observaciones (15)'] = (
-        'Gestor anterior: ' + cr['GESTOR_ANTERIOR'] + ' - ' + 'Score: ' +
-        cr['SCORE'].str.replace(',', '.').astype(float).round(2).astype(str)
-    )
-    df_os['Fecha Fin de Gestion (16)'] = date_2
-    df_os['IDSucursal(17)'] = '1'
-    df_os['riesgo'] = cr['RIESGO']
-
-    for name, df_sub in df_os.groupby('riesgo'):
-        dataframe_saver.save_df(name=name, df=df_sub)
+    write_csv(df_os, dataframe_saver)
 
 
 def Preparacion_Cuentas_Comafi(emerix_file_path=EMERIX_FILE_PATH):
