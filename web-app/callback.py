@@ -1,6 +1,7 @@
 from app import app
 from dash import Output, Input, State, html, dcc, MATCH, ctx
 import base64
+from dash.exceptions import PreventUpdate
 from src.adapters.dash_dataframe_saver import DashDataFrameSaver
 from callbacks_helpers import process_naranja_client, process_comafi_client
 
@@ -27,7 +28,7 @@ def upload_csv(list_of_contents, client_selected):
         return download_buttons, data_dict
 
     else:
-        return html.Div(), None
+        raise PreventUpdate
 
 
 @app.callback(
@@ -39,7 +40,7 @@ def upload_csv(list_of_contents, client_selected):
 )
 def download_csv(n_clicks, dfs):
     if not n_clicks:
-        return
+        raise PreventUpdate
     df_id = ctx.triggered_id["id"]
     df = dfs[df_id]
     return dcc.send_string(df, f"{df_id}.csv")
