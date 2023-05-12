@@ -156,18 +156,30 @@ class GenerateDataInfo:
         return df_copy
 
     @classmethod
-    def get_emails(cls, df: pd.DataFrame) -> pd.DataFrame:
+    def get_emails(cls, df: pd.DataFrame, allow_multiple_emails: bool = False) -> pd.DataFrame:
         df_copy = df.copy()
-        mails = df_copy.loc[df_copy['MAIL_info'].notnull(), 'MAIL_info'].str.split(',', expand=True)
-        rename = {x: f'mail_{i+1}' for i, x in enumerate(list(mails.columns), 0)}
+        mails = (
+            df_copy
+            .loc[df_copy['MAIL_info'].notnull(), 'MAIL_info']
+            .str.split(',', expand=True)
+            .apply(lambda row: [value.strip() if value else np.nan for value in row])
+        )
+        rename = {x: f'mail_{i}' for i, x in enumerate(mails.columns, start=1)}
+
         mails = mails.rename(columns=rename)
         name_mails = list(rename.values())
         df_copy[name_mails] = mails[name_mails]
-        concat_mails = list()
+        concat_mails = []
         for name in name_mails:
-            concat_mails.append(df_copy.loc[df_copy[name].notnull(), ['Cuenta', name]].rename(
-                columns={name: 'MAIL_info'}
-                ))
+            df_emails = (
+                df_copy
+                .loc[df_copy[name].notnull(), ['Cuenta', name]]
+                .rename(columns={name: 'MAIL_info'})
+            )
+            if not allow_multiple_emails:
+                return df_emails
+            concat_mails.append(df_emails)
+
         return pd.concat(concat_mails)
 
     @classmethod
