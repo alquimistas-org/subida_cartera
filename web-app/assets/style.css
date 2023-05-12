@@ -149,3 +149,23 @@ a.upload-link-container{
     cursor: pointer;
     color: rgb(245, 97, 97);
 }
+
+
+#error-client-filename{
+    margin-top: 20rem;
+    text-align: center;
+}
+
+#accept-btn-error{
+   background-color: #1d8ab6;
+   border-color: #1d8ab6;
+}
+
+#accept-btn-error:hover{
+    background-color: #2cb7ee;
+    border-color: #2cb7ee;
+}
+
+#filename-error{
+    font-style: italic;
+}

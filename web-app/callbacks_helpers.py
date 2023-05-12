@@ -1,6 +1,7 @@
 import io
 from dash import html, dcc
 from pathlib import Path
+import dash_bootstrap_components as dbc
 from src.subida import Preparacion_Cuentas
 from src.prepare_comafi_accounts import prepare_comafi_accounts
 from src.adapters.dash_dataframe_saver import DashDataFrameSaver
@@ -73,3 +74,28 @@ def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, decoded, con
     data_dict['emerix'] = content_string
 
     return download_buttons, data_dict
+
+
+def display_modal_error(client_selected, filename):
+    if (
+        (client_selected == 'naranja' and 'cr' not in filename)
+        or (client_selected == 'comafi' and 'emerix' not in filename)
+    ):
+        modal_header = dbc.ModalHeader([
+            html.I(
+                className="fa-solid fa-circle-exclamation",
+                style={"color": "#f30010", "marginRight": "0.5rem"}
+            ),
+            html.Span("Error", style={"fontWeight": 400, "fontSize": "large"}),
+        ])
+        modal_body = dbc.ModalBody(
+            [
+                html.Span("No es posible procesar el archivo "),
+                html.Span(filename, id="filename-error"),
+                html.Span(f" para {client_selected[0].upper()}{client_selected[1:]}"),
+            ],
+            style={'fontSize': 'large', 'fontWeight': 400})
+        modal_footer = dbc.ModalFooter(
+            [dbc.Button("Aceptar", id="accept-btn-error")],
+        )
+        return True, [modal_header, modal_body, modal_footer]
