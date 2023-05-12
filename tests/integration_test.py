@@ -58,8 +58,16 @@ def test_integration_prepararion_riesgo_online_data():
 
     expected_result_df = pd.read_csv(expected_result_file_path, encoding='latin-1', sep=';')
 
-    result_file_path = risk_data(risk_df_filepath, osiris_accounts_df)
-    result_df = pd.read_csv(result_file_path, encoding='latin-1', sep=';')
+    with tempfile.TemporaryDirectory() as tmpdir:
+        saver = FileDataFrameSaver(output_path=Path(tmpdir))
+
+        risk_data(
+            risk_df_filepath,
+            osiris_accounts_df,
+            saver
+            )
+        saved_files = saver.get_saved_files()
+        result_df = pd.read_csv(saved_files['RIESGO_telefonos'], encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(result_df, expected_result_df)
 
@@ -167,16 +175,18 @@ def test_integration_naranja_data_preparation():
     expected_df_result_mails = pd.read_csv(result_mails_path, encoding='latin-1', sep=';')
     expected_df_result_phones = pd.read_csv(result_phones_path, encoding='latin-1', sep=';')
 
-    all_result_file_path = Preparacion_Datos(
-        cr_file_path=cr_test_file_path,
-        osiris_accounts_file_path=osiris_accounts_df
-    )
+    with tempfile.TemporaryDirectory() as tmpdir:
+        saver = FileDataFrameSaver(output_path=Path(tmpdir))
 
-    for result_path in all_result_file_path:
-        if 'datos_cr_subida_mail.csv' in result_path.name:
-            df_result_mails = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'datos_cr_subida_telefonos.csv' in result_path.name:
-            df_result_phones = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        Preparacion_Datos(
+            cr_file_path=cr_test_file_path,
+            osiris_accounts_file_path=osiris_accounts_df,
+            dataframe_saver=saver,
+            )
+        saved_files = saver.get_saved_files()
+
+        df_result_mails = pd.read_csv(saved_files['datos_cr_subida_mail'], encoding='latin-1', sep=';')
+        df_result_phones = pd.read_csv(saved_files['datos_cr_subida_telefonos'], encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(expected_df_result_mails, df_result_mails)
     pd.testing.assert_frame_equal(expected_df_result_phones, df_result_phones)
@@ -202,20 +212,20 @@ def test_integration_info_experto_data_preparation():
 
     with mock.patch.object(GenerateDataInfo, 'info_experto_file_path', info_df_filepath):
         with mock.patch.object(GenerateDataInfo, 'osiris_accounts_file_path', osiris_accounts_df):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                saver = FileDataFrameSaver(output_path=Path(tmpdir))
+                GenerateDataInfo.process(dataframe_saver=saver)
+                saved_files = saver.get_saved_files()
 
-            all_result_file_paths = GenerateDataInfo.process()
-
-    for result_path in all_result_file_paths:
-        if 'info_patrimoniales' in result_path.name:
-            df_result_info_patrimoniales = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_q_vehiculos' in result_path.name:
-            df_result_info_q_vehiculos = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_mail' in result_path.name:
-            df_result_info_mail = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_sueldo' in result_path.name:
-            df_result_info_sueldo = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_telefonos' in result_path.name:
-            df_result_info_telefonos = pd.read_csv(result_path, encoding='latin-1', sep=';')
+                df_result_info_patrimoniales = pd.read_csv(
+                    saved_files['info_patrimoniales'],
+                    encoding='latin-1',
+                    sep=';',
+                    )
+                df_result_info_q_vehiculos = pd.read_csv(saved_files['info_q_vehiculos'], encoding='latin-1', sep=';')
+                df_result_info_sueldo = pd.read_csv(saved_files['info_sueldo'], encoding='latin-1', sep=';')
+                df_result_info_telefonos = pd.read_csv(saved_files['info_telefonos'], encoding='latin-1', sep=';')
+                df_result_info_mail = pd.read_csv(saved_files['info_mail'], encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(expected_result_info_patrimoniales_df, df_result_info_patrimoniales)
     pd.testing.assert_frame_equal(expected_result_info_q_vehiculos_df, df_result_info_q_vehiculos)

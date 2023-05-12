@@ -8,8 +8,7 @@ import numpy as np
 import pandas as pd
 
 from adapters.file_dataframe_saver import FileDataFrameSaver
-from data_info import GenerateDataInfo
-from driver_email import enviar_mail_con_adjuntos
+from clean_numbers import clean_numbers
 from constants.constants import (
     ACCOUNT_PREP_COL,
     CR_FILE_PATH,
@@ -22,17 +21,18 @@ from constants.constants import (
     USER,
     UTIL_COLS_COMAFI,
 )
+from data_info import GenerateDataInfo
+from driver_email import enviar_mail_con_adjuntos
 from risk_data import risk_data
-from clean_numbers import clean_numbers
-from prepare_comafi_accounts import prepare_comafi_accounts
-from write_data_osiris import Escribir_Datos_Osiris
 from ports.dataframe_saver import DataFrameSaver
+from prepare_comafi_accounts import prepare_comafi_accounts
 from process_preparacion_cuentas import NARANJA_FIELDS
 from utils.cuentas_processor_utils import (
     write_csv,
     read_data,
     process_cuentas
 )
+from write_data_osiris import Escribir_Datos_Osiris
 
 
 def Preparacion_Cuentas(
@@ -50,18 +50,7 @@ def Preparacion_Cuentas(
     write_csv(df_os, dataframe_saver)
 
 
-def Preparacion_Datos(cr_file_path=CR_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
-    ' Necesita que este en la carpeta'
-    print('Preparando planillas de datos...')
-    try:
-        cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
-        cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
-    except Exception:
-        cr = pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
-        cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='ANSI', sep=';', dtype=str)
-
-    cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
-
+def preparacion_tels(cr: pd.DataFrame, cuentas_subidas: pd.DataFrame) -> pd.DataFrame:
     df_cr = cr[DATA_PREP_COLUMNS].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
     df_cr = pd.merge(cuentas_subidas, df_cr, how="inner", on="DNI")
 
@@ -125,26 +114,58 @@ def Preparacion_Datos(cr_file_path=CR_FILE_PATH, osiris_accounts_file_path=OSIRI
     df_tels = df_tels.astype({'TEL': 'str'})
     df_tels.drop(df_tels[df_tels.TEL == '0'].index, inplace=True)
 
-    result_df_phones_file_path = Escribir_Datos_Osiris(
+    return df_tels
+
+
+def preparacion_mails(cr: pd.DataFrame, cuentas_subidas: pd.DataFrame) -> pd.DataFrame:
+
+    df_cr = cr[DATA_PREP_COLUMNS].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
+    df_cr = pd.merge(cuentas_subidas, df_cr, how="inner", on="DNI")
+
+    df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'] = df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'].str.replace(' ', '')
+    df_mail = df_cr.loc[df_cr['EMAIL'].notnull(), ['Cuenta', 'EMAIL']].copy()
+
+    return df_mail
+
+
+def Preparacion_Datos(
+        cr_file_path: Union[str, io.BytesIO, io.StringIO] = CR_FILE_PATH,
+        osiris_accounts_file_path: Union[str, io.BytesIO, io.StringIO] = OSIRIS_ACCOUNTS_FILE_PATH,
+        dataframe_saver: DataFrameSaver = None,
+        ):
+    if not dataframe_saver:
+        dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/', portfolio_name='subida_cartera')
+
+    ' Necesita que este en la carpeta'
+    print('Preparando planillas de datos...')
+
+    cr = read_data(cr_file_path)
+    cuentas_subidas = read_data(osiris_accounts_file_path)
+
+    cuentas_subidas = cuentas_subidas[['Cuenta', 'Mat. Unica']].rename(columns={'Mat. Unica': 'DNI'}, inplace=False)
+
+    df_tels = preparacion_tels(cr=cr, cuentas_subidas=cuentas_subidas)
+
+    Escribir_Datos_Osiris(
         df_tels,
-        'datos_cr_subida_telefonos.csv',
+        'datos_cr_subida_telefonos',
         ['Cuenta', 'ID_FONO', 'TEL'],
-        ['ID Cuenta o Nro. de Asig. (0)', "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)"]
+        ['ID Cuenta o Nro. de Asig. (0)', "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)"],
+        dataframe_saver,
     )
     print(f'{len(df_tels)} TELEFONOS se guardaron en archivo: subida_telefono.csv')
     # reemplazar cualquier caractaer alfabetico que este dentro del numero para evitar roblema en futuro
     # borrar numero cero
-    df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'] = df_cr.loc[df_cr['EMAIL'].notnull(), 'EMAIL'].str.replace(' ', '')
-    df_mail = df_cr.loc[df_cr['EMAIL'].notnull(), ['Cuenta', 'EMAIL']].copy()
-    result_df_mails_file_path = Escribir_Datos_Osiris(
+
+    df_mail = preparacion_mails(cr=cr, cuentas_subidas=cuentas_subidas)
+    Escribir_Datos_Osiris(
         df_mail,
-        'datos_cr_subida_mail.csv',
+        'datos_cr_subida_mail',
         ['Cuenta', 'EMAIL'],
-        ['ID Cuenta o Nro. de Asig. (0)', "Email (16)"]
+        ['ID Cuenta o Nro. de Asig. (0)', "Email (16)"],
+        dataframe_saver,
     )
     print(f'{len(df_mail)} MAILS se guardaron en archivo: subida_mail.csv\n\n')
-    all_result_file_paths = [result_df_phones_file_path, result_df_mails_file_path]
-    return all_result_file_paths
 
 
 def Preparacion_Datos_Comafi(emerix_file_path=EMERIX_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):

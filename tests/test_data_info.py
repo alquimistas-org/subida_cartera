@@ -1,7 +1,12 @@
 import numpy as np
 import pandas as pd
-from unittest.mock import patch
 import pytest
+
+from pathlib import Path
+from unittest.mock import patch
+import tempfile
+
+from src.adapters.file_dataframe_saver import FileDataFrameSaver
 from src.data_info import GenerateDataInfo
 
 
@@ -65,7 +70,13 @@ class TestDataInfo:
     @patch('src.data_info.Escribir_Datos_Osiris')
     def test_write_phone_template(self, mock_write_data_osiris, mock_df_data_info):
 
-        GenerateDataInfo.write_phone_template(df=mock_df_data_info)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+
+            GenerateDataInfo.write_phone_template(
+                df=mock_df_data_info,
+                dataframe_saver=saver,
+                )
 
         expected_df_phones = pd.DataFrame(
             {
@@ -81,7 +92,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df_phones)
-        assert call_args[1] == 'info_telefonos.csv'
+        assert call_args[1] == 'info_telefonos'
         assert call_args[2] == ['Cuenta', 'ID_FONO', 'TEL', 'OBS']
         assert call_args[3] == [
                 "ID Cuenta o Nro. de Asig. (0)",
@@ -93,7 +104,9 @@ class TestDataInfo:
     @patch('src.data_info.Escribir_Datos_Osiris')
     def test_write_salary_template(self, mock_write_data_osiris, mock_df_data_info):
 
-        GenerateDataInfo.write_salary_template(mock_df_data_info)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            GenerateDataInfo.write_salary_template(mock_df_data_info, saver)
         expected_df_info = pd.DataFrame(
             {
                 'Cuenta': '1234',
@@ -106,7 +119,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df_info)
-        assert call_args[1] == 'info_sueldo.csv'
+        assert call_args[1] == 'info_sueldo'
         assert call_args[2] == ['Cuenta', 'sueldo_info']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Sueldo (40)"]
 
@@ -122,20 +135,24 @@ class TestDataInfo:
                 index=[0]
             )
 
-        GenerateDataInfo.write_email_template(df=mock_df_data_info)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            GenerateDataInfo.write_email_template(df=mock_df_data_info, dataframe_saver=saver)
 
         # asserts
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], mock_get_emails.return_value)
-        assert call_args[1] == 'info_mail.csv'
+        assert call_args[1] == 'info_mail'
         assert call_args[2] == ['Cuenta', 'MAIL_info']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Email (16)"]
 
     @patch('src.data_info.Escribir_Datos_Osiris')
     def test_write_q_vehicles_template(self, mock_write_data_osiris, mock_df_data_info):
 
-        GenerateDataInfo.write_q_vehicles_template(df=mock_df_data_info)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            GenerateDataInfo.write_q_vehicles_template(df=mock_df_data_info, dataframe_saver=saver)
         expected_df_info = pd.DataFrame(
             {
                 'Cuenta': '1234',
@@ -148,7 +165,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df_info)
-        assert call_args[1] == 'info_q_vehiculos.csv'
+        assert call_args[1] == 'info_q_vehiculos'
         assert call_args[2] == ['Cuenta', 'q_vehiculos']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Cantidad de Vehiculos (41)"]
 
@@ -170,7 +187,11 @@ class TestDataInfo:
                 'NSE_info': pd.Series([np.NaN for i in range(1, 15)]),
             }
         )
-        GenerateDataInfo.write_patrimonial_data_template(df=mock_df)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            GenerateDataInfo.write_patrimonial_data_template(df=mock_df, dataframe_saver=saver)
+
         expected_df = pd.DataFrame(
             {
                 'Cuenta': pd.Series(
@@ -216,7 +237,7 @@ class TestDataInfo:
         mock_write_data_osiris.assert_called_once()
         call_args = mock_write_data_osiris.call_args_list[0][0]
         pd.testing.assert_frame_equal(call_args[0], expected_df)
-        assert call_args[1] == 'info_patrimoniales.csv'
+        assert call_args[1] == 'info_patrimoniales'
         assert call_args[2] == ['Cuenta', 'primonial']
         assert call_args[3] == ["ID Cuenta o Nro. de Asig. (0)", "Datos Patrimoniales (42)"]
 

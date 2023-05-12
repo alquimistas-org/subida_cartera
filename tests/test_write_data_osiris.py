@@ -1,7 +1,11 @@
-from freezegun import freeze_time
 import pandas as pd
 import pytest
-from unittest import mock
+
+from freezegun import freeze_time
+from pathlib import Path
+import tempfile
+
+from src.adapters.file_dataframe_saver import FileDataFrameSaver
 from src.write_data_osiris import Escribir_Datos_Osiris
 
 
@@ -37,28 +41,12 @@ class TestWriteDataOsiris:
         mock_cols_df,
         mock_cols_osiris,
     ):
-
-        Escribir_Datos_Osiris(
-                df=mock_df,
-                filename=mock_filename,
-                cols_df=mock_cols_df,
-                cols_osiris=mock_cols_osiris,
-            )
-
-    @mock.patch('src.write_data_osiris.there_is_not_saved_files_directory')
-    def test_raise_exception_folder_doesnt_exist(
-        self,
-        mock_there_is_not_saved_files_directory,
-        mock_df,
-        mock_filename,
-        mock_cols_df,
-        mock_cols_osiris,
-    ):
-        mock_there_is_not_saved_files_directory.return_value = True
-        with pytest.raises(Exception):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
             Escribir_Datos_Osiris(
-                df=mock_df,
-                filename=mock_filename,
-                cols_df=mock_cols_df,
-                cols_osiris=mock_cols_osiris,
-            )
+                    df=mock_df,
+                    name=mock_filename,
+                    cols_df=mock_cols_df,
+                    cols_osiris=mock_cols_osiris,
+                    dataframe_saver=saver,
+                )

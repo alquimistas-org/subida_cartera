@@ -1,6 +1,11 @@
 import pandas as pd
-from src.risk_data import risk_data
+
+from pathlib import Path
+import tempfile
 from unittest import mock
+
+from src.adapters.file_dataframe_saver import FileDataFrameSaver
+from src.risk_data import risk_data
 
 
 class TestRiskData:
@@ -56,23 +61,26 @@ class TestRiskData:
             index=[0]
         )
 
-        risk_data()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            risk_data(dataframe_saver=saver)
 
-        # asserts
-        mock_get_phones.assert_called_once_with(
-            df=mock_merge.return_value,
-            stop=5,
-            colum_name='RIESGO'
-        )
-        mock_Escribir_Datos_Osiris.assert_called_once()
-        mock_Escribir_Datos_Osiris.assert_called_once_with(
-            mock_get_phones.return_value,
-            'RIESGO_telefonos.csv',
-            ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
-            [
-                "ID Cuenta o Nro. de Asig. (0)",
-                "ID Tipo de Teléfono (17)",
-                "Nro. de Teléfono (18)",
-                "Obs. de Teléfono (19)"
-            ]
-        )
+            # asserts
+            mock_get_phones.assert_called_once_with(
+                df=mock_merge.return_value,
+                stop=5,
+                colum_name='RIESGO'
+            )
+            # mock_Escribir_Datos_Osiris.assert_called_once()
+            mock_Escribir_Datos_Osiris.assert_called_once_with(
+                mock_get_phones.return_value,
+                'RIESGO_telefonos',
+                ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
+                [
+                    "ID Cuenta o Nro. de Asig. (0)",
+                    "ID Tipo de Teléfono (17)",
+                    "Nro. de Teléfono (18)",
+                    "Obs. de Teléfono (19)"
+                ],
+                saver
+            )

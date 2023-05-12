@@ -1,17 +1,29 @@
 import pandas as pd
+
+from adapters.file_dataframe_saver import FileDataFrameSaver
 from constants.constants import (
     NUMBER_OF_COLUMNS,
     OSIRIS_ACCOUNTS_FILE_PATH,
     RISK_FILE_PATH,
+    ROOT_PATH,
 )
 from helpers import (
     get_phones,
     read_osiris_accounts,
 )
+from ports.dataframe_saver import DataFrameSaver
 from write_data_osiris import Escribir_Datos_Osiris
 
 
-def risk_data(risk_file_path=RISK_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH) -> str:
+def risk_data(
+        risk_file_path=RISK_FILE_PATH,
+        osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH,
+        dataframe_saver: DataFrameSaver = None,
+        ) -> str:
+
+    if not dataframe_saver:
+        dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/', portfolio_name='subida_cartera')
+
     'NECESARIOS: tener el archivos.csv de riesgo y el archivo de las cuentas de osiris como cuentas.csv'
     col_numbers = {
         'NÃºmero.1': 'tel_riesgo_1',
@@ -42,9 +54,13 @@ def risk_data(risk_file_path=RISK_FILE_PATH, osiris_accounts_file_path=OSIRIS_AC
 
     result_file_path = Escribir_Datos_Osiris(
         df_phone_risk,
-        'RIESGO_telefonos.csv',
+        'RIESGO_telefonos',
         ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
-        ["ID Cuenta o Nro. de Asig. (0)", "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)", "Obs. de Teléfono (19)"]
+        [
+            "ID Cuenta o Nro. de Asig. (0)", "ID Tipo de Teléfono (17)",
+            "Nro. de Teléfono (18)", "Obs. de Teléfono (19)",
+        ],
+        dataframe_saver,
     )
     print('Planilla de Teléfonos de RIESGO escrita')
     return result_file_path
