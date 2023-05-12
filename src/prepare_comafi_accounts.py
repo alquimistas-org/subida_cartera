@@ -30,33 +30,42 @@ def prepare_comafi_accounts(
     # lectura planilla modelo
 
     try:
+        df_os = read_comafi_data(accounts_models)
+
+        df = pd.read_excel(emerix_file_path, dtype=str)
+        df = df[list(UTIL_COLS_COMAFI.keys())]
+        df = df.rename(columns=UTIL_COLS_COMAFI)
+
+        # reemplazo de valores nulos
+        df.loc[df['provincia'].isna(), 'provincia'] = '0'
+
+        # reemplazo de 'ñ' en nombres
+        replace_invalid_chars(df)
+
+        fill_data(df, df_os)
+        write_csv_per_subcliente(df_os, dataframe_saver)
+    except Exception as e:
+        print(f'Error: {e}')
+        return
+
+
+def read_comafi_data(accounts_models: Path) -> pd.DataFrame:
+    try:
         df_os = pd.read_csv(accounts_models, encoding='latin_1', sep=';')
     except Exception:
         df_os = pd.read_csv(accounts_models, encoding='ANSI', sep=';')
 
-    df = pd.read_excel(emerix_file_path, dtype=str)
-    col_utiles = UTIL_COLS_COMAFI
-
-    df = df[list(col_utiles.keys())]
-    df = df.rename(columns=col_utiles)
-
-    # reemplazo de valores nulos
-    df.loc[df['provincia'].isna(), 'provincia'] = '0'
-    # reemplazo de 'ñ' en nombres
-    replace_invalid_chars(df)
-    fill_data(df, df_os)
-
-    write_csv_per_subcliente(df_os, dataframe_saver)
+    return df_os
 
 
-def replace_invalid_chars(dataframe):
+def replace_invalid_chars(dataframe: pd.DataFrame) -> None:
     for char in INVALID_CHARACTERS:
         n = dataframe['nombre'].str.contains(char).sum()
         dataframe['nombre'] = dataframe['nombre'].str.replace(char, 'ñ').str.title()
         print(f'character {char}: se remplazaron {n}')
 
 
-def fill_data(df, df_os):
+def fill_data(df: pd.DataFrame, df_os: pd.DataFrame) -> None:
     '''
     Takes two dataframes, so it can fill the second df based upon
     the values of the first one.
@@ -96,7 +105,7 @@ def fill_data(df, df_os):
     df_os['subcliente'] = df['subcliente']
 
 
-def write_csv_per_subcliente(dataframe: pd.DataFrame, dataframe_saver: DataFrameSaver):
+def write_csv_per_subcliente(dataframe: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
     for name, df_sub in dataframe.groupby('subcliente'):
         print(f'Ecribiendo: {name}.csv')
         df_sub = df_sub.drop('subcliente', inplace=False, axis=1)

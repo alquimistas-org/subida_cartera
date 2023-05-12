@@ -194,3 +194,22 @@ a.upload-link-container{
     background-color: red;
     border-color: red;
 }
+
+#error-client-filename{
+    margin-top: 20rem;
+    text-align: center;
+}
+
+#accept-btn-error{
+   background-color: #1d8ab6;
+   border-color: #1d8ab6;
+}
+
+#accept-btn-error:hover{
+    background-color: #2cb7ee;
+    border-color: #2cb7ee;
+}
+
+#filename-error{
+    font-style: italic;
+}

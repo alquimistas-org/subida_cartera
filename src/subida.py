@@ -43,11 +43,13 @@ def Preparacion_Cuentas(
     if not dataframe_saver:
         dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/', portfolio_name='subida_cartera')
 
-    cr = read_data(cr_file_path)
-
-    df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
-
-    write_csv(df_os, dataframe_saver)
+    try:
+        cr = read_data(cr_file_path)
+        df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
+        write_csv(df_os, dataframe_saver)
+    except Exception as e:
+        print(f"Error: {e}")
+        return
 
 
 def Preparacion_Datos(cr_file_path=CR_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
