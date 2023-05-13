@@ -4,7 +4,6 @@ import io
 import traceback
 from typing import Union
 
-import numpy as np
 import pandas as pd
 
 from adapters.file_dataframe_saver import FileDataFrameSaver

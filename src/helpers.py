@@ -2,7 +2,9 @@ from pathlib import Path
 import pandas as pd
 from constants.constants import (
     OSIRIS_ACCOUNTS_FILE_PATH,
+    CR_FILE_PATH,
 )
+from src.constants.constants import DATA_PREP_COLUMNS
 
 
 def get_phones(df: pd.DataFrame, stop: int, colum_name: str) -> pd.DataFrame:
@@ -31,3 +33,13 @@ def read_osiris_accounts(osiris_accounts_file_path: Path = OSIRIS_ACCOUNTS_FILE_
         inplace=False
         )
     return uploaded_accounts
+
+
+def read_cr_data(cr_file_path: Path = CR_FILE_PATH, columns_to_use: list = DATA_PREP_COLUMNS) -> pd.DataFrame:
+    try:
+        cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
+    except Exception:
+        cr = pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
+
+    df_cr = cr[columns_to_use].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
+    return df_cr

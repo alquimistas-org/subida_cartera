@@ -1,5 +1,6 @@
 from pathlib import Path
 from unittest import mock
+from unittest.mock import PropertyMock
 import tempfile
 from src.adapters.file_dataframe_saver import FileDataFrameSaver
 
@@ -155,11 +156,17 @@ def test_integration_comafi_data_preparation():
     pd.testing.assert_frame_equal(result_df, expected_result_df)
 
 
-def test_integration_naranja_data_preparation():
+@mock.patch.object(GenerateDataNaranja, 'osiris_accounts_file_path', new_callable=PropertyMock)
+@mock.patch.object(GenerateDataNaranja, 'cr_file_path', new_callable=PropertyMock)
+def test_integration_naranja_data_preparation(
+    mocked_cr_file_path: PropertyMock,
+    mocked_osiris_accounts_file_path: PropertyMock,
+):
     naranja_data_file_path = integration_test_file_path / 'datos_naranja/'
-
     cr_test_file_path = naranja_data_file_path / 'cr_test.csv'
     osiris_accounts_df = naranja_data_file_path / 'cuentas_osiris_naranja_test.csv'
+    mocked_osiris_accounts_file_path.return_value = osiris_accounts_df 
+    mocked_cr_file_path.return_value = cr_test_file_path
 
     result_mails_path = naranja_data_file_path / 'result_datos_cr_subida_mail.csv'
     result_phones_path = naranja_data_file_path / 'result_datos_cr_subida_telefonos.csv'
@@ -167,10 +174,7 @@ def test_integration_naranja_data_preparation():
     expected_df_result_mails = pd.read_csv(result_mails_path, encoding='latin-1', sep=';')
     expected_df_result_phones = pd.read_csv(result_phones_path, encoding='latin-1', sep=';')
 
-    all_result_file_path = GenerateDataNaranja.process(
-        cr_file_path=cr_test_file_path,
-        osiris_accounts_file_path=osiris_accounts_df
-    )
+    all_result_file_path = GenerateDataNaranja.process()
 
     for result_path in all_result_file_path:
         if 'datos_cr_subida_mail.csv' in result_path.name:
