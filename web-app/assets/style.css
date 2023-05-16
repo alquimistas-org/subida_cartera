@@ -22,8 +22,12 @@ span.jsx-3468109796 {
     margin-top: 2rem;
     height: 350px;
 }
+.selec-client{
+    margin-top: 2rem;
+    margin-bottom: 0;
+}
 
-.attach-file{
+.attach-file, .selec-client{
     font-size: x-large;
     margin-left: 0.5rem;
 }
@@ -142,10 +146,51 @@ a.upload-link-container{
     width: 100%;
 }
 
+.btn-tab:hover{
+    cursor: pointer;
+    border-color:  #29a9e0;
+    color: #29a9e0;
+}
+
 .fa-trash-can{
     color:red;
+    font-size: x-large;
 }
-.fa-trash-can:hover{
+
+.clear-data-icon-span-container:hover{
     cursor: pointer;
     color: rgb(245, 97, 97);
+}
+
+.clear-data-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+.clean-data-text{
+    font-size: large;
+    font-weight: 400;
+}
+
+.modal-content{
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.modal-footer{
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: center;
+}
+
+.mr-auto, .btn-primary{
+    background-color: #1d8ab6;
+    border-color: #1d8ab6;
+}
+
+.btn-danger{
+    background-color: red;
+    border-color: red;
 }

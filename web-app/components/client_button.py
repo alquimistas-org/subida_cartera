@@ -25,7 +25,7 @@ class ClientButton:
         return html.Div([
             naranja,
             comafi,
-        ], style={'marginBottom': '4rem', 'marginTop': '4rem'}, className='tabs-container')
+        ], style={'marginBottom': '4rem', 'marginTop': '2rem'}, className='tabs-container')
 
     def style_button(self, button_id):
         if self.selected_button == button_id:

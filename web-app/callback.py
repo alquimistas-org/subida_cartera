@@ -54,8 +54,8 @@ def download_csv(n_clicks, dfs):
 )
 def collapse_upload(filaname, is_open):
     return not is_open, html.Div([
-        filaname,
-        html.I(className="fa-regular fa-trash-can", id="delete-cr", style={'marginLeft': '1rem'})])
+        filaname
+    ])
 
 
 @app.callback(
@@ -69,21 +69,43 @@ def collapse_upload(filaname, is_open):
 def get_client(btn_1, btn_2):
     client_id = ctx.triggered_id
 
-    white_button_style = {
+    not_selected_button_style = {
         'background-color': 'white'
     }
 
-    red_button_style = {
+    selected_client_style = {
         'background-color': '#1d8ab6',
         'border-color': '#1d8ab6',
         'color': 'white',
      }
 
     if client_id == 'naranja':
-        style_naranja = red_button_style
-        style_comafi = white_button_style
+        style_naranja = selected_client_style
+        style_comafi = not_selected_button_style
     elif client_id == 'comafi':
-        style_comafi = red_button_style
-        style_naranja = white_button_style
+        style_comafi = selected_client_style
+        style_naranja = not_selected_button_style
 
     return client_id, style_naranja, style_comafi
+
+
+@app.callback(
+    Output("confirm-modal", "is_open"),
+    Input("btn-clear", "n_clicks"),
+    Input("cancel-btn", "n_clicks"),
+    Input("accept-btn", "n_clicks"),
+    State("confirm-modal", "is_open"),
+)
+def toggle_modal(n_clicks_1, n_clicks_2, n_clicks_3, is_open):
+    if n_clicks_1 or n_clicks_2 or n_clicks_3:
+        return not is_open
+    return is_open
+
+
+@app.callback(
+    Output("url", "href"),
+    Input("accept-btn", "n_clicks"),
+    prevent_initial_call=True,
+)
+def reload_page(n_clicks):
+    return "/"
