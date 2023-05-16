@@ -150,8 +150,11 @@ def test_integration_comafi_data_preparation():
 
     expected_result_df = pd.read_csv(expected_result_file_path, encoding='latin-1', sep=';')
 
-    result_file_path = Preparacion_Datos_Comafi(emerix_df_file_path, osiris_accounts_df)
-    result_df = pd.read_csv(result_file_path, encoding='latin-1', sep=';')
+    with tempfile.TemporaryDirectory() as tmpdir:
+        saver = FileDataFrameSaver(output_path=Path(tmpdir))
+        Preparacion_Datos_Comafi(emerix_df_file_path, osiris_accounts_df, saver)
+        saved_file = saver.get_saved_files()
+        result_df = pd.read_csv(saved_file['DATOS_EMERIX_subida_telefono'],  encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(result_df, expected_result_df)
 

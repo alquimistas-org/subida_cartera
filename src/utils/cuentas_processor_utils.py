@@ -1,7 +1,8 @@
 from datetime import date
 
 import pandas as pd
-
+from pathlib import Path
+from typing import Union
 from constants.constants import YEARS_TO_ADD
 from ports.dataframe_saver import DataFrameSaver
 
@@ -12,11 +13,11 @@ def write_csv(df_os: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
         dataframe_saver.save_df(name=name, df=df_sub)
 
 
-def read_data(cr_file_path: str) -> pd.DataFrame:
+def read_data(file_path: Union[str, Path]) -> pd.DataFrame:
     try:
-        return pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
+        return pd.read_csv(file_path, sep=';', encoding='latin_1', dtype=str)
     except Exception:
-        return pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
+        return pd.read_csv(file_path, sep=';', encoding='ANSI', dtype=str)
 
 
 def create_date(year_to_add: int = 0) -> date:

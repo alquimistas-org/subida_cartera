@@ -1,5 +1,4 @@
 from cmd import Cmd
-from datetime import datetime
 import io
 import traceback
 from typing import Union
@@ -22,7 +21,7 @@ from constants.constants import (
     UTIL_COLS_COMAFI,
 )
 from risk_data import risk_data
-from clean_numbers import clean_numbers
+from helpers import process_phone_numbers
 from prepare_comafi_accounts import prepare_comafi_accounts
 from ports.dataframe_saver import DataFrameSaver
 from process_preparacion_cuentas import NARANJA_FIELDS
@@ -48,29 +47,22 @@ def Preparacion_Cuentas(
     write_csv(df_os, dataframe_saver)
 
 
-def Preparacion_Datos_Comafi(emerix_file_path=EMERIX_FILE_PATH, osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH):
+def Preparacion_Datos_Comafi(
+        emerix_file_path=EMERIX_FILE_PATH,
+        osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH,
+        dataframe_saver: DataFrameSaver = None,
+):
 
-    print('Preparando planillas de datos para comafi...')
-    try:
-        df_subida = pd.read_csv('modelos/modelo_datos.csv', encoding='latin_1', sep=';')
-    except Exception:
-        df_subida = pd.read_csv('modelos/modelo_datos.csv', encoding='ANSI', sep=';')
+    if not dataframe_saver:
+        dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/')
 
-    df_num = pd.read_excel(emerix_file_path, dtype=str)
-    col_utiles = UTIL_COLS_COMAFI
-    df_num = df_num[list(col_utiles.keys())]
-    df_num = df_num.rename(columns=col_utiles)
-    df_num = df_num[df_num['telefono'].notna()]
-    df_num = clean_numbers(df_num)
-    df_num = df_num[['dni', 'telefono', 'telefono_2']]
-    df_num['telefono_2'] = df_num[df_num['telefono_2'].apply(len) >= 6]['telefono_2']
-    df_num = df_num[df_num['telefono_2'].notna()]
+    print('Preparando planillas de datos para comafi...')  # TODO: remove print statements when deleted CMD
 
-    try:
-        df_cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
-    except Exception:
-        df_cuentas_subidas = pd.read_csv(osiris_accounts_file_path, encoding='ANSI', sep=';', dtype=str)
+    df_subida = read_data(file_path='modelos/modelo_datos.csv')
 
+    df_num = process_phone_numbers(file_path=emerix_file_path, cols=UTIL_COLS_COMAFI)
+
+    df_cuentas_subidas = read_data(file_path=osiris_accounts_file_path)
     df_cuentas_subidas = df_cuentas_subidas[['Cuenta', 'Mat. Unica']]\
         .rename(columns={'Mat. Unica': 'dni'}, inplace=False)
 
@@ -79,27 +71,12 @@ def Preparacion_Datos_Comafi(emerix_file_path=EMERIX_FILE_PATH, osiris_accounts_
     df_subida[
         ['ID Cuenta o Nro. de Asig. (0)', "Nro. de Teléfono (18)"]] = df_numeros_cuentas[['Cuenta', 'telefono_2']]
     df_subida["ID Tipo de Teléfono (17)"] = 1
+
     print('Guardando planilla subida...')
-    result_file_path = (
-        ROOT_PATH / "Subida Osiris" /
-        f'{datetime.now().strftime("(%H.%M hs) -")}DATOS_EMERIX_subida_telefono.csv'
-    )
-    try:
-        df_subida.to_csv(
-            result_file_path,
-            sep=';',
-            index=False,
-            encoding='latin_1'
-        )
-    except Exception:
-        df_subida.to_csv(
-            result_file_path,
-            sep=';',
-            index=False,
-            encoding='ANSI'
-        )
+
+    dataframe_saver.save_df(name="DATOS_EMERIX_subida_telefono", df=df_subida)
+
     print('Guardado exitoso!')
-    return result_file_path
 
 
 class Interfaz_Usuario(Cmd):
