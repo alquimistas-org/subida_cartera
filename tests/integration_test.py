@@ -165,7 +165,7 @@ def test_integration_naranja_data_preparation(
     naranja_data_file_path = integration_test_file_path / 'datos_naranja/'
     cr_test_file_path = naranja_data_file_path / 'cr_test.csv'
     osiris_accounts_df = naranja_data_file_path / 'cuentas_osiris_naranja_test.csv'
-    mocked_osiris_accounts_file_path.return_value = osiris_accounts_df 
+    mocked_osiris_accounts_file_path.return_value = osiris_accounts_df
     mocked_cr_file_path.return_value = cr_test_file_path
 
     result_mails_path = naranja_data_file_path / 'result_datos_cr_subida_mail.csv'
