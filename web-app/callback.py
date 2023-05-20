@@ -3,7 +3,11 @@ from dash import Output, Input, State, html, dcc, MATCH, ctx
 import base64
 from dash.exceptions import PreventUpdate
 from src.adapters.dash_dataframe_saver import DashDataFrameSaver
-from callbacks_helpers import process_naranja_client, process_comafi_client
+from callbacks_helpers import (
+    process_naranja_client,
+    process_comafi_client,
+    display_modal_error,
+)
 
 
 @app.callback(Output('div-download', 'children'),
@@ -51,11 +55,16 @@ def download_csv(n_clicks, dfs):
     Output("filename-cr", "children"),
     Input("upload-data-cr", "filename"),
     State("collapse-cr", "is_open"),
+    Input('client-selected-value', 'children'),
+    Input('stored-dfs', 'data'),
 )
-def collapse_upload(filaname, is_open):
-    return not is_open, html.Div([
-        filaname
-    ])
+def collapse_upload(filename, is_open, client_selected, data):
+    if filename and client_selected and data:
+        return not is_open, html.Div([
+            filename,
+        ])
+    else:
+        raise PreventUpdate
 
 
 @app.callback(
@@ -96,7 +105,7 @@ def get_client(btn_1, btn_2):
     Input("accept-btn", "n_clicks"),
     State("confirm-modal", "is_open"),
 )
-def toggle_modal(n_clicks_1, n_clicks_2, n_clicks_3, is_open):
+def toggle_modal_clear_data(n_clicks_1, n_clicks_2, n_clicks_3, is_open):
     if n_clicks_1 or n_clicks_2 or n_clicks_3:
         return not is_open
     return is_open
@@ -108,4 +117,45 @@ def toggle_modal(n_clicks_1, n_clicks_2, n_clicks_3, is_open):
     prevent_initial_call=True,
 )
 def reload_page(n_clicks):
+    if not n_clicks:
+        raise PreventUpdate
     return "/"
+
+
+@app.callback(
+    Output('upload-data-cr', 'disabled'),
+    Input('client-selected-value', 'children'),
+    State('upload-data-cr', 'disabled')
+)
+def enable_upload_component(client_selected, disabled):
+    if client_selected:
+        return False
+    raise PreventUpdate
+
+
+@app.callback(
+              Output('error-client-filename', 'is_open'),
+              Output('error-client-filename', 'children'),
+              Input('upload-data-cr', 'contents'),
+              Input('client-selected-value', 'children'),
+              Input("upload-data-cr", "filename"),
+              Input("accept-btn-error", "n_clicks"),
+              Input('stored-dfs', 'data'),
+              State("error-client-filename", "is_open"),
+              prevent_initial_call=True,
+              suppress_callback_exceptions=True)
+def process_modal_error(list_of_contents, client_selected, filename, n_clicks, stored_data, is_open):
+
+    if not list_of_contents and not client_selected:
+        raise PreventUpdate
+
+    if ctx.triggered_id == 'upload-data-cr':
+        if not stored_data:
+            return display_modal_error(client_selected, filename)
+        raise PreventUpdate
+
+    elif ctx.triggered_id == 'accept-btn-error':
+        return not is_open, []
+
+    else:
+        raise PreventUpdate

@@ -13,8 +13,6 @@ class ClearData:
             ],
             id="btn-clear"
         )
-        # dbc.Button("Limpiar datos", id="btn-clear", color="danger")
-
         confirm_modal = dbc.Modal(
             [
                 dbc.ModalHeader("Confirmación"),

@@ -44,6 +44,7 @@ class Upload:
                 },
                 # Don't allow multiple files to be uploaded
                 multiple=multiple_files,
+                disabled=True,
             )
 
         collapse = dbc.Row(
