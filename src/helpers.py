@@ -5,6 +5,7 @@ from constants.constants import (
     CR_FILE_PATH,
 )
 from src.constants.constants import DATA_PREP_COLUMNS
+from clean_numbers import clean_numbers
 
 
 def get_phones(df: pd.DataFrame, stop: int, colum_name: str) -> pd.DataFrame:
@@ -43,3 +44,16 @@ def read_cr_data(cr_file_path: Path = CR_FILE_PATH, columns_to_use: list = DATA_
 
     df_cr = cr[columns_to_use].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
     return df_cr
+
+
+def process_phone_numbers(file_path: Path, cols: dict[str, str]) -> pd.DataFrame:
+    df_num = pd.read_excel(file_path, dtype=str)
+    df_num = df_num[list(cols.keys())]
+    df_num = df_num.rename(columns=cols)
+    df_num = df_num[df_num['telefono'].notna()]
+    df_num = clean_numbers(df_num)
+    df_num = df_num[['dni', 'telefono', 'telefono_2']]
+    df_num['telefono_2'] = df_num[df_num['telefono_2'].apply(len) >= 6]['telefono_2']
+    df_num = df_num[df_num['telefono_2'].notna()]
+
+    return df_num
