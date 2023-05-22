@@ -7,7 +7,6 @@ from components.step_title import StepTitle
 from components.complete_step_btn import CompleteStepBtn
 
 client_button = ClientButton()
-upload = Upload()
 clear_data = ClearData()
 first_step_title = StepTitle()
 complete_first_step = CompleteStepBtn(input_id='completed-first-step-btn')
@@ -29,7 +28,10 @@ app_layout = html.Div([
     html.Div(id='client-selected-value', style={'display': 'none'}),
     first_step_title.create(title_step="1. Subir archivo para preparación de cuentas"),
     html.Div([
-        upload.create(id="cr", multiple_files=False),
+        Upload.create(
+            id="cr",
+            multiple_files=False,
+        ),
         html.Div(
             [
                 html.Div([], id="div-download", className="donwload-container")
@@ -46,5 +48,5 @@ app_layout = html.Div([
         dbc.ModalFooter(
             [dbc.Button("Aceptar", id="accept-btn-error")],
         ),
-    ], id='error-client-filename', is_open=False)
+    ], id='error-client-filename', is_open=False),
 ])

@@ -1,5 +1,13 @@
 from app import app
-from dash import Output, Input, State, html, dcc, MATCH, ctx
+from dash import (
+    Output,
+    Input,
+    State,
+    html,
+    dcc,
+    MATCH,
+    ctx
+)
 import base64
 from dash.exceptions import PreventUpdate
 from src.adapters.dash_dataframe_saver import DashDataFrameSaver
@@ -8,15 +16,18 @@ from callbacks_helpers import (
     process_comafi_client,
     display_modal_error,
 )
+from components.upload import Upload
 
 
-@app.callback(Output('div-download', 'children'),
-              Output('stored-dfs', 'data'),
-              Output('completed-first-step-btn', 'style'),
-              Input('upload-data-cr', 'contents'),
-              Input('client-selected-value', 'children'),
-              prevent_initial_call=True,
-              allow_duplicate=True,)
+@app.callback(
+    Output('div-download', 'children'),
+    Output('stored-dfs', 'data'),
+    Output('completed-first-step-btn', 'style'),
+    Input(Upload.get_upload_id('cr'), 'contents'),
+    Input('client-selected-value', 'children'),
+    prevent_initial_call=True,
+    allow_duplicate=True,
+)
 def upload_csv(list_of_contents, client_selected):
 
     if list_of_contents and client_selected:
@@ -54,7 +65,7 @@ def download_csv(n_clicks, dfs):
 @app.callback(
     Output("collapse-cr", "is_open"),
     Output("filename-cr", "children"),
-    Input("upload-data-cr", "filename"),
+    Input(Upload.get_upload_id('cr'), "filename"),
     State("collapse-cr", "is_open"),
     Input('client-selected-value', 'children'),
     Input('stored-dfs', 'data'),
@@ -124,9 +135,9 @@ def reload_page(n_clicks):
 
 
 @app.callback(
-    Output('upload-data-cr', 'disabled'),
+    Output(Upload.get_upload_id('cr'), 'disabled'),
     Input('client-selected-value', 'children'),
-    State('upload-data-cr', 'disabled')
+    State(Upload.get_upload_id('cr'), 'disabled')
 )
 def enable_upload_component(client_selected, disabled):
     if client_selected:
@@ -137,9 +148,9 @@ def enable_upload_component(client_selected, disabled):
 @app.callback(
               Output('error-client-filename', 'is_open'),
               Output('error-client-filename', 'children'),
-              Input('upload-data-cr', 'contents'),
+              Input(Upload.get_upload_id('cr'), 'contents'),
               Input('client-selected-value', 'children'),
-              Input("upload-data-cr", "filename"),
+              Input(Upload.get_upload_id('cr'), "filename"),
               Input("accept-btn-error", "n_clicks"),
               Input('stored-dfs', 'data'),
               State("error-client-filename", "is_open"),
@@ -150,7 +161,7 @@ def process_modal_error(list_of_contents, client_selected, filename, n_clicks, s
     if not list_of_contents and not client_selected:
         raise PreventUpdate
 
-    if ctx.triggered_id == 'upload-data-cr':
+    if ctx.triggered_id == Upload.get_upload_id('cr'):
         if not stored_data:
             return display_modal_error(client_selected, filename)
         raise PreventUpdate
