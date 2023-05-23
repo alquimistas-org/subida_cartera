@@ -22,19 +22,13 @@ class GenerateDataInfo:
     def get_data_info(cls) -> pd.DataFrame:
         'NECESARIO cuentas de osiris como cuentas.csv, cuentas deinfo exporto como info.xlsx'
         uploaded_accounts = read_osiris_accounts(cls.osiris_accounts_file_path)
-
         info = pd.read_excel(cls.info_experto_file_path, dtype=str, skiprows=1)
         df_info = info[DATA_INFO_COLUMNS]
         df_info = df_info.rename(columns=DATA_INFO_COLUMNS_RENAME, inplace=False).copy()
         df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
-
-        # El error está aca!!!!! uploaded_accounts no tiene DNI ue matcheen con los de sf_info!!!
-        # SE PUEDE USAR LA DATA DE LOS INTEGRATION TESTS.
         df_info = pd.merge(uploaded_accounts, df_info, how="inner", on="DNI")
-        # Si esta línea de una df vacía, hacer un Raise con el mensjae coorespondiente: "No hay coincidencias"
         if df_info.empty:
-            raise Exception('No hay coincidencia de datos para DO_INFO')  # crear excepción mas adelante
-        # correspondiente. Estás echando gasoil a un naftero.
+            raise Exception('No hay coincidencia de datos para DO_INFO')
         return df_info
 
     @classmethod
@@ -77,7 +71,6 @@ class GenerateDataInfo:
         try:
             emails = cls.get_emails(df=df)
         except Exception as e:
-            print()
             print(e)
             emails = pd.Series()
 
@@ -129,7 +122,6 @@ class GenerateDataInfo:
             (df['detalle_veh'].isnull()) &
             (df['NSE_info'].isnull()), 'primonial'
         ] = np.nan
-        df[['Cuenta', 'q_vehiculos', 'detalle_veh', 'primonial']].iloc[10]
 
         file_path = Escribir_Datos_Osiris(
             df.loc[df['primonial'].notnull(), ['Cuenta', 'primonial']],
