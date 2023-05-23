@@ -22,13 +22,13 @@ class GenerateDataInfo:
     def get_data_info(cls) -> pd.DataFrame:
         'NECESARIO cuentas de osiris como cuentas.csv, cuentas deinfo exporto como info.xlsx'
         uploaded_accounts = read_osiris_accounts(cls.osiris_accounts_file_path)
-
         info = pd.read_excel(cls.info_experto_file_path, dtype=str, skiprows=1)
         df_info = info[DATA_INFO_COLUMNS]
         df_info = df_info.rename(columns=DATA_INFO_COLUMNS_RENAME, inplace=False).copy()
         df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
-
         df_info = pd.merge(uploaded_accounts, df_info, how="inner", on="DNI")
+        if df_info.empty:
+            raise Exception('No hay coincidencia de datos para DO_INFO')
         return df_info
 
     @classmethod
@@ -68,7 +68,11 @@ class GenerateDataInfo:
 
     @classmethod
     def write_email_template(cls, df: pd.DataFrame) -> None:
-        emails = cls.get_emails(df=df)
+        try:
+            emails = cls.get_emails(df=df)
+        except Exception as e:
+            print(e)
+            emails = pd.Series()
 
         file_path = Escribir_Datos_Osiris(
             emails,
@@ -118,7 +122,6 @@ class GenerateDataInfo:
             (df['detalle_veh'].isnull()) &
             (df['NSE_info'].isnull()), 'primonial'
         ] = np.nan
-        df[['Cuenta', 'q_vehiculos', 'detalle_veh', 'primonial']].iloc[10]
 
         file_path = Escribir_Datos_Osiris(
             df.loc[df['primonial'].notnull(), ['Cuenta', 'primonial']],
