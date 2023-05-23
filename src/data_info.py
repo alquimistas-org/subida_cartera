@@ -28,7 +28,13 @@ class GenerateDataInfo:
         df_info = df_info.rename(columns=DATA_INFO_COLUMNS_RENAME, inplace=False).copy()
         df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
 
+        # El error está aca!!!!! uploaded_accounts no tiene DNI ue matcheen con los de sf_info!!!
+        # SE PUEDE USAR LA DATA DE LOS INTEGRATION TESTS.
         df_info = pd.merge(uploaded_accounts, df_info, how="inner", on="DNI")
+        # Si esta línea de una df vacía, hacer un Raise con el mensjae coorespondiente: "No hay coincidencias"
+        if df_info.empty:
+            raise Exception('No hay coincidencia de datos para DO_INFO')  # crear excepción mas adelante
+        # correspondiente. Estás echando gasoil a un naftero.
         return df_info
 
     @classmethod
@@ -68,7 +74,12 @@ class GenerateDataInfo:
 
     @classmethod
     def write_email_template(cls, df: pd.DataFrame) -> None:
-        emails = cls.get_emails(df=df)
+        try:
+            emails = cls.get_emails(df=df)
+        except Exception as e:
+            print()
+            print(e)
+            emails = pd.Series()
 
         file_path = Escribir_Datos_Osiris(
             emails,
