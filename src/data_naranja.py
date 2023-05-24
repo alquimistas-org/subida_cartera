@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 
@@ -11,6 +9,7 @@ from helpers import (
     read_cr_data,
     read_osiris_accounts,
 )
+from src.ports.dataframe_saver import DataFrameSaver
 from write_data_osiris import Escribir_Datos_Osiris
 
 
@@ -20,13 +19,11 @@ class GenerateDataNaranja:
     cr_file_path = CR_FILE_PATH
 
     @classmethod
-    def process(cls) -> 'list[Path]':
+    def process(cls, dataframe_saver: DataFrameSaver) -> None:
         print('Preparando planillas de datos...')
         cr = cls._get_cr_data()
-        result_phones_file_path = cls._get_and_wirte_all_phones_from_cr(cr)
-        result_mails_file_path = cls._get_and_write_mails_from_cr(cr)
-        all_result_file_paths = [result_phones_file_path, result_mails_file_path]
-        return all_result_file_paths
+        cls._get_and_wirte_all_phones_from_cr(cr, dataframe_saver)
+        cls._get_and_write_mails_from_cr(cr, dataframe_saver)
 
     @classmethod
     def _get_cr_data(cls) -> pd.DataFrame:
@@ -36,10 +33,10 @@ class GenerateDataNaranja:
         return cr_accounts_that_are_in_osiris_df
 
     @classmethod
-    def _get_and_wirte_all_phones_from_cr(cls, cr: pd.DataFrame) -> Path:
+    def _get_and_wirte_all_phones_from_cr(cls, cr: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
         phones = cls._get_all_phones_from_cr(cr)
         cleaned_phones = cls._clean_phone_numbers(phones)
-        return cls._write_phones_data_result(cleaned_phones)
+        cls._write_phones_data_result(cleaned_phones, dataframe_saver)
 
     @classmethod
     def _get_all_phones_from_cr(cls, cr_df: pd.DataFrame) -> pd.DataFrame:
@@ -120,20 +117,20 @@ class GenerateDataNaranja:
         return phones_df
 
     @staticmethod
-    def _write_phones_data_result(cleaned_phones_df: pd.DataFrame) -> Path:
-        result_df_phones_file_path = Escribir_Datos_Osiris(
+    def _write_phones_data_result(cleaned_phones_df: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
+        Escribir_Datos_Osiris(
             cleaned_phones_df,
             'datos_cr_subida_telefonos.csv',
             ['Cuenta', 'ID_FONO', 'TEL'],
-            ['ID Cuenta o Nro. de Asig. (0)', "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)"]
+            ['ID Cuenta o Nro. de Asig. (0)', "ID Tipo de Teléfono (17)", "Nro. de Teléfono (18)"],
+            dataframe_saver,
         )
         print(f'{len(cleaned_phones_df)} TELEFONOS se guardaron en archivo: subida_telefono.csv')
-        return result_df_phones_file_path
 
     @classmethod
-    def _get_and_write_mails_from_cr(cls, cr: pd.DataFrame) -> Path:
+    def _get_and_write_mails_from_cr(cls, cr: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
         mails = cls._get_mails_from_cr(cr)
-        return cls._write_mail_data_results(mails)
+        cls._write_mail_data_results(mails, dataframe_saver)
 
     @staticmethod
     def _get_mails_from_cr(cr: pd.DataFrame) -> pd.DataFrame:
@@ -142,12 +139,12 @@ class GenerateDataNaranja:
         return mails
 
     @staticmethod
-    def _write_mail_data_results(mails: pd.DataFrame) -> Path:
-        result_df_mails_file_path = Escribir_Datos_Osiris(
+    def _write_mail_data_results(mails: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
+        Escribir_Datos_Osiris(
             mails,
             'datos_cr_subida_mail.csv',
             ['Cuenta', 'EMAIL'],
-            ['ID Cuenta o Nro. de Asig. (0)', "Email (16)"]
+            ['ID Cuenta o Nro. de Asig. (0)', "Email (16)"],
+            dataframe_saver,
         )
         print(f'{len(mails)} MAILS se guardaron en archivo: subida_mail.csv\n\n')
-        return result_df_mails_file_path

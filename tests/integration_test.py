@@ -59,8 +59,13 @@ def test_integration_prepararion_riesgo_online_data():
 
     expected_result_df = pd.read_csv(expected_result_file_path, encoding='latin-1', sep=';')
 
-    result_file_path = risk_data(risk_df_filepath, osiris_accounts_df)
-    result_df = pd.read_csv(result_file_path, encoding='latin-1', sep=';')
+    with tempfile.TemporaryDirectory() as tmpdir:
+        saver = FileDataFrameSaver(output_path=Path(tmpdir))
+
+        risk_data(risk_df_filepath, osiris_accounts_df, saver)
+        saved_files = saver.get_saved_files()
+        result_path = list(saved_files.values())[0]
+        result_df = pd.read_csv(result_path, encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(result_df, expected_result_df)
 
@@ -177,13 +182,16 @@ def test_integration_naranja_data_preparation(
     expected_df_result_mails = pd.read_csv(result_mails_path, encoding='latin-1', sep=';')
     expected_df_result_phones = pd.read_csv(result_phones_path, encoding='latin-1', sep=';')
 
-    all_result_file_path = GenerateDataNaranja.process()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        saver = FileDataFrameSaver(output_path=Path(tmpdir))
+        GenerateDataNaranja.process(dataframe_saver=saver)
 
-    for result_path in all_result_file_path:
-        if 'datos_cr_subida_mail.csv' in result_path.name:
-            df_result_mails = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'datos_cr_subida_telefonos.csv' in result_path.name:
-            df_result_phones = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        # get result dataframes
+        for result_path in saver.get_saved_files().values():
+            if 'datos_cr_subida_mail.csv' in result_path.name:
+                df_result_mails = pd.read_csv(result_path, encoding='latin-1', sep=';')
+            elif 'datos_cr_subida_telefonos.csv' in result_path.name:
+                df_result_phones = pd.read_csv(result_path, encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(expected_df_result_mails, df_result_mails)
     pd.testing.assert_frame_equal(expected_df_result_phones, df_result_phones)

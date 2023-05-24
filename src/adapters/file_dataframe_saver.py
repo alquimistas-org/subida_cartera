@@ -16,8 +16,9 @@ class FileDataFrameSaver:
 
         result_file_path = (
             self.output_path /
-            f'{datetime.now().strftime("(%H.%M hs) -")} \
-            {self.portfolio_name if self.portfolio_name else ""}_{name}.csv'
+            f'{datetime.now().strftime("(%H.%M hs) - ")}'
+            f'{ f"{self.portfolio_name}_" if self.portfolio_name else ""}'
+            f'{name}{"" if name.endswith(".csv") else ".csv"}'
         )
 
         try:

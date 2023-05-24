@@ -1,6 +1,11 @@
-import pandas as pd
-from src.risk_data import risk_data
+from pathlib import Path
+import tempfile
 from unittest import mock
+
+import pandas as pd
+
+from src.adapters.file_dataframe_saver import FileDataFrameSaver
+from src.risk_data import risk_data
 
 
 class TestRiskData:
@@ -55,8 +60,9 @@ class TestRiskData:
             },
             index=[0]
         )
-
-        risk_data()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            risk_data(dataframe_saver=saver)
 
         # asserts
         mock_get_phones.assert_called_once_with(
@@ -74,5 +80,6 @@ class TestRiskData:
                 "ID Tipo de Teléfono (17)",
                 "Nro. de Teléfono (18)",
                 "Obs. de Teléfono (19)"
-            ]
+            ],
+            dataframe_saver=saver,
         )
