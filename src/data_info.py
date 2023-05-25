@@ -1,3 +1,7 @@
+import io
+from pathlib import Path
+from typing import Union
+
 import numpy as np
 import pandas as pd
 
@@ -10,19 +14,28 @@ from helpers import (
     get_phones,
     read_osiris_accounts,
 )
+from src.adapters.file_dataframe_saver import FileDataFrameSaver
+from src.constants.constants import ROOT_PATH
+from src.ports.dataframe_saver import DataFrameSaver
 from write_data_osiris import Escribir_Datos_Osiris
 
 
 class GenerateDataInfo:
 
+    # defaults
     info_experto_file_path = 'info.xlsx'
     osiris_accounts_file_path = OSIRIS_ACCOUNTS_FILE_PATH
 
     @classmethod
-    def get_data_info(cls) -> pd.DataFrame:
-        'NECESARIO cuentas de osiris como cuentas.csv, cuentas deinfo exporto como info.xlsx'
-        uploaded_accounts = read_osiris_accounts(cls.osiris_accounts_file_path)
-        info = pd.read_excel(cls.info_experto_file_path, dtype=str, skiprows=1)
+    def get_data_info(
+        cls,
+        osiris_accounts_data: Union[Path, io.BytesIO],
+        external_provider_data: Union[Path, io.BytesIO],
+    ) -> pd.DataFrame:
+
+        uploaded_accounts = read_osiris_accounts(osiris_accounts_data)
+
+        info = pd.read_excel(external_provider_data, dtype=str, skiprows=1)
         df_info = info[DATA_INFO_COLUMNS]
         df_info = df_info.rename(columns=DATA_INFO_COLUMNS_RENAME, inplace=False).copy()
         df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
@@ -32,14 +45,18 @@ class GenerateDataInfo:
         return df_info
 
     @classmethod
-    def write_phone_template(cls, df: pd.DataFrame) -> None:
+    def write_phone_template(
+        cls,
+        df: pd.DataFrame,
+        dataframe_saver: DataFrameSaver,
+    ) -> None:
         df_phones = get_phones(
             df=df,
             stop=3,
             colum_name='INFO'
         )
 
-        file_path = Escribir_Datos_Osiris(
+        Escribir_Datos_Osiris(
             df_phones[['Cuenta', 'ID_FONO', 'TEL', 'OBS']],
             'info_telefonos.csv',
             ['Cuenta', 'ID_FONO', 'TEL', 'OBS'],
@@ -48,56 +65,72 @@ class GenerateDataInfo:
                 "ID Tipo de Teléfono (17)",
                 "Nro. de Teléfono (18)",
                 "Obs. de Teléfono (19)"
-            ]
+            ],
+            dataframe_saver,
         )
 
         print('Planilla de TELEFONOS de INFO escrita')
-        return file_path
 
     @classmethod
-    def write_salary_template(cls, df: pd.DataFrame) -> None:
+    def write_salary_template(
+        cls,
+        df: pd.DataFrame,
+        dataframe_saver: DataFrameSaver,
+    ) -> None:
 
-        file_path = Escribir_Datos_Osiris(
+        Escribir_Datos_Osiris(
             df.loc[df['sueldo_info'].notnull(), ['Cuenta', 'sueldo_info']],
             'info_sueldo.csv',
             ['Cuenta', 'sueldo_info'],
-            ["ID Cuenta o Nro. de Asig. (0)", "Sueldo (40)"]
+            ["ID Cuenta o Nro. de Asig. (0)", "Sueldo (40)"],
+            dataframe_saver,
         )
         print('Planilla de SUELDOS de INFO escrita')
-        return file_path
 
     @classmethod
-    def write_email_template(cls, df: pd.DataFrame) -> None:
+    def write_email_template(
+        cls,
+        df: pd.DataFrame,
+        dataframe_saver: DataFrameSaver,
+    ) -> None:
         try:
             emails = cls.get_emails(df=df)
         except Exception as e:
             print(e)
             emails = pd.Series()
 
-        file_path = Escribir_Datos_Osiris(
+        Escribir_Datos_Osiris(
             emails,
             'info_mail.csv',
             ['Cuenta', 'MAIL_info'],
-            ["ID Cuenta o Nro. de Asig. (0)", "Email (16)"]
+            ["ID Cuenta o Nro. de Asig. (0)", "Email (16)"],
+            dataframe_saver,
         )
         print('Planilla de MAIL de INFO escrita')
-        return file_path
 
     @classmethod
-    def write_q_vehicles_template(cls, df: pd.DataFrame) -> None:
+    def write_q_vehicles_template(
+        cls,
+        df: pd.DataFrame,
+        dataframe_saver: DataFrameSaver,
+    ) -> None:
 
-        file_path = Escribir_Datos_Osiris(
+        Escribir_Datos_Osiris(
             df.loc[df['q_vehiculos'] != '0', ['Cuenta', 'q_vehiculos']],
             'info_q_vehiculos.csv',
             ['Cuenta', 'q_vehiculos'],
-            ["ID Cuenta o Nro. de Asig. (0)", "Cantidad de Vehiculos (41)"]
+            ["ID Cuenta o Nro. de Asig. (0)", "Cantidad de Vehiculos (41)"],
+            dataframe_saver,
         )
 
         print('Planilla de Q VEHICULOS de INFO escrita')
-        return file_path
 
     @classmethod
-    def write_patrimonial_data_template(cls, df: pd.DataFrame) -> None:
+    def write_patrimonial_data_template(
+        cls,
+        df: pd.DataFrame,
+        dataframe_saver: DataFrameSaver,
+    ) -> None:
 
         df = cls.apply_salary_template(df=df)
 
@@ -123,14 +156,14 @@ class GenerateDataInfo:
             (df['NSE_info'].isnull()), 'primonial'
         ] = np.nan
 
-        file_path = Escribir_Datos_Osiris(
+        Escribir_Datos_Osiris(
             df.loc[df['primonial'].notnull(), ['Cuenta', 'primonial']],
             'info_patrimoniales.csv',
             ['Cuenta', 'primonial'],
-            ["ID Cuenta o Nro. de Asig. (0)", "Datos Patrimoniales (42)"]
+            ["ID Cuenta o Nro. de Asig. (0)", "Datos Patrimoniales (42)"],
+            dataframe_saver,
         )
         print('Planilla de DATOS PATRIMONIALES de INFO escrita')
-        return file_path
 
     @classmethod
     def apply_salary_template(cls, df: pd.DataFrame) -> pd.DataFrame:
@@ -186,19 +219,31 @@ class GenerateDataInfo:
         return pd.concat(concat_mails)
 
     @classmethod
-    def process(cls) -> list:
-        df = cls.get_data_info()
-        phone_result_path_file = cls.write_phone_template(df=df)
-        salary_result_path_file = cls.write_salary_template(df=df)
-        email_result_path_file = cls.write_email_template(df=df)
-        q_vehicles_result_path_file = cls.write_q_vehicles_template(df=df)
-        patrimonial_result_path_file = cls.write_patrimonial_data_template(df=df)
+    def process(
+        cls,
+        osiris_accounts_data: Union[Path, io.BytesIO] = None,
+        external_provider_data: Union[Path, io.BytesIO] = None,
+        dataframe_saver: DataFrameSaver = None,
+    ) -> list:
+
+        if not osiris_accounts_data:
+            osiris_accounts_data = cls.osiris_accounts_file_path
+        if not external_provider_data:
+            external_provider_data = cls.info_experto_file_path
+        if not dataframe_saver:
+            dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/')
+
+        df = cls.get_data_info(osiris_accounts_data, external_provider_data)
+
+        cls.write_phone_template(df, dataframe_saver)
+        cls.write_salary_template(df, dataframe_saver)
+        cls.write_email_template(df, dataframe_saver)
+        cls.write_q_vehicles_template(df, dataframe_saver)
+        cls.write_patrimonial_data_template(df, dataframe_saver)
 
         all_result_file_paths = [
-            phone_result_path_file,
-            salary_result_path_file,
-            email_result_path_file,
-            q_vehicles_result_path_file,
-            patrimonial_result_path_file
+            result_file_path
+            for result_file_path in dataframe_saver.get_saved_files().values()
         ]
+
         return all_result_file_paths

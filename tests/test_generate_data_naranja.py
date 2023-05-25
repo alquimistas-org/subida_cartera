@@ -1,12 +1,14 @@
+from pathlib import Path
+import tempfile
 from unittest.mock import (
     patch,
     MagicMock,
 )
 
 import pandas as pd
-
 import pytest
 
+from src.adapters.file_dataframe_saver import FileDataFrameSaver
 from src.data_naranja import GenerateDataNaranja
 
 
@@ -53,7 +55,7 @@ def mocked_mails_result() -> pd.DataFrame:
     )
 
 
-class TestGenerateDaaNarana:
+class TestGenerateDataNaranja:
 
     @patch.object(GenerateDataNaranja, '_get_cr_data')
     @patch.object(GenerateDataNaranja, '_get_and_wirte_all_phones_from_cr')
@@ -63,27 +65,21 @@ class TestGenerateDaaNarana:
         patched_get_and_write_mails_from_cr: MagicMock,
         patched_get_and_wirte_all_phones_from_cr: MagicMock,
         pathced_get_cr_data: MagicMock,
+        mocked_cr: pd.DataFrame,
     ):
 
         # arrange
-        mocked_cr = 'cr'
-        expected_phones_file_path = 'phones_file_path'
-        expected_mails_file_path = 'mails_file_path'
-        expected_result = [expected_phones_file_path, expected_mails_file_path]
         pathced_get_cr_data.return_value = mocked_cr
-        patched_get_and_wirte_all_phones_from_cr.return_value = expected_phones_file_path
-        patched_get_and_write_mails_from_cr.return_value = expected_mails_file_path
 
         # act
-        result = GenerateDataNaranja.process()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            GenerateDataNaranja.process(saver)
 
         # assert
-
         pathced_get_cr_data.assert_called_once()
-        patched_get_and_wirte_all_phones_from_cr.assert_called_once_with(mocked_cr)
-        patched_get_and_write_mails_from_cr.assert_called_once_with(mocked_cr)
-
-        assert result == expected_result
+        patched_get_and_wirte_all_phones_from_cr.assert_called_once_with(mocked_cr, saver)
+        patched_get_and_write_mails_from_cr.assert_called_once_with(mocked_cr, saver)
 
     @pytest.mark.skip(reason='TODO')
     @patch('src.data_info.read_osiris_accounts')
@@ -158,11 +154,13 @@ class TestGenerateDaaNarana:
     ):
         expected_result = 'fake_result'
         patched_Escribir_Datos_Osiris.return_value = expected_result
-        result = GenerateDataNaranja._write_mail_data_results(mocked_mails_result)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            saver = FileDataFrameSaver(output_path=Path(tmpdir))
+            GenerateDataNaranja._write_mail_data_results(mocked_mails_result, dataframe_saver=saver)
         patched_Escribir_Datos_Osiris.assert_called_once_with(
             mocked_mails_result,
             'datos_cr_subida_mail.csv',
             ['Cuenta', 'EMAIL'],
             ['ID Cuenta o Nro. de Asig. (0)', "Email (16)"],
+            saver,
         )
-        assert result == expected_result

@@ -7,6 +7,7 @@ from constants.constants import YEARS_TO_ADD
 from ports.dataframe_saver import DataFrameSaver
 
 
+# TODO considerer to rename it to wirte_df instead of write_csv
 def write_csv(df_os: pd.DataFrame, dataframe_saver: DataFrameSaver) -> None:
     for name, df_sub in df_os.groupby('riesgo'):
         df_sub = df_sub.drop('riesgo', inplace=False, axis=1)

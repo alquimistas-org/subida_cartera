@@ -1,11 +1,12 @@
+import io
 from pathlib import Path
+from typing import Union
+
 import pandas as pd
-from constants.constants import (
-    OSIRIS_ACCOUNTS_FILE_PATH,
-    CR_FILE_PATH,
-)
-from src.constants.constants import DATA_PREP_COLUMNS
+
 from clean_numbers import clean_numbers
+from constants.constants import CR_FILE_PATH
+from src.constants.constants import DATA_PREP_COLUMNS
 
 
 def get_phones(df: pd.DataFrame, stop: int, colum_name: str) -> pd.DataFrame:
@@ -22,7 +23,7 @@ def get_phones(df: pd.DataFrame, stop: int, colum_name: str) -> pd.DataFrame:
     return df_phones
 
 
-def read_osiris_accounts(osiris_accounts_file_path: Path = OSIRIS_ACCOUNTS_FILE_PATH) -> pd.DataFrame:
+def read_osiris_accounts(osiris_accounts_file_path: Union[Path, io.BytesIO]) -> pd.DataFrame:
     try:
         uploaded_accounts = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
     except Exception:
