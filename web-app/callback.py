@@ -12,6 +12,7 @@ from callbacks_helpers import (
 
 @app.callback(Output('div-download', 'children'),
               Output('stored-dfs', 'data'),
+              Output('completed-first-step-btn', 'style'),
               Input('upload-data-cr', 'contents'),
               Input('client-selected-value', 'children'),
               prevent_initial_call=True,
@@ -29,7 +30,7 @@ def upload_csv(list_of_contents, client_selected):
         elif client_selected == 'comafi':
             download_buttons, data_dict = process_comafi_client(dash_dataframe_saver, decoded, content_string)
 
-        return download_buttons, data_dict
+        return download_buttons, data_dict, {'display': 'block'}
 
     else:
         raise PreventUpdate
@@ -159,3 +160,21 @@ def process_modal_error(list_of_contents, client_selected, filename, n_clicks, s
 
     else:
         raise PreventUpdate
+
+
+@app.callback(Output('icon-success-upload', 'children'),
+              Output('first-step-container', 'style'),
+              Input('completed-first-step-btn', 'n_clicks'),
+              prevent_initial_call=True,
+              allow_duplicate=True,)
+def mark_fist_step_as_completed(n_clicks):
+    if not n_clicks:
+        raise PreventUpdate
+    return (
+        html.Img(
+            src="assets/check-icon.svg",
+            height=40,
+            style={'marginLeft': '10px', 'marginBottom': '10px'}
+        ),
+        {'display': 'none'}
+        )

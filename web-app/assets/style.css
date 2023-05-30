@@ -62,6 +62,7 @@ a.upload-link-container{
     width: 100%;
     justify-content: center;
     align-items: center;
+    margin-right: 5rem;
 }
 
 .icon-container{
@@ -76,13 +77,16 @@ a.upload-link-container{
 }
 
 .download-button{
-    width: 23rem;
+    width: 30rem;
     border-radius: 10px;
     color: #ffffff;
     background-color: #1d8ab6;
     border-color: #1d8ab6;
     text-align: center;
-    margin: 1rem;
+    margin-top: 1rem;
+    font-size: medium;
+    display: flex;
+    justify-content: space-between;
 }
 
 .donwload-container{
@@ -105,6 +109,7 @@ a.upload-link-container{
     margin-left: 3rem;
     font-size: large;
     color:#1d8ab6;
+    font-size: x-large;
 }
 
 .download-csv-btn{
@@ -123,8 +128,8 @@ a.upload-link-container{
 
 .p-download-csv{
     width: 25rem;
-    background-color: #dce7eb;
-    color: #090909;
+    background-color: #1d8ab6;
+    color: #ffffff;
     margin-top: 0.5rem;
     border-radius: 10px;
     margin-left: 15px;
@@ -132,11 +137,15 @@ a.upload-link-container{
 
 .p-download-csv:hover{
     cursor: pointer;
+    background-color: #4595b4;
+    border-color: #b9e8fbc7;
+
 }
 
 .btn-tab{
     width: 50%;
     margin: 0.5rem;
+    font-size: large;
 }
 
 .tabs-container{
@@ -212,4 +221,19 @@ a.upload-link-container{
 
 #filename-error{
     font-style: italic;
+}
+
+.completed-step-bnt-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.completed-step-btn:hover{
+    cursor: pointer;
+    color: #24c927;
+}
+
+.fa-circle-check{
+    color: #24c927;
 }
