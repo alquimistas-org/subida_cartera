@@ -24,8 +24,11 @@ def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, decoded, co
     for key, _ in dfs.items():
         download_buttons.append(html.Div([
             html.Button([
-                html.I(className="fa-solid fa-circle-down", style={'marginRight': '10px'}),
-                f"Descargar {key}"
+                html.P(f"{key}.csv", style={'textTransform': 'lowercase', 'marginLeft': '1rem'}),
+                html.I(
+                    className="fa-solid fa-circle-down",
+                    style={'marginRight': '0.5rem', 'fontSize': 'large', 'marginTop': '1rem'}
+                ),
             ], id={
                 "type": "btn-download",
                 "id": key
@@ -55,26 +58,18 @@ def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, decoded, con
     download_buttons = []
     for key, _ in dfs.items():
         download_buttons.append(html.Div([
-            html.Div([
-                html.P([
-                    f"{key}.csv",
-                ], className="p-download-csv"),
+            html.Button([
+                html.P(f"{key}.csv", style={'textTransform': 'lowercase', 'marginLeft': '1rem'}),
                 html.I(
-                    id=key,
                     className="fa-solid fa-circle-down",
-                    style={
-                        'marginRight': '15px',
-                        'marginTop': '0.5rem',
-                        'fontSize': '2rem',
-                    })
-            ], className="container-filename-icon-dwn p-download-csv"),
-            dcc.Download(id={"type": "download-csv", "id": key}),
-            ],
-            className='download-csv-btn',
-            id={
+                    style={'marginRight': '0.5rem', 'fontSize': 'large', 'marginTop': '1rem'}
+                ),
+            ], id={
                 "type": "btn-download",
                 "id": key
-            }))
+            }, className="download-button"),
+            dcc.Download(id={"type": "download-csv", "id": key})
+        ]))
 
     data_dict = {key: value.to_csv() for key, value in dfs.items()}
     data_dict['emerix'] = content_string

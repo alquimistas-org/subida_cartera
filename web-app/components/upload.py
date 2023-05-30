@@ -8,13 +8,7 @@ class Upload:
         self.input_id = input_id
         self.output_id = output_id
 
-    def create(self, title_step: str, id: str, multiple_files: bool = False):
-
-        title = html.Div([
-            html.Img(src="assets/attach-icon.svg", height=20, style={'marginLeft': '5px'}),
-            html.Span(title_step, className="attach-file",),
-            html.Hr(style={"color": "black", "marginTop": "0"})
-        ], className="attach-file-container")
+    def create(self, id: str, multiple_files: bool = False):
 
         upload = dcc.Upload(
                 id=f'upload-data-{id}',
@@ -33,7 +27,7 @@ class Upload:
                     )
                 ]),
                 style={
-                    'width': '100%',
+                    'width': '99%',
                     'height': 'auto',
                     'lineHeight': '60px',
                     'borderWidth': '1px',
@@ -60,7 +54,6 @@ class Upload:
         filename_div = html.Div(id=f"filename-{id}", className="filaname-container")
 
         return html.Div([
-            title,
             collapse,
             filename_div,
         ])
