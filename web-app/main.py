@@ -26,4 +26,4 @@ def argument_parser() -> bool:
 if __name__ == "__main__":
 
     debug = True if argument_parser() else bool(int(os.getenv("DEBUG", "0")))
-    app.run_server(debug=debug)
+    app.run_server(host='0.0.0.0', port=8050, debug=debug)

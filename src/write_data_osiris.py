@@ -7,7 +7,7 @@ from constants.constants import (
     DATA_UPLOADER_HEADER,
     ROOT_PATH,
 )
-from src.ports.dataframe_saver import DataFrameSaver
+from ports.dataframe_saver import DataFrameSaver
 
 
 def Escribir_Datos_Osiris(

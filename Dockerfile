@@ -6,10 +6,12 @@ RUN pip install pipenv
 
 COPY Pipfile Pipfile.lock ./
 
-RUN pipenv install --system --deploy --ignore-pipfile
+RUN pipenv install --dev --system
 
 ENV DEBUG="0"
 
 COPY . .
 
-CMD ["python3", "src/subida.py"]
+EXPOSE 8050
+
+CMD ["python", "web-app/main.py"]

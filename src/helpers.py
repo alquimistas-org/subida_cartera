@@ -5,8 +5,7 @@ from typing import Union
 import pandas as pd
 
 from clean_numbers import clean_numbers
-from constants.constants import CR_FILE_PATH
-from src.constants.constants import DATA_PREP_COLUMNS
+from constants.constants import CR_FILE_PATH, DATA_PREP_COLUMNS
 
 
 def get_phones(df: pd.DataFrame, stop: int, colum_name: str) -> pd.DataFrame:
