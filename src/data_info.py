@@ -14,9 +14,9 @@ from helpers import (
     get_phones,
     read_osiris_accounts,
 )
-from src.adapters.file_dataframe_saver import FileDataFrameSaver
-from src.constants.constants import ROOT_PATH
-from src.ports.dataframe_saver import DataFrameSaver
+from adapters.file_dataframe_saver import FileDataFrameSaver
+from constants.constants import ROOT_PATH
+from ports.dataframe_saver import DataFrameSaver
 from write_data_osiris import Escribir_Datos_Osiris
 
 

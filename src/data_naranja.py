@@ -9,7 +9,7 @@ from helpers import (
     read_cr_data,
     read_osiris_accounts,
 )
-from src.ports.dataframe_saver import DataFrameSaver
+from ports.dataframe_saver import DataFrameSaver
 from write_data_osiris import Escribir_Datos_Osiris
 
 
