@@ -19,26 +19,25 @@ from callbacks_helpers import (
 from components.upload import Upload
 
 
-@app.callback(
-    Output('div-download', 'children'),
-    Output('stored-dfs', 'data'),
-    Output('completed-first-step-btn', 'style'),
-    Input(Upload.get_upload_id('cr'), 'contents'),
-    Input('client-selected-value', 'children'),
-    prevent_initial_call=True,
-    allow_duplicate=True,
-)
+@app.callback(Output('div-download', 'children'),
+              Output('stored-dfs', 'data'),
+              Output('complete-first-step-btn', 'style'),
+              Input(Upload.get_upload_id('prepare-accounts'), 'contents'),
+              Input('client-store', 'data'),
+              prevent_initial_call=True,
+              allow_duplicate=True,)
 def upload_csv(list_of_contents, client_selected):
 
-    if list_of_contents and client_selected:
+    if list_of_contents and client_selected.get('selected_client'):
         content_type, content_string = list_of_contents.split(',')
         decoded = base64.b64decode(content_string)
         dash_dataframe_saver = DashDataFrameSaver()
-
-        if client_selected == 'naranja':
+        download_buttons = []
+        data_dict = {}
+        if client_selected['selected_client'] == 'Naranja':
             download_buttons, data_dict = process_naranja_client(dash_dataframe_saver, decoded, content_string)
 
-        elif client_selected == 'comafi':
+        elif client_selected['selected_client'] == 'Comafi':
             download_buttons, data_dict = process_comafi_client(dash_dataframe_saver, decoded, content_string)
 
         return download_buttons, data_dict, {'display': 'block'}
@@ -63,51 +62,30 @@ def download_csv(n_clicks, dfs):
 
 
 @app.callback(
-    Output("collapse-cr", "is_open"),
-    Output("filename-cr", "children"),
-    Input(Upload.get_upload_id('cr'), "filename"),
-    State("collapse-cr", "is_open"),
-    Input('client-selected-value', 'children'),
+    Output(Upload.get_collapse_id('prepare-accounts'), "is_open"),
+    Output("filename-uploaded-first-step", "children"),
+    Output("filename-uploaded-first-step", "style"),
+    Input(Upload.get_upload_id('prepare-accounts'), "filename"),
+    State(Upload.get_collapse_id('prepare-accounts'), "is_open"),
+    Input('client-store', 'data'),
     Input('stored-dfs', 'data'),
 )
 def collapse_upload(filename, is_open, client_selected, data):
     if filename and client_selected and data:
         return not is_open, html.Div([
             filename,
-        ])
+        ]), {'display': 'block'}
     else:
         raise PreventUpdate
 
 
 @app.callback(
-    Output('client-selected-value', 'children'),
-    Output('naranja', 'style'),
-    Output('comafi', 'style'),
-    Input('naranja', 'n_clicks'),
-    Input('comafi', 'n_clicks'),
+    Output('client-store', 'data'),
+    Input('clients_dropdown', 'value'),
     prevent_initial_call=True,
 )
-def get_client(btn_1, btn_2):
-    client_id = ctx.triggered_id
-
-    not_selected_button_style = {
-        'background-color': 'white'
-    }
-
-    selected_client_style = {
-        'background-color': '#1d8ab6',
-        'border-color': '#1d8ab6',
-        'color': 'white',
-     }
-
-    if client_id == 'naranja':
-        style_naranja = selected_client_style
-        style_comafi = not_selected_button_style
-    elif client_id == 'comafi':
-        style_comafi = selected_client_style
-        style_naranja = not_selected_button_style
-
-    return client_id, style_naranja, style_comafi
+def get_client(client):
+    return {'selected_client': client}
 
 
 @app.callback(
@@ -135,22 +113,11 @@ def reload_page(n_clicks):
 
 
 @app.callback(
-    Output(Upload.get_upload_id('cr'), 'disabled'),
-    Input('client-selected-value', 'children'),
-    State(Upload.get_upload_id('cr'), 'disabled')
-)
-def enable_upload_component(client_selected, disabled):
-    if client_selected:
-        return False
-    raise PreventUpdate
-
-
-@app.callback(
               Output('error-client-filename', 'is_open'),
               Output('error-client-filename', 'children'),
-              Input(Upload.get_upload_id('cr'), 'contents'),
-              Input('client-selected-value', 'children'),
-              Input(Upload.get_upload_id('cr'), "filename"),
+              Input(Upload.get_upload_id('prepare-accounts'), 'contents'),
+              Input('client-store', 'data'),
+              Input(Upload.get_upload_id('prepare-accounts'), "filename"),
               Input("accept-btn-error", "n_clicks"),
               Input('stored-dfs', 'data'),
               State("error-client-filename", "is_open"),
@@ -161,7 +128,7 @@ def process_modal_error(list_of_contents, client_selected, filename, n_clicks, s
     if not list_of_contents and not client_selected:
         raise PreventUpdate
 
-    if ctx.triggered_id == Upload.get_upload_id('cr'):
+    if ctx.triggered_id == Upload.get_upload_id('prepare-accounts'):
         if not stored_data:
             return display_modal_error(client_selected, filename)
         raise PreventUpdate
@@ -173,9 +140,9 @@ def process_modal_error(list_of_contents, client_selected, filename, n_clicks, s
         raise PreventUpdate
 
 
-@app.callback(Output('icon-success-upload', 'children'),
+@app.callback(Output('icon-success-uploadfirst', 'children'),
               Output('first-step-container', 'style'),
-              Input('completed-first-step-btn', 'n_clicks'),
+              Input('complete-first-step-btn', 'n_clicks'),
               prevent_initial_call=True,
               allow_duplicate=True,)
 def mark_fist_step_as_completed(n_clicks):
@@ -184,8 +151,8 @@ def mark_fist_step_as_completed(n_clicks):
     return (
         html.Img(
             src="assets/check-icon.svg",
-            height=40,
+            height=30,
             style={'marginLeft': '10px', 'marginBottom': '10px'}
         ),
-        {'display': 'none'}
+        {'display': 'none'},
         )
