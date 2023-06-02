@@ -1,17 +1,23 @@
-from dash import html, dcc
+from dash import (
+    html,
+    dcc,
+    ALL,
+    MATCH,
+)
 import dash_bootstrap_components as dbc
 
 
 class Upload:
 
-    def __init__(self, input_id='input', output_id='output') -> None:
-        self.input_id = input_id
-        self.output_id = output_id
-
-    def create(self, id: str, multiple_files: bool = False):
-
+    @classmethod
+    def create(
+        cls,
+        id: str,
+        multiple_files: bool = False,
+        upload_disabled: bool = True,
+    ):
         upload = dcc.Upload(
-                id=f'upload-data-{id}',
+                id=cls.get_upload_id(id),
                 children=html.Div([
                     html.A(
                         children=[
@@ -38,22 +44,42 @@ class Upload:
                 },
                 # Don't allow multiple files to be uploaded
                 multiple=multiple_files,
-                disabled=True,
+                disabled=upload_disabled,
             )
 
         collapse = dbc.Row(
             dbc.Col(
                 dbc.Collapse(
                     upload,
-                    id=f"collapse-{id}",
+                    id=cls.get_collapse_id(id),
                     is_open=True,
                 )
             ),
         )
 
-        filename_div = html.Div(id=f"filename-{id}", className="filaname-container")
+        filename_div = html.Div(id=cls.get_filename_div_id(id), className="filaname-container")
 
         return html.Div([
             collapse,
             filename_div,
         ])
+
+    @staticmethod
+    def get_upload_id(id: str) -> dict:
+        return {'type': 'upload-data', 'id': id}
+
+    @staticmethod
+    def get_upload_id_that_matchs():
+        return {'type': 'upload-data', 'id': MATCH}
+
+    @staticmethod
+    def get_all_upload_id():
+        return {'type': 'upload-data', 'id': ALL}
+
+    @staticmethod
+    def get_collapse_id(id: str):
+        return f"collapse-{id}"
+
+    @staticmethod
+    def get_filename_div_id(id: str):
+        return f"filename-{id}"
