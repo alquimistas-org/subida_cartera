@@ -16,10 +16,11 @@ from callbacks_helpers import (
     process_comafi_client,
     display_modal_error,
 )
+from components.download_area import DownloadButtonsArea
 from components.upload import Upload
 
 
-@app.callback(Output('div-download', 'children'),
+@app.callback(Output(DownloadButtonsArea.get_id("prepare"), 'children'),
               Output('stored-dfs', 'data'),
               Output('complete-first-step-btn', 'style'),
               Input(Upload.get_upload_id('prepare-accounts'), 'contents'),

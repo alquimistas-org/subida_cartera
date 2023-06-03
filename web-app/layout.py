@@ -2,6 +2,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 from components.clear_data import ClearData
+from components.download_area import DownloadButtonsArea
 from components.upload import Upload
 from components.step_title import StepTitle
 from components.complete_step_btn import CompleteStepBtn
@@ -51,13 +52,7 @@ app_layout = html.Div([
                                 multiple_files=False,
                                 upload_disabled=False,
                             ),
-                            html.Div(
-                                [
-                                    html.Div(id="div-download", className="donwload-container")
-                                ],
-                                id="major-div-download",
-                                className="major-donwload-container"
-                            ),
+                            DownloadButtonsArea.create("prepare-accounts"),
                             html.Div([
                                 CompleteStepBtn.create(id='complete-first-step-btn')
                                 ],
@@ -89,7 +84,7 @@ app_layout = html.Div([
                             dbc.Col(
                                 [
                                     StepTitle.create(title_step="1. Archivo cuentas de osiris"),
-                                    Upload().create(
+                                    Upload.create(
                                         id=osiris_accounts,
                                         multiple_files=False,
                                         upload_disabled=False,
