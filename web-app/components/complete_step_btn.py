@@ -3,11 +3,8 @@ from dash import html
 
 class CompleteStepBtn:
 
-    def __init__(self, input_id='input', output_id='output') -> None:
-        self.input_id = input_id
-        self.output_id = output_id
-
-    def create(self):
+    @classmethod
+    def create(self, id: str):
 
         btn = html.Div(
             [
@@ -18,7 +15,7 @@ class CompleteStepBtn:
                     id="check-step-icon"
                 ),
             ],
-            id=self.input_id,
+            id=id,
             style={'display': 'none'}
         )
 

@@ -4,6 +4,7 @@ from dash import html
 
 class ClearData:
 
+    @classmethod
     def create(self):
 
         clear_button = html.Div(

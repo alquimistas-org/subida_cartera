@@ -90,7 +90,7 @@ def display_modal_error(client_selected, filename):
         [
             html.Span("No es posible procesar el archivo "),
             html.Span(filename, id="filename-error"),
-            html.Span(f" para {client_selected[0].upper()}{client_selected[1:]}"),
+            html.Span(f" para {client_selected['selected_client']}"),
         ],
         style={'fontSize': 'large', 'fontWeight': 400})
     modal_footer = dbc.ModalFooter(
