@@ -2,10 +2,9 @@
 
 Proyecto de EDA6 - Legendary Wallabies
 
-Packages installed:\
-completar
-
 ## To install the dependencies
+
+[Packages](https://github.com/alquimistas-org/subida_cartera/blob/main/Pipfile)
 
 `pip install pipenv` --> Install pipenv\
 `pipenv install` --> Install dependencies. Also, this command also creates and activates an virtual env with the dependencies intalled.\
