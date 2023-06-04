@@ -240,10 +240,3 @@ class GenerateDataInfo:
         cls.write_email_template(df, dataframe_saver)
         cls.write_q_vehicles_template(df, dataframe_saver)
         cls.write_patrimonial_data_template(df, dataframe_saver)
-
-        all_result_file_paths = [
-            result_file_path
-            for result_file_path in dataframe_saver.get_saved_files().values()
-        ]
-
-        return all_result_file_paths

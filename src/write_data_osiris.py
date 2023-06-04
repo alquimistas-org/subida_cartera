@@ -8,6 +8,7 @@ from constants.constants import (
     ROOT_PATH,
 )
 from ports.dataframe_saver import DataFrameSaver
+from adapters.dash_dataframe_saver import DashDataFrameSaver
 
 
 def Escribir_Datos_Osiris(
@@ -18,7 +19,12 @@ def Escribir_Datos_Osiris(
     dataframe_saver: DataFrameSaver,
 ) -> None:
 
-    if there_is_not_saved_files_directory():
+    if (
+        there_is_not_saved_files_directory() and
+        dataframe_saver.__class__.__name__ != DashDataFrameSaver.__name__
+    ):
+        # TODO: this check only had sense when the app was a desktop app
+        #      once it starts working as web app, this check is not be necessary
         raise Exception
     df_subida = pd.DataFrame(columns=DATA_UPLOADER_HEADER)
     df_subida[cols_osiris] = df[cols_df]

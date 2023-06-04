@@ -10,6 +10,7 @@ class DownloadButton:
                     style={'marginRight': '10px'},
                 )
 
+    @classmethod
     def create(cls, name: str):
         return html.Div([
                 html.Button(

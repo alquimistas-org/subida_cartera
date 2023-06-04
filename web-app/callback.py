@@ -1,3 +1,5 @@
+import io
+
 from app import app
 from dash import (
     Output,
@@ -12,14 +14,21 @@ import base64
 from dash.exceptions import PreventUpdate
 from src.adapters.dash_dataframe_saver import DashDataFrameSaver
 from callbacks_helpers import (
-    process_naranja_client,
-    process_comafi_client,
     display_modal_error,
+    get_id_and_value_from_context,
+    process_comafi_client,
+    process_external_provider_data,
+    process_naranja_client,
 )
+from components.download_area import DownloadButtonsArea
 from components.upload import Upload
+from ids import (
+    external_providers,
+    osiris_accounts,
+)
 
 
-@app.callback(Output('div-download', 'children'),
+@app.callback(Output(DownloadButtonsArea.get_id("prepare"), 'children'),
               Output('stored-dfs', 'data'),
               Output('complete-first-step-btn', 'style'),
               Input(Upload.get_upload_id('prepare-accounts'), 'contents'),
@@ -156,3 +165,89 @@ def mark_fist_step_as_completed(n_clicks):
         ),
         {'display': 'none'},
         )
+
+
+@app.callback(
+    Output('store-data-provider', 'data', allow_duplicate=True),
+    Input(Upload.get_all_upload_id(), 'contents'),
+    State(Upload.get_all_upload_id(), 'filename'),
+    State('store-data-provider', 'data'),
+    prevent_initial_call=True,
+)
+def upload_csv_without_process(_, __, data_store):
+
+    triggered_input_id, triggered_file_content, triggered_file_name = get_id_and_value_from_context()
+    if (
+        triggered_file_content and
+        (
+            triggered_input_id == Upload.get_upload_id(external_providers) or
+            triggered_input_id == Upload.get_upload_id(osiris_accounts)
+        )
+    ):
+
+        if triggered_input_id == Upload.get_upload_id(external_providers):
+            data_name = external_providers
+        else:
+            data_name = osiris_accounts
+        content_type, content_data = triggered_file_content.split(',')
+        data_store.update(
+            {
+                data_name: {
+                    'content_type': content_type,
+                    'filename': triggered_file_name,
+                    'data': content_data,
+                }
+            }
+        )
+        return data_store
+    raise PreventUpdate
+
+
+@app.callback(
+    Output(DownloadButtonsArea.get_id("prepare-external-data-provider"), 'children'),
+    Output('store-data-provider', 'data'),
+    Input('prepare_data_provider_button', 'n_clicks'),
+    State('external_data_providers_dropdown', 'value'),
+    State('store-data-provider', 'data'),
+)
+def process_provider_data(
+    click: int,
+    external_provider_name: str,
+    data_store: dict,
+):
+
+    osiris_accunts_data = data_store.get('osiris-accounts')
+    external_provider_data = data_store.get('external-providers')
+
+    if click and external_provider_name and osiris_accunts_data and external_provider_data:
+
+        dash_dataframe_saver = DashDataFrameSaver()
+        osiris_accunts_data = io.BytesIO(base64.b64decode(osiris_accunts_data.get('data')))
+        external_provider_data = io.BytesIO(base64.b64decode(external_provider_data.get('data')))
+
+        download_buttons, result_data = process_external_provider_data(
+            dash_dataframe_saver,
+            osiris_accunts_data,
+            external_provider_data,
+            external_provider_name,
+        )
+        data_store.update({
+            'results': result_data,
+        })
+        return download_buttons, data_store
+    raise PreventUpdate
+
+
+@app.callback(
+    Output({"type": "download-csv", "id": MATCH}, "data", allow_duplicate=True),
+    Input({"type": "btn-download", "id": MATCH}, "n_clicks"),
+    Input('store-data-provider', 'data'),
+    prevent_initial_call=True,
+    allow_duplicate=True,
+)
+def download_csv_data_provider(n_clicks, dfs):
+    if not n_clicks:
+        raise PreventUpdate
+    df_id = ctx.triggered_id["id"]
+    df = dfs.get('results')[df_id]
+    return dcc.send_string(df, df_id)

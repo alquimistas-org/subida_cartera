@@ -197,7 +197,12 @@ def test_integration_naranja_data_preparation(
     pd.testing.assert_frame_equal(expected_df_result_phones, df_result_phones)
 
 
-def test_integration_info_experto_data_preparation():
+@mock.patch.object(GenerateDataInfo, 'osiris_accounts_file_path', new_callable=PropertyMock)
+@mock.patch.object(GenerateDataInfo, 'info_experto_file_path', new_callable=PropertyMock)
+def test_integration_info_experto_data_preparation(
+    patched_info_experto_file_path: PropertyMock,
+    patched_osiris_accounts_file_path: PropertyMock,
+):
     info_experto_data_directory_path = integration_test_file_path / 'datos_info_experto'
 
     info_df_filepath = info_experto_data_directory_path / 'info_test.xlsx'
@@ -215,22 +220,24 @@ def test_integration_info_experto_data_preparation():
     expected_result_info_sueldo_df = pd.read_csv(expected_result_info_sueldo_path, encoding='latin-1', sep=';')
     expected_result_info_telefonos_df = pd.read_csv(expected_result_info_telefonos_path, encoding='latin-1', sep=';')
 
-    with mock.patch.object(GenerateDataInfo, 'info_experto_file_path', info_df_filepath):
-        with mock.patch.object(GenerateDataInfo, 'osiris_accounts_file_path', osiris_accounts_df):
+    patched_info_experto_file_path.return_value = info_df_filepath
+    patched_osiris_accounts_file_path.return_value = osiris_accounts_df
 
-            all_result_file_paths = GenerateDataInfo.process()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        saver = FileDataFrameSaver(output_path=Path(tmpdir))
+        GenerateDataInfo.process(dataframe_saver=saver)
 
-    for result_path in all_result_file_paths:
-        if 'info_patrimoniales' in result_path.name:
-            df_result_info_patrimoniales = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_q_vehiculos' in result_path.name:
-            df_result_info_q_vehiculos = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_mail' in result_path.name:
-            df_result_info_mail = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_sueldo' in result_path.name:
-            df_result_info_sueldo = pd.read_csv(result_path, encoding='latin-1', sep=';')
-        elif 'info_telefonos' in result_path.name:
-            df_result_info_telefonos = pd.read_csv(result_path, encoding='latin-1', sep=';')
+        for result_path in saver.get_saved_files().values():
+            if 'info_patrimoniales' in result_path.name:
+                df_result_info_patrimoniales = pd.read_csv(result_path, encoding='latin-1', sep=';')
+            elif 'info_q_vehiculos' in result_path.name:
+                df_result_info_q_vehiculos = pd.read_csv(result_path, encoding='latin-1', sep=';')
+            elif 'info_mail' in result_path.name:
+                df_result_info_mail = pd.read_csv(result_path, encoding='latin-1', sep=';')
+            elif 'info_sueldo' in result_path.name:
+                df_result_info_sueldo = pd.read_csv(result_path, encoding='latin-1', sep=';')
+            elif 'info_telefonos' in result_path.name:
+                df_result_info_telefonos = pd.read_csv(result_path, encoding='latin-1', sep=';')
 
     pd.testing.assert_frame_equal(expected_result_info_patrimoniales_df, df_result_info_patrimoniales)
     pd.testing.assert_frame_equal(expected_result_info_q_vehiculos_df, df_result_info_q_vehiculos)
