@@ -83,7 +83,10 @@ app_layout = html.Div([
                         dbc.Row([
                             dbc.Col(
                                 [
-                                    StepTitle.create(title_step="1. Archivo cuentas de osiris"),
+                                    StepTitle.create(
+                                        title_step="1. Archivo cuentas de osiris",
+                                        step_id='external-data-provider',
+                                    ),
                                     Upload.create(
                                         id=osiris_accounts,
                                         multiple_files=False,
@@ -94,7 +97,7 @@ app_layout = html.Div([
                             dbc.Col(
                                 [
                                     StepTitle.create(
-                                        title_step="2. Archivo datos del proveedor"),
+                                        title_step="2. Archivo datos del proveedor", step_id='osiris-accounts'),
                                     Upload.create(
                                         id=external_providers,
                                         multiple_files=False,
@@ -108,12 +111,7 @@ app_layout = html.Div([
                                 dbc.Button("Preparar datos", id="prepare_data_provider_button", color="primary"),
                             )
                         ]),
-                        dbc.Row([
-                            dbc.Col(
-                                'Resultado',
-                                id='result_prepare_data_provider',
-                            ),
-                        ]),
+                        DownloadButtonsArea.create("prepare-external-data-provider"),
                         dcc.Store(id='store-data-provider', data={}, clear_data=False, storage_type='session')
                     ],
                     id="tab_data_providers",
