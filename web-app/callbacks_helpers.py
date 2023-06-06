@@ -40,10 +40,10 @@ def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, decoded, co
                     style={'marginRight': '0.5rem', 'fontSize': 'large', 'marginTop': '1rem'}
                 ),
             ], id={
-                "type": "btn-download",
+                "type": "btn-download-accounts",
                 "id": key
             }, className="download-button"),
-            dcc.Download(id={"type": "download-csv", "id": key})
+            dcc.Download(id={"type": "download-csv-accounts", "id": key})
         ]))
 
     data_dict = {key: value.to_csv() for key, value in dfs.items()}
@@ -75,10 +75,10 @@ def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, decoded, con
                     style={'marginRight': '0.5rem', 'fontSize': 'large', 'marginTop': '1rem'}
                 ),
             ], id={
-                "type": "btn-download",
+                "type": "btn-download-accounts",
                 "id": key
             }, className="download-button"),
-            dcc.Download(id={"type": "download-csv", "id": key})
+            dcc.Download(id={"type": "download-csv-accounts", "id": key})
         ]))
 
     data_dict = {key: value.to_csv() for key, value in dfs.items()}

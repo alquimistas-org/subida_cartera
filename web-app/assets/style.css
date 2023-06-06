@@ -78,7 +78,7 @@ a.upload-link-container{
 
 .download-button{
     width: 30rem;
-    border-radius: 10px;
+    border-radius: 5px;
     color: #ffffff;
     background-color: #1d8ab6;
     border-color: #1d8ab6;
@@ -227,11 +227,20 @@ a.upload-link-container{
     display: flex;
     justify-content: center;
     margin-top: 3rem;
+
 }
 
-.completed-step-btn:hover{
+#complete-first-step-btn{
+    color: white;
+    background-color: #27c12a;
+    border-color: #27c12a;
+    border-radius: 5px;
+}
+
+#complete-first-step-btn:hover{
     cursor: pointer;
-    color: #24c927;
+    background-color: #6ed570;
+    border-color: #6ed570;
 }
 
 .fa-circle-check{
