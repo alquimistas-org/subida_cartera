@@ -49,15 +49,15 @@ def upload_csv(list_of_contents, client_selected):
         elif client_selected['selected_client'] == 'Comafi':
             download_buttons, data_dict = process_comafi_client(dash_dataframe_saver, decoded, content_string)
 
-        return download_buttons, data_dict, {'display': 'block'}
+        return download_buttons, data_dict, {'display': 'block', 'textTransform': 'lowercase'}
 
     else:
         raise PreventUpdate
 
 
 @app.callback(
-    Output({"type": "download-csv", "id": MATCH}, "data"),
-    Input({"type": "btn-download", "id": MATCH}, "n_clicks"),
+    Output({"type": "download-csv-accounts", "id": MATCH}, "data"),
+    Input({"type": "btn-download-accounts", "id": MATCH}, "n_clicks"),
     Input('stored-dfs', 'data'),
     prevent_initial_call=True,
     allow_duplicate=True,
@@ -143,7 +143,7 @@ def process_modal_error(list_of_contents, client_selected, filename, n_clicks, s
         raise PreventUpdate
 
     elif ctx.triggered_id == 'accept-btn-error':
-        return not is_open, []
+        return not is_open, html.Div(id="accept-btn-error")
 
     else:
         raise PreventUpdate

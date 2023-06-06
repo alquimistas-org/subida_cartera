@@ -52,7 +52,7 @@ app_layout = html.Div([
                                 multiple_files=False,
                                 upload_disabled=False,
                             ),
-                            DownloadButtonsArea.create("prepare-accounts"),
+                            DownloadButtonsArea.create("prepare"),
                             html.Div([
                                 CompleteStepBtn.create(id='complete-first-step-btn')
                                 ],

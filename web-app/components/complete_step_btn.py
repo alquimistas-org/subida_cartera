@@ -6,12 +6,12 @@ class CompleteStepBtn:
     @classmethod
     def create(self, id: str):
 
-        btn = html.Div(
+        btn = html.Button(
             [
-                html.Span("Completar este paso", className="completed-step-btn", style={"fontSize": "x-large"}),
+                html.Span("Completar este paso", className="completed-step-btn", style={"fontSize": "medium"}),
                 html.I(
                     className="fa-regular fa-circle-check",
-                    style={"color": "#24c927", 'marginLeft': '0.7rem', 'fontSize': 'x-large'},
+                    style={"color": "white", 'marginLeft': '0.7rem', 'fontSize': 'x-large'},
                     id="check-step-icon"
                 ),
             ],
