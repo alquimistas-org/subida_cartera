@@ -30,6 +30,7 @@ from utils.cuentas_processor_utils import (
     read_data,
     process_cuentas
 )
+from exceptions.exceptions import validate_columns
 
 
 def Preparacion_Cuentas(
@@ -42,6 +43,7 @@ def Preparacion_Cuentas(
 
     try:
         cr = read_data(cr_file_path)
+        validate_columns(cr, NARANJA_FIELDS)
         df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
         write_csv(df_os, dataframe_saver)
     except Exception:
