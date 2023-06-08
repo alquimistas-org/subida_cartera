@@ -2,8 +2,8 @@ import dash
 import dash_bootstrap_components as dbc
 import os
 
-
-assets_path = os.getcwd() + '/assets'
+web_app_path = os.getenv("WEB_APP_PATH", "")
+assets_path = os.getcwd() + f'{web_app_path}/assets'
 external_stylesheets = [
     dbc.themes.MATERIA,
     dbc.icons.FONT_AWESOME,

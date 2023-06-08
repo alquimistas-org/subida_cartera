@@ -10,6 +10,8 @@ RUN pipenv install --dev --system
 
 ENV DEBUG="0"
 
+ENV WEB_APP_PATH="/web-app"
+
 COPY . .
 
 EXPOSE 8050
