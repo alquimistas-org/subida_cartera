@@ -17,6 +17,10 @@ from src.data_info import GenerateDataInfo
 from src.prepare_comafi_accounts import prepare_comafi_accounts
 from src.risk_data import risk_data
 from src.subida import Preparacion_Cuentas
+from web_constants import (
+    COMAFI,
+    NARANJA,
+    )
 
 
 def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, decoded, content_string):
@@ -150,3 +154,13 @@ def process_external_provider_data(
     result_data = {df_name: df.to_csv(index=False) for df_name, df in dfs.items()}
 
     return download_buttons, result_data
+
+
+CLIENT_STRATEGY = {
+    COMAFI: process_comafi_client,
+    NARANJA: process_naranja_client,
+}
+
+
+def process_client(strategy, dash_dataframe_saver: DashDataFrameSaver, decoded, content_string):
+    return CLIENT_STRATEGY[strategy](dash_dataframe_saver, decoded, content_string)

@@ -1,0 +1,3 @@
+
+COMAFI = 'Comafi'
+NARANJA = 'Naranja'

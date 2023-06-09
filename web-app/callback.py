@@ -16,9 +16,8 @@ from src.adapters.dash_dataframe_saver import DashDataFrameSaver
 from callbacks_helpers import (
     display_modal_error,
     get_id_and_value_from_context,
-    process_comafi_client,
     process_external_provider_data,
-    process_naranja_client,
+    process_client,
 )
 from components.download_area import DownloadButtonsArea
 from components.upload import Upload
@@ -43,11 +42,13 @@ def upload_csv(list_of_contents, client_selected):
         dash_dataframe_saver = DashDataFrameSaver()
         download_buttons = []
         data_dict = {}
-        if client_selected['selected_client'] == 'Naranja':
-            download_buttons, data_dict = process_naranja_client(dash_dataframe_saver, decoded, content_string)
 
-        elif client_selected['selected_client'] == 'Comafi':
-            download_buttons, data_dict = process_comafi_client(dash_dataframe_saver, decoded, content_string)
+        download_buttons, data_dict = process_client(
+            client_selected['selected_client'],
+            dash_dataframe_saver,
+            decoded,
+            content_string,
+            )
 
         return download_buttons, data_dict, {'display': 'block', 'textTransform': 'lowercase'}
 
