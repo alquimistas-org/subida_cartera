@@ -1,13 +1,15 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
-from components.clear_data import ClearData
-from components.download_area import DownloadButtonsArea
-from components.upload import Upload
-from components.step_title import StepTitle
-from components.complete_step_btn import CompleteStepBtn
-from components.clients_dropdown import ClientsDropdown
-from components.external_data_providers_dropdown import ExternalDataProvidersDropDown
+from components import (
+    ClearData,
+    ClientsDropdown,
+    CompleteStepBtn,
+    DownloadButtonsArea,
+    ExternalDataProvidersDropDown,
+    StepTitle,
+    Upload,
+)
 from ids import (
     osiris_accounts,
     external_providers,

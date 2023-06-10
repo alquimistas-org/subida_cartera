@@ -10,7 +10,7 @@ from dash import (
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
-from components.download_button import DownloadButton
+from components import DownloadButton
 from src.adapters.dash_dataframe_saver import DashDataFrameSaver
 from src.constants.constants import ACCOUNTS_MODEL_CSV_PATH
 from src.data_info import GenerateDataInfo

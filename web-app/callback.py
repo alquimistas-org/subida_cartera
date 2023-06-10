@@ -1,6 +1,5 @@
 import io
 
-from components.step_title import StepTitle
 
 from app import app
 from dash import (
@@ -21,9 +20,12 @@ from callbacks_helpers import (
     process_external_provider_data,
     process_client,
 )
-from components.download_area import DownloadButtonsArea
-from components.complete_step_btn import CompleteStepBtn
-from components.upload import Upload
+from components import (
+    CompleteStepBtn,
+    DownloadButtonsArea,
+    StepTitle,
+    Upload,
+    )
 from ids import (
     external_providers,
     osiris_accounts,
