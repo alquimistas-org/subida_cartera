@@ -40,7 +40,10 @@ app_layout = html.Div([
                             html.P("Selecciona un cliente", className="selec-client")
                         ]),
                         ClientsDropdown.create(),
-                        StepTitle.create(title_step="1. Subir archivo para preparación cuentas", step_id='first'),
+                        StepTitle.create(
+                            title_step="1. Subir archivo para preparación cuentas",
+                            step_id='client-first'
+                        ),
                         html.Div(
                             id="filename-uploaded-first-step",
                             style={'display': 'none'},

@@ -1,5 +1,7 @@
 import io
 
+from components.step_title import StepTitle
+
 from app import app
 from dash import (
     Output,
@@ -150,11 +152,13 @@ def process_modal_error(list_of_contents, client_selected, filename, n_clicks, s
         raise PreventUpdate
 
 
-@app.callback(Output('icon-success-uploadfirst', 'children'),
-              Output('first-step-container', 'style'),
-              Input('complete-first-step-btn', 'n_clicks'),
-              prevent_initial_call=True,
-              allow_duplicate=True,)
+@app.callback(
+    Output(StepTitle.get_step_id('client-first'), 'children'),
+    Output('first-step-container', 'style'),
+    Input('complete-first-step-btn', 'n_clicks'),
+    prevent_initial_call=True,
+    allow_duplicate=True,
+)
 def mark_fist_step_as_completed(n_clicks):
     if not n_clicks:
         raise PreventUpdate
