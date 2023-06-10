@@ -115,7 +115,7 @@ app_layout = html.Div([
                             )
                         ]),
                         DownloadButtonsArea.create("prepare-external-data-provider"),
-                        dcc.Store(id='store-data-provider', data={}, clear_data=False, storage_type='session')
+                        dcc.Store(id='store-data-provider', data={}, clear_data=False, storage_type='memory')
                     ],
                     id="tab_data_providers",
                     tab_id="tab_data_providers",
