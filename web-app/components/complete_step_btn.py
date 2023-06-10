@@ -18,5 +18,9 @@ class CompleteStepBtn:
             id=id,
             style={'display': 'none'}
         )
+        return html.Div(
+            btn,
+            className='completed-step-bnt-container'
+        )
 
         return btn
