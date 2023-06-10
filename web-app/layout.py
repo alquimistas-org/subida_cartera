@@ -56,7 +56,7 @@ app_layout = html.Div([
                                 upload_disabled=False,
                             ),
                             DownloadButtonsArea.create("prepare"),
-                            CompleteStepBtn.create(id='complete-first-step-btn'),
+                            CompleteStepBtn.create(id='client-first'),
 
                         ], id='first-step-container'),
                         dcc.Store(id='stored-dfs', clear_data=False, storage_type='memory'),
