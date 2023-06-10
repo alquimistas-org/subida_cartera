@@ -4,7 +4,7 @@ from dash import html
 class CompleteStepBtn:
 
     @classmethod
-    def create(self, id: str):
+    def create(cls, id: str):
 
         btn = html.Button(
             [
