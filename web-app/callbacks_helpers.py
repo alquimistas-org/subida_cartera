@@ -24,10 +24,12 @@ from web_constants import (
 
 
 def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, decoded, content_string):
-    Preparacion_Cuentas(
+    message = Preparacion_Cuentas(
             cr_file_path=io.BytesIO(decoded),
             dataframe_saver=dash_dataframe_saver
         )
+    if message:
+        return None, None, message
 
     dfs = dash_dataframe_saver.get_saved_dfs()
 
@@ -53,7 +55,7 @@ def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, decoded, co
     data_dict = {key: value.to_csv() for key, value in dfs.items()}
     data_dict['cr'] = content_string
 
-    return download_buttons, data_dict
+    return download_buttons, data_dict, None
 
 
 def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, decoded, content_string):
@@ -91,7 +93,9 @@ def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, decoded, con
     return download_buttons, data_dict
 
 
-def display_modal_error(client_selected, filename):
+def display_modal_error(client_selected, filename, message=""):
+
+    message_display = f"\n{message}" if message else ""
 
     modal_header = dbc.ModalHeader([
         html.I(
@@ -105,6 +109,8 @@ def display_modal_error(client_selected, filename):
             html.Span("No es posible procesar el archivo "),
             html.Span(filename, id="filename-error"),
             html.Span(f" para {client_selected['selected_client']}"),
+            html.Br(),
+            html.Span(message_display)
         ],
         style={'fontSize': 'large', 'fontWeight': 400})
     modal_footer = dbc.ModalFooter(

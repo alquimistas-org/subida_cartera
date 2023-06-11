@@ -12,6 +12,7 @@ from driver_email import enviar_mail_con_adjuntos
 from constants.constants import (
     ACCOUNT_PREP_COL,
     CR_FILE_PATH,
+    CR_REQUIRED_FIELDS,
     EMERIX_FILE_PATH,
     OSIRIS_ACCOUNTS_FILE_PATH,
     PASSWORD,
@@ -30,7 +31,10 @@ from utils.cuentas_processor_utils import (
     read_data,
     process_cuentas
 )
-from exceptions.exceptions import validate_columns
+from validations.validations import (
+    validate_columns,
+    IncorrectColumnsError,
+)
 
 
 def Preparacion_Cuentas(
@@ -43,10 +47,17 @@ def Preparacion_Cuentas(
 
     try:
         cr = read_data(cr_file_path)
-        validate_columns(cr, NARANJA_FIELDS)
+        validate_columns(cr, CR_REQUIRED_FIELDS)
         df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
         write_csv(df_os, dataframe_saver)
-    except Exception:
+    except IncorrectColumnsError as e:
+        print(e.message)
+        logging.exception(e.message)
+        return e.message
+    except Exception as e:
+        error_message = traceback.format_exc()
+        print(error_message)
+        print(f"Error: {e}")
         logging.exception("Failed read csv")
         return
 
