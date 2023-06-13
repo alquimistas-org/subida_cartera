@@ -7,6 +7,7 @@ from .complete_step_btn import CompleteStepBtn
 from .download_area import DownloadButtonsArea
 from .download_button import DownloadButton
 from .external_data_providers_dropdown import ExternalDataProvidersDropDown
+from .filename_uploaded import FilenameUploaded
 from .step_title import StepTitle
 from .upload import Upload
 

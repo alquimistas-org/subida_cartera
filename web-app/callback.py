@@ -23,6 +23,7 @@ from callbacks_helpers import (
 from components import (
     CompleteStepBtn,
     DownloadButtonsArea,
+    FilenameUploaded,
     StepTitle,
     Upload,
     )
@@ -80,8 +81,8 @@ def download_csv(n_clicks, dfs):
 
 @app.callback(
     Output(Upload.get_collapse_id('prepare-accounts'), "is_open"),
-    Output("filename-uploaded-first-step", "children"),
-    Output("filename-uploaded-first-step", "style"),
+    Output(FilenameUploaded.get_id('client-first-step'), "children"),
+    Output(FilenameUploaded.get_id('client-first-step'), "style"),
     Input(Upload.get_upload_id('prepare-accounts'), "filename"),
     State(Upload.get_collapse_id('prepare-accounts'), "is_open"),
     Input('client-store', 'data'),

@@ -7,6 +7,7 @@ from components import (
     CompleteStepBtn,
     DownloadButtonsArea,
     ExternalDataProvidersDropDown,
+    FilenameUploaded,
     StepTitle,
     Upload,
 )
@@ -46,11 +47,7 @@ app_layout = html.Div([
                             title_step="1. Subir archivo para preparación cuentas",
                             step_id='client-first'
                         ),
-                        html.Div(
-                            id="filename-uploaded-first-step",
-                            style={'display': 'none'},
-                            className='filaname-container'
-                        ),
+                        FilenameUploaded.create('client-first-step'),
                         html.Div([
                             Upload.create(
                                 id="prepare-accounts",
