@@ -1,7 +1,7 @@
 import io
 from pathlib import Path
 from typing import Union
-
+import logging
 import pandas as pd
 
 from constants.constants import (
@@ -40,6 +40,7 @@ def risk_data(
         risk = pd.read_csv(risk_file_path, sep=';', encoding='latin_1', dtype=str, index_col=False, usecols=col_list)
     except Exception:
         risk = pd.read_csv(risk_file_path, sep=';', encoding='ANSI', dtype=str, index_col=False, usecols=col_list)
+        logging.exception("Failed read csv - risk data")
     df_risk = risk[['DNI'] + list(col_numbers.keys()) + ['NSE']]
 
     df_risk = df_risk.rename(columns=col_numbers, inplace=False)

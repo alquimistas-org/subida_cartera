@@ -14,6 +14,7 @@ from constants.constants import (
 )
 from adapters.file_dataframe_saver import FileDataFrameSaver
 from ports.dataframe_saver import DataFrameSaver
+import logging
 
 
 def prepare_comafi_accounts(
@@ -44,8 +45,8 @@ def prepare_comafi_accounts(
 
         fill_data(df, df_os)
         write_csv_per_subcliente(df_os, dataframe_saver)
-    except Exception as e:
-        print(f'Error: {e}')
+    except Exception:
+        logging.exception("Fail to read file - Comafi")
         return
 
 
@@ -54,6 +55,7 @@ def read_comafi_data(accounts_models: Path) -> pd.DataFrame:
         df_os = pd.read_csv(accounts_models, encoding='latin_1', sep=';')
     except Exception:
         df_os = pd.read_csv(accounts_models, encoding='ANSI', sep=';')
+        logging.exception("Failed read csv")
 
     return df_os
 

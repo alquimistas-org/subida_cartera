@@ -2,7 +2,7 @@ from cmd import Cmd
 import io
 import traceback
 from typing import Union
-
+import logging
 import pandas as pd
 
 from adapters.file_dataframe_saver import FileDataFrameSaver
@@ -44,8 +44,8 @@ def Preparacion_Cuentas(
         cr = read_data(cr_file_path)
         df_os = process_cuentas(cr, NARANJA_FIELDS, ACCOUNT_PREP_COL)
         write_csv(df_os, dataframe_saver)
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
+        logging.exception("Failed read csv")
         return
 
 
