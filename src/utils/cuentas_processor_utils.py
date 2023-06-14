@@ -1,5 +1,5 @@
 from datetime import date
-
+import logging
 import pandas as pd
 from pathlib import Path
 from typing import Union
@@ -18,6 +18,7 @@ def read_data(file_path: Union[str, Path]) -> pd.DataFrame:
     try:
         return pd.read_csv(file_path, sep=';', encoding='latin_1', dtype=str)
     except Exception:
+        logging.exception("Failed to read csv")
         return pd.read_csv(file_path, sep=';', encoding='ANSI', dtype=str)
 
 

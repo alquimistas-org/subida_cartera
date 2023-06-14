@@ -1,6 +1,9 @@
 import argparse
+import logging
 import os
 import sys
+import sentry_sdk
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/src")
@@ -11,6 +14,18 @@ from callback import upload_csv   # noqa
 
 
 app.layout = app_layout
+
+sentry_logging = LoggingIntegration(
+    level=logging.INFO,        # Capture info and above as breadcrumbs
+    event_level=logging.ERROR  # Send errors as events
+)
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    integrations=[
+        sentry_logging,
+    ],
+    traces_sample_rate=1.0,
+)
 
 
 def argument_parser() -> bool:

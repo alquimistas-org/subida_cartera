@@ -1,7 +1,7 @@
 import io
 from pathlib import Path
 from typing import Union
-
+import logging
 import pandas as pd
 
 from clean_numbers import clean_numbers
@@ -27,6 +27,8 @@ def read_osiris_accounts(osiris_accounts_file_path: Union[Path, io.BytesIO]) -> 
         uploaded_accounts = pd.read_csv(osiris_accounts_file_path, encoding='latin_1', sep=';', dtype=str)
     except Exception:
         uploaded_accounts = pd.read_csv(osiris_accounts_file_path, encoding='ANSI', sep=';', dtype=str)
+        logging.exception("Failed read csv")
+
     uploaded_accounts = uploaded_accounts[['Cuenta', 'Mat. Unica']].rename(
         columns={
             'Mat. Unica': 'DNI'
@@ -41,6 +43,7 @@ def read_cr_data(cr_file_path: Path = CR_FILE_PATH, columns_to_use: list = DATA_
         cr = pd.read_csv(cr_file_path, sep=';', encoding='latin_1', dtype=str)
     except Exception:
         cr = pd.read_csv(cr_file_path, sep=';', encoding='ANSI', dtype=str)
+        logging.exception("Failed read csv")
 
     df_cr = cr[columns_to_use].rename(columns={'NRODOC': 'DNI'}, inplace=False).copy()
     return df_cr

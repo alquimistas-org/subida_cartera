@@ -1,10 +1,9 @@
 import io
 from pathlib import Path
 from typing import Union
-
 import numpy as np
 import pandas as pd
-
+import logging
 from constants.constants import (
     DATA_INFO_COLUMNS,
     DATA_INFO_COLUMNS_RENAME,
@@ -41,6 +40,7 @@ class GenerateDataInfo:
         df_info['q_vehiculos'] = df_info['q_vehiculos'].fillna('0')
         df_info = pd.merge(uploaded_accounts, df_info, how="inner", on="DNI")
         if df_info.empty:
+            logging.exception("Failed coincidence between df_info and uploaded_accounts")
             raise Exception('No hay coincidencia de datos para DO_INFO')
         return df_info
 
@@ -93,11 +93,8 @@ class GenerateDataInfo:
         df: pd.DataFrame,
         dataframe_saver: DataFrameSaver,
     ) -> None:
-        try:
-            emails = cls.get_emails(df=df)
-        except Exception as e:
-            print(e)
-            emails = pd.Series()
+
+        emails = cls.get_emails(df=df)
 
         Escribir_Datos_Osiris(
             emails,

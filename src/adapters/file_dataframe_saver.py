@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
+import logging
 
 
 class FileDataFrameSaver:
@@ -35,6 +36,7 @@ class FileDataFrameSaver:
                 encoding='ANSI',
                 index=False
             )
+            logging.exception("Failed to write csv")
 
         self.saved_dfs[name] = df
         self.saved_files[name] = result_file_path
