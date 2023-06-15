@@ -1,13 +1,16 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
-from components.clear_data import ClearData
-from components.download_area import DownloadButtonsArea
-from components.upload import Upload
-from components.step_title import StepTitle
-from components.complete_step_btn import CompleteStepBtn
-from components.clients_dropdown import ClientsDropdown
-from components.external_data_providers_dropdown import ExternalDataProvidersDropDown
+from components import (
+    ClearData,
+    ClientsDropdown,
+    CompleteStepBtn,
+    DownloadButtonsArea,
+    ExternalDataProvidersDropDown,
+    FilenameUploaded,
+    StepTitle,
+    Upload,
+)
 from ids import (
     osiris_accounts,
     external_providers,
@@ -40,12 +43,11 @@ app_layout = html.Div([
                             html.P("Selecciona un cliente", className="selec-client")
                         ]),
                         ClientsDropdown.create(),
-                        StepTitle.create(title_step="1. Subir archivo para preparación cuentas", step_id='first'),
-                        html.Div(
-                            id="filename-uploaded-first-step",
-                            style={'display': 'none'},
-                            className='filaname-container'
+                        StepTitle.create(
+                            title_step="1. Subir archivo para preparación cuentas",
+                            step_id='client-first'
                         ),
+                        FilenameUploaded.create('client-first-step'),
                         html.Div([
                             Upload.create(
                                 id="prepare-accounts",
@@ -53,11 +55,8 @@ app_layout = html.Div([
                                 upload_disabled=False,
                             ),
                             DownloadButtonsArea.create("prepare"),
-                            html.Div([
-                                CompleteStepBtn.create(id='complete-first-step-btn')
-                                ],
-                                className='completed-step-bnt-container'
-                            ),
+                            CompleteStepBtn.create(id='client-first'),
+
                         ], id='first-step-container'),
                         dcc.Store(id='stored-dfs', clear_data=False, storage_type='memory'),
                         dcc.Store(
@@ -112,7 +111,7 @@ app_layout = html.Div([
                             )
                         ]),
                         DownloadButtonsArea.create("prepare-external-data-provider"),
-                        dcc.Store(id='store-data-provider', data={}, clear_data=False, storage_type='session')
+                        dcc.Store(id='store-data-provider', data={}, clear_data=False, storage_type='memory')
                     ],
                     id="tab_data_providers",
                     tab_id="tab_data_providers",

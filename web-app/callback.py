@@ -1,5 +1,6 @@
 import io
 
+
 from app import app
 from dash import (
     Output,
@@ -19,21 +20,28 @@ from callbacks_helpers import (
     process_external_provider_data,
     process_client,
 )
-from components.download_area import DownloadButtonsArea
-from components.upload import Upload
+from components import (
+    CompleteStepBtn,
+    DownloadButtonsArea,
+    FilenameUploaded,
+    StepTitle,
+    Upload,
+    )
 from ids import (
     external_providers,
     osiris_accounts,
 )
 
 
-@app.callback(Output(DownloadButtonsArea.get_id("prepare"), 'children'),
-              Output('stored-dfs', 'data'),
-              Output('complete-first-step-btn', 'style'),
-              Input(Upload.get_upload_id('prepare-accounts'), 'contents'),
-              Input('client-store', 'data'),
-              prevent_initial_call=True,
-              allow_duplicate=True,)
+@app.callback(
+    Output(DownloadButtonsArea.get_id("prepare"), 'children'),
+    Output('stored-dfs', 'data'),
+    Output(CompleteStepBtn.get_btn_id('client-first'), 'style'),
+    Input(Upload.get_upload_id('prepare-accounts'), 'contents'),
+    Input('client-store', 'data'),
+    prevent_initial_call=True,
+    allow_duplicate=True,
+)
 def upload_csv(list_of_contents, client_selected):
 
     if list_of_contents and client_selected.get('selected_client'):
@@ -73,8 +81,8 @@ def download_csv(n_clicks, dfs):
 
 @app.callback(
     Output(Upload.get_collapse_id('prepare-accounts'), "is_open"),
-    Output("filename-uploaded-first-step", "children"),
-    Output("filename-uploaded-first-step", "style"),
+    Output(FilenameUploaded.get_id('client-first-step'), "children"),
+    Output(FilenameUploaded.get_id('client-first-step'), "style"),
     Input(Upload.get_upload_id('prepare-accounts'), "filename"),
     State(Upload.get_collapse_id('prepare-accounts'), "is_open"),
     Input('client-store', 'data'),
@@ -150,11 +158,13 @@ def process_modal_error(list_of_contents, client_selected, filename, n_clicks, s
         raise PreventUpdate
 
 
-@app.callback(Output('icon-success-uploadfirst', 'children'),
-              Output('first-step-container', 'style'),
-              Input('complete-first-step-btn', 'n_clicks'),
-              prevent_initial_call=True,
-              allow_duplicate=True,)
+@app.callback(
+    Output(StepTitle.get_step_id('client-first'), 'children'),
+    Output('first-step-container', 'style'),
+    Input(CompleteStepBtn.get_btn_id('client-first'), 'n_clicks'),
+    prevent_initial_call=True,
+    allow_duplicate=True,
+)
 def mark_fist_step_as_completed(n_clicks):
     if not n_clicks:
         raise PreventUpdate
