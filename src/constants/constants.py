@@ -169,6 +169,7 @@ RISK_FILE_PATH = Path('./risk.csv')
 EMERIX_FILE_PATH = Path('./emerix.xlsx')
 YEARS_TO_ADD = 3
 ACCOUNTS_MODEL_CSV_PATH = Path('modelos/modelo_cuentas.csv')
+DATA_MODEL_CSV_PATH = Path('modelos/modelo_datos.csv')
 
 CR_REQUIRED_FIELDS = [
     'NRODOC', 'NOMBRECOMPLETO', 'CALLE', 'NUMERO', 'PISO', 'DEPTO',

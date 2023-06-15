@@ -77,7 +77,7 @@ a.upload-link-container{
 }
 
 .download-button{
-    width: 30rem;
+    width: 40rem;
     border-radius: 5px;
     color: #ffffff;
     background-color: #1d8ab6;
@@ -230,14 +230,27 @@ a.upload-link-container{
 
 }
 
-#complete-first-step-btn{
+#complete-step-btn-client-first{
     color: white;
     background-color: #27c12a;
     border-color: #27c12a;
     border-radius: 5px;
 }
 
-#complete-first-step-btn:hover{
+#complete-step-btn-client-first:hover{
+    cursor: pointer;
+    background-color: #6ed570;
+    border-color: #6ed570;
+}
+
+#complete-second-step-btn{
+    color: white;
+    background-color: #27c12a;
+    border-color: #27c12a;
+    border-radius: 5px;
+}
+
+#complete-second-step-btn:hover{
     cursor: pointer;
     background-color: #6ed570;
     border-color: #6ed570;
