@@ -65,6 +65,7 @@ app_layout = html.Div([
                             clear_data=False,
                             storage_type='memory'
                         ),
+                        dcc.Store(id='exception-storage', data={}, clear_data=False, storage_type='session'),
                         dcc.Location(id='url', refresh=True),
                         dbc.Modal([
                             dbc.ModalFooter(

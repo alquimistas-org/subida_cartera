@@ -37,6 +37,7 @@ from ids import (
     Output(DownloadButtonsArea.get_id("prepare"), 'children'),
     Output('stored-dfs', 'data'),
     Output(CompleteStepBtn.get_btn_id('client-first'), 'style'),
+    Output('exception-storage', 'data'),
     Input(Upload.get_upload_id('prepare-accounts'), 'contents'),
     Input('client-store', 'data'),
     prevent_initial_call=True,
@@ -51,14 +52,17 @@ def upload_csv(list_of_contents, client_selected):
         download_buttons = []
         data_dict = {}
 
-        download_buttons, data_dict = process_client(
+        download_buttons, data_dict, message = process_client(
             client_selected['selected_client'],
             dash_dataframe_saver,
             decoded,
             content_string,
             )
 
-        return download_buttons, data_dict, {'display': 'block', 'textTransform': 'lowercase'}
+        if message:
+            return None, None, None, message
+
+        return download_buttons, data_dict, {'display': 'block', 'textTransform': 'lowercase'}, None
 
     else:
         raise PreventUpdate
@@ -138,17 +142,21 @@ def reload_page(n_clicks):
               Input(Upload.get_upload_id('prepare-accounts'), "filename"),
               Input("accept-btn-error", "n_clicks"),
               Input('stored-dfs', 'data'),
+              Input('exception-storage', 'data'),
               State("error-client-filename", "is_open"),
               prevent_initial_call=True,
               suppress_callback_exceptions=True)
-def process_modal_error(list_of_contents, client_selected, filename, n_clicks, stored_data, is_open):
+def process_modal_error(
+    list_of_contents, client_selected, filename, n_clicks,
+    stored_data, exception_storage, is_open
+):
 
     if not list_of_contents and not client_selected:
         raise PreventUpdate
 
     if ctx.triggered_id == Upload.get_upload_id('prepare-accounts'):
-        if not stored_data:
-            return display_modal_error(client_selected, filename)
+        if exception_storage or not stored_data:
+            return display_modal_error(client_selected, filename, exception_storage)
         raise PreventUpdate
 
     elif ctx.triggered_id == 'accept-btn-error':
