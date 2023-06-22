@@ -31,6 +31,22 @@ from ids import (
     external_providers,
     osiris_accounts,
 )
+from web_constants import (
+    NARANJA_DATA,
+    )
+
+
+@app.callback(Output('preparacion-cuentas', 'style'),
+              Input('client-store', 'data'),)
+def show_first_step_accounts(selected_client):
+    client = selected_client.get('selected_client')
+    return {'display': 'none'} if client == '-' else {'display': 'block'}
+
+
+@app.callback(Output('external-provider-div', 'style'),
+              Input('external_data_providers_dropdown', 'value'),)
+def show_data_provider_processor(selected_provider):
+    return {'display': 'none'} if selected_provider == '-' else {'display': 'block'}
 
 
 @app.callback(
@@ -54,15 +70,56 @@ def upload_csv(list_of_contents, client_selected):
 
         download_buttons, data_dict, message = process_client(
             client_selected['selected_client'],
-            dash_dataframe_saver,
-            decoded,
-            content_string,
+            dash_dataframe_saver=dash_dataframe_saver,
+            cr_decoded=decoded,
+            cr_content_string=content_string,
             )
 
         if message:
             return None, None, None, message
 
         return download_buttons, data_dict, {'display': 'block', 'textTransform': 'lowercase'}, None
+
+    else:
+        raise PreventUpdate
+
+
+@app.callback(Output(DownloadButtonsArea.get_id("prepare-data-btn"), 'children'),
+              Output('data-store', 'data'),
+              Input('data-client-store', 'data'),
+              Input('stored-dfs', 'data'),
+              Input(Upload.get_upload_id('prepare-data'), 'contents'),
+              prevent_initial_call=True,
+              allow_duplicate=True,
+              )
+def upload_data_csv(
+    client_selected,
+    store_dfs_data,
+    list_of_contents,
+                    ):
+
+    if list_of_contents:
+
+        client = client_selected.get('selected_client')
+
+        stored_cr = store_dfs_data.get('cr') if client == NARANJA_DATA else store_dfs_data.get('emerix')
+        decoded_stored_cr = base64.b64decode(stored_cr)
+
+        data_content_string = list_of_contents.split(',')[-1]
+        decoded_data_content_string = base64.b64decode(data_content_string)
+
+        dash_dataframe_saver = DashDataFrameSaver()
+
+        download_buttons = []
+        data_dict = {}
+
+        download_buttons, data_dict = process_client(
+            client=client,
+            dash_dataframe_saver=dash_dataframe_saver,
+            cr_decoded=decoded_stored_cr,
+            decoded_data_content_string=decoded_data_content_string,
+            )
+        return download_buttons, data_dict
 
     else:
         raise PreventUpdate
@@ -76,6 +133,21 @@ def upload_csv(list_of_contents, client_selected):
     allow_duplicate=True,
 )
 def download_csv(n_clicks, dfs):
+    if not n_clicks:
+        raise PreventUpdate
+    df_id = ctx.triggered_id["id"]
+    df = dfs[df_id]
+    return dcc.send_string(df, f"{df_id}.csv")
+
+
+@app.callback(
+    Output({"type": "download-csv-data", "id": MATCH}, "data"),
+    Input({"type": "btn-download-data", "id": MATCH}, "n_clicks"),
+    Input('data-store', 'data'),
+    prevent_initial_call=True,
+    allow_duplicate=True,
+)
+def download_csv_data(n_clicks, dfs):
     if not n_clicks:
         raise PreventUpdate
     df_id = ctx.triggered_id["id"]
@@ -102,12 +174,31 @@ def collapse_upload(filename, is_open, client_selected, data):
 
 
 @app.callback(
+    Output(Upload.get_collapse_id('prepare-data'), "is_open"),
+    Output("filename-uploaded-second-step", "children"),
+    Output("filename-uploaded-second-step", "style"),
+    Input(Upload.get_upload_id('prepare-data'), "filename"),
+    State(Upload.get_collapse_id('prepare-data'), "is_open"),
+    Input('data-client-store', 'data'),
+    Input('data-client-store', 'data'),
+)
+def collapse_upload_data(filename, is_open, client_selected, data):
+    if filename and client_selected and data:
+        return not is_open, html.Div([
+            filename,
+        ]), {'display': 'block'}
+    else:
+        raise PreventUpdate
+
+
+@app.callback(
     Output('client-store', 'data'),
+    Output('data-client-store', 'data'),
     Input('clients_dropdown', 'value'),
     prevent_initial_call=True,
 )
 def get_client(client):
-    return {'selected_client': client}
+    return {'selected_client': client}, {'selected_client': client + '_data'}
 
 
 @app.callback(
@@ -169,11 +260,12 @@ def process_modal_error(
 @app.callback(
     Output(StepTitle.get_step_id('client-first'), 'children'),
     Output('first-step-container', 'style'),
+    Output('preparacion-datos', 'style'),
     Input(CompleteStepBtn.get_btn_id('client-first'), 'n_clicks'),
     prevent_initial_call=True,
     allow_duplicate=True,
 )
-def mark_fist_step_as_completed(n_clicks):
+def mark_first_step_as_completed(n_clicks):
     if not n_clicks:
         raise PreventUpdate
     return (
@@ -183,6 +275,7 @@ def mark_fist_step_as_completed(n_clicks):
             style={'marginLeft': '10px', 'marginBottom': '10px'}
         ),
         {'display': 'none'},
+        {'display': 'block'},
         )
 
 

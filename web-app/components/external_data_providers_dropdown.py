@@ -4,6 +4,7 @@ from dash import dcc
 class ExternalDataProvidersDropDown:
 
     data_providers = {
+        '-': '-',
         'Riesgo Online': 'riesgo-online',
         'Info Experto': 'info-experto',
     }

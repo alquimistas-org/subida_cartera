@@ -1,6 +1,10 @@
 import numpy as np
 import pandas as pd
 
+from pathlib import Path
+from typing import Union
+import io
+
 from constants.constants import (
     CR_FILE_PATH,
     OSIRIS_ACCOUNTS_FILE_PATH,
@@ -19,7 +23,18 @@ class GenerateDataNaranja:
     cr_file_path = CR_FILE_PATH
 
     @classmethod
-    def process(cls, dataframe_saver: DataFrameSaver) -> None:
+    def process(
+        cls,
+        dataframe_saver: DataFrameSaver,
+        osiris_accounts_file_path: Union[Path, io.BytesIO] = None,
+        cr_file_path: Union[Path, io.BytesIO] = None,
+    ) -> None:
+
+        if cr_file_path:
+            cls.cr_file_path = cr_file_path
+        if osiris_accounts_file_path:
+            cls.osiris_accounts_file_path = osiris_accounts_file_path
+
         print('Preparando planillas de datos...')
         cr = cls._get_cr_data()
         cls._get_and_wirte_all_phones_from_cr(cr, dataframe_saver)

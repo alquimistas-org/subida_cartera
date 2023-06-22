@@ -13,6 +13,7 @@ from constants.constants import (
     ACCOUNT_PREP_COL,
     CR_FILE_PATH,
     CR_REQUIRED_FIELDS,
+    DATA_MODEL_CSV_PATH,
     EMERIX_FILE_PATH,
     OSIRIS_ACCOUNTS_FILE_PATH,
     PASSWORD,
@@ -63,17 +64,17 @@ def Preparacion_Cuentas(
 
 
 def Preparacion_Datos_Comafi(
-        emerix_file_path=EMERIX_FILE_PATH,
-        osiris_accounts_file_path=OSIRIS_ACCOUNTS_FILE_PATH,
+        emerix_file_path: Union[str, io.BytesIO, io.StringIO] = EMERIX_FILE_PATH,
+        osiris_accounts_file_path: Union[str, io.BytesIO, io.StringIO] = OSIRIS_ACCOUNTS_FILE_PATH,
         dataframe_saver: DataFrameSaver = None,
-):
-
+        data_models=DATA_MODEL_CSV_PATH,
+        ):
     if not dataframe_saver:
         dataframe_saver = FileDataFrameSaver(output_path=ROOT_PATH / 'Subida Osiris/')
 
     print('Preparando planillas de datos para comafi...')  # TODO: remove print statements when deleted CMD
 
-    df_subida = read_data(file_path='modelos/modelo_datos.csv')
+    df_subida = read_data(file_path=data_models)
 
     df_num = process_phone_numbers(file_path=emerix_file_path, cols=UTIL_COLS_COMAFI)
 

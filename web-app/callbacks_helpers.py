@@ -12,20 +12,116 @@ import dash_bootstrap_components as dbc
 
 from components import DownloadButton
 from src.adapters.dash_dataframe_saver import DashDataFrameSaver
-from src.constants.constants import ACCOUNTS_MODEL_CSV_PATH
+from src.constants.constants import (
+    ACCOUNTS_MODEL_CSV_PATH,
+    DATA_MODEL_CSV_PATH,
+    )
 from src.data_info import GenerateDataInfo
 from src.prepare_comafi_accounts import prepare_comafi_accounts
 from src.risk_data import risk_data
-from src.subida import Preparacion_Cuentas
+from src.subida import (
+    Preparacion_Cuentas,
+    Preparacion_Datos_Comafi,
+    )
 from web_constants import (
     COMAFI,
+    COMAFI_DATA,
     NARANJA,
+    NARANJA_DATA,
     )
+from src.data_naranja import GenerateDataNaranja
 
 
-def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, decoded, content_string):
+def procces_comafi_data(dash_dataframe_saver: DashDataFrameSaver, **kwargs):
+
+    if kwargs.get('cr_decoded'):
+        cr_decoded = kwargs.get('cr_decoded')
+    if kwargs.get('decoded_data_content_string'):
+        decoded_data_content_string = kwargs.get('decoded_data_content_string')
+
+    Preparacion_Datos_Comafi(
+        dataframe_saver=dash_dataframe_saver,
+        emerix_file_path=io.BytesIO(cr_decoded),
+        osiris_accounts_file_path=io.BytesIO(decoded_data_content_string),
+        data_models=Path(f'../{DATA_MODEL_CSV_PATH}'),
+        )
+
+    dfs = dash_dataframe_saver.get_saved_dfs()
+
+    if not dfs:
+        raise PreventUpdate
+
+    download_buttons = []
+    for key, _ in dfs.items():
+        download_buttons.append(html.Div([
+            html.Button([
+                html.P(f"{key}", style={'textTransform': 'lowercase', 'marginLeft': '1rem'}),
+                html.I(
+                    className="fa-solid fa-circle-down",
+                    style={'marginRight': '0.5rem', 'fontSize': 'large', 'marginTop': '1rem'}
+                ),
+            ], id={
+                "type": "btn-download-data",
+                "id": key
+            }, className="download-button"),
+            dcc.Download(id={"type": "download-csv-data", "id": key})
+        ]))
+
+    data_dict = {key: value.to_csv() for key, value in dfs.items()}
+    # data_dict['data'] = content_string
+
+    return download_buttons, data_dict
+
+
+def procces_naranja_data(dash_dataframe_saver: DashDataFrameSaver, **kwargs):
+
+    if kwargs.get('cr_decoded'):
+        cr_decoded = kwargs.get('cr_decoded')
+    if kwargs.get('decoded_data_content_string'):
+        decoded_data_content_string = kwargs.get('decoded_data_content_string')
+
+    GenerateDataNaranja.process(
+        dataframe_saver=dash_dataframe_saver,
+        cr_file_path=io.BytesIO(cr_decoded),
+        osiris_accounts_file_path=io.BytesIO(decoded_data_content_string),
+        )
+
+    dfs = dash_dataframe_saver.get_saved_dfs()
+
+    if not dfs:
+        raise PreventUpdate
+
+    download_buttons = []
+    for key, _ in dfs.items():
+        download_buttons.append(html.Div([
+            html.Button([
+                html.P(f"{key}", style={'textTransform': 'lowercase', 'marginLeft': '1rem'}),
+                html.I(
+                    className="fa-solid fa-circle-down",
+                    style={'marginRight': '0.5rem', 'fontSize': 'large', 'marginTop': '1rem'}
+                ),
+            ], id={
+                "type": "btn-download-data",
+                "id": key
+            }, className="download-button"),
+            dcc.Download(id={"type": "download-csv-data", "id": key})
+        ]))
+
+    data_dict = {key: value.to_csv() for key, value in dfs.items()}
+    # data_dict['data'] = content_string
+
+    return download_buttons, data_dict
+
+
+def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, **kwargs):
+
+    if kwargs.get('cr_decoded'):
+        cr_decoded = kwargs.get('cr_decoded')
+    if kwargs.get('cr_content_string'):
+        cr_content_string = kwargs.get('cr_content_string')
+
     message = Preparacion_Cuentas(
-            cr_file_path=io.BytesIO(decoded),
+            cr_file_path=io.BytesIO(cr_decoded),
             dataframe_saver=dash_dataframe_saver
         )
     if message:
@@ -53,18 +149,26 @@ def process_naranja_client(dash_dataframe_saver: DashDataFrameSaver, decoded, co
         ]))
 
     data_dict = {key: value.to_csv() for key, value in dfs.items()}
-    data_dict['cr'] = content_string
+    data_dict['cr'] = cr_content_string
 
     return download_buttons, data_dict, None
 
 
-def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, decoded, content_string):
+def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, **kwargs):
 
-    prepare_comafi_accounts(
-        emerix_file_path=io.BytesIO(decoded),
+    if kwargs.get('cr_decoded'):
+        cr_decoded = kwargs.get('cr_decoded')
+    if kwargs.get('cr_content_string'):
+        cr_content_string = kwargs.get('cr_content_string')
+
+    message = prepare_comafi_accounts(
+        emerix_file_path=io.BytesIO(cr_decoded),
         dataframe_saver=dash_dataframe_saver,
         accounts_models=Path(f'../{ACCOUNTS_MODEL_CSV_PATH}')
     )
+
+    if message:
+        return None, None, message
 
     dfs = dash_dataframe_saver.get_saved_dfs()
 
@@ -88,9 +192,9 @@ def process_comafi_client(dash_dataframe_saver: DashDataFrameSaver, decoded, con
         ]))
 
     data_dict = {key: value.to_csv() for key, value in dfs.items()}
-    data_dict['emerix'] = content_string
+    data_dict['emerix'] = cr_content_string
 
-    return download_buttons, data_dict
+    return download_buttons, data_dict, None
 
 
 def display_modal_error(client_selected, filename, message=""):
@@ -164,9 +268,23 @@ def process_external_provider_data(
 
 CLIENT_STRATEGY = {
     COMAFI: process_comafi_client,
+    COMAFI_DATA: procces_comafi_data,
     NARANJA: process_naranja_client,
+    NARANJA_DATA: procces_naranja_data,
 }
 
 
-def process_client(strategy, dash_dataframe_saver: DashDataFrameSaver, decoded, content_string):
-    return CLIENT_STRATEGY[strategy](dash_dataframe_saver, decoded, content_string)
+def process_client(
+        client: str,
+        dash_dataframe_saver: DashDataFrameSaver,
+        cr_decoded=None,
+        cr_content_string=None,
+        decoded_data_content_string=None,
+
+        ):
+    return CLIENT_STRATEGY[client](
+        dash_dataframe_saver,
+        cr_decoded=cr_decoded,
+        cr_content_string=cr_content_string,
+        decoded_data_content_string=decoded_data_content_string,
+        )

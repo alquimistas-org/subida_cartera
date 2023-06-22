@@ -4,6 +4,7 @@ from dash import dcc
 class ClientsDropdown:
 
     clients = [
+        '-',
         'Comafi',
         'Naranja',
     ]
