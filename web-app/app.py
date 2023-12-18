@@ -18,4 +18,4 @@ app = dash.Dash(
     assets_folder=assets_path,
 )
 
-app.title = "Cuervo Abogados"
+app.title = "Uploader"
