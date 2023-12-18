@@ -126,9 +126,11 @@ app_layout = html.Div([
                     dcc.Location(id='url', refresh=True),
                     dbc.Modal([
                         dbc.ModalFooter(
-                            [dbc.Button("Aceptar", id="accept-btn-error")],
+                            # FIXME repeated id so i have to add datos, but it's not a good solution
+                            [dbc.Button("Aceptar", id="accept-btn-error-datos")],
                         ),
-                    ], id='error-client-filename', is_open=False),
+                    # FIXME repeated id so i have to add datos, but it's not a good solution
+                    ], id='error-client-filename-datos', is_open=False),
                 ],
                 tab_id="clients_tabs"
                 ),
