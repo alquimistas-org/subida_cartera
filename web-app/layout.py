@@ -25,7 +25,7 @@ selected_client_style = {
 app_layout = html.Div([
     ClearData.create(),
     html.H1(
-        'Osiris',
+        'Uploader',
         style={
             'fontSize': '5rem',
             'fontWeight': '800',
